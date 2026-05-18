@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle}, ${pageDescription}, ${canonicalUrl})}"></head>
+<body>
+<button class="mobile-menu-button" type="button" data-menu-toggle aria-label="메뉴 열기">☰</button>
+<div class="app-shell">
+    <aside th:replace="~{fragments/nav :: sidebar(${activeMenu})}"></aside>
+    <main class="main-content">
+        <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
+        <div th:replace="~{fragments/components :: pageHero('적정주가 계산기', ${pageDescription})}"></div>
+        <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
+
+        <section class="calculator-layout">
+            <form class="calculator-form" th:action="@{/fair-value-calculator}" th:object="${form}" method="post">
+                <h2>입력값</h2>
+                <label>EPS
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="eps" name="eps" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'eps')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('eps')}" th:errors="*{eps}"></span>
+                </label>
+                <label>목표 PER
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="targetPer" name="targetPer" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'targetPer')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('targetPer')}" th:errors="*{targetPer}"></span>
+                </label>
+                <label>성장률(%)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" data-signed="true" id="growthRate" name="growthRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'growthRate')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('growthRate')}" th:errors="*{growthRate}"></span>
+                </label>
+                <label>할인율(%)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="discountRate" name="discountRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'discountRate')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('discountRate')}" th:errors="*{discountRate}"></span>
+                </label>
+                <label>안전마진(%)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="safetyMargin" name="safetyMargin" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'safetyMargin')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('safetyMargin')}" th:errors="*{safetyMargin}"></span>
+                </label>
+                <button class="primary-button" type="submit">계산하기</button>
+            </form>
+
+            <div th:if="${result == null}" th:replace="~{fragments/components :: calculatorSideNote}"></div>
+            <section class="result-panel" th:if="${result != null}" data-result-card>
+                <h2>계산 결과</h2>
+                <div class="result-grid">
+                    <div><span>기본 적정주가</span><strong th:text="${#numbers.formatDecimal(result.baseFairValue, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>성장·할인 반영</span><strong th:text="${#numbers.formatDecimal(result.growthAdjustedFairValue, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>안전마진 매수가</span><strong th:text="${#numbers.formatDecimal(result.safeBuyPrice, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>보수적 시나리오</span><strong th:text="${#numbers.formatDecimal(result.conservativePrice, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>중립 시나리오</span><strong th:text="${#numbers.formatDecimal(result.neutralPrice, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>공격적 시나리오</span><strong th:text="${#numbers.formatDecimal(result.aggressivePrice, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                </div>
+                <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
+            </section>
+        </section>
+
+        <div th:replace="~{fragments/components :: disclaimer('본 계산기는 단순 참고용이며 특정 종목 매수·매도 추천이나 투자 자문이 아닙니다.')}"></div>
+        <section class="content-card">
+            <h2>계산식</h2>
+            <p>기본 적정주가는 EPS × 목표 PER로 계산합니다. 성장률과 할인율을 단순 반영한 뒤, 안전마진을 차감해 보수적인 매수가를 표시합니다.</p>
+        </section>
+        <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
+        <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
+        <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
+</div>
+</body>
+</html>

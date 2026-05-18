@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside class="sidebar" id="sidebar" th:fragment="sidebar(activeMenu)">
+    <a class="brand" href="/" aria-label="머니툴스 홈으로 이동">
+        <span class="brand-mark">₩</span>
+        <span>
+            <strong th:text="${appName}">머니툴스</strong>
+            <small>Finance calculators</small>
+        </span>
+    </a>
+
+    <nav class="side-nav" aria-label="계산기 메뉴">
+        <a th:each="menu : ${menus}"
+           th:href="${menu.path}"
+           th:text="${menu.label}"
+           th:classappend="${activeMenu == menu.key} ? ' active' : ''">메뉴</a>
+    </nav>
+
+    <div class="sidebar-note">
+        <strong>계산 결과는 참고용</strong>
+        <p>세금·급여·투자 판단 전에는 최신 기준과 전문가 확인이 필요합니다.</p>
+    </div>
+</aside>
+</body>
+</html>

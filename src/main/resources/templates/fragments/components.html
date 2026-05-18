@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="pageHero(title, description)">
+    <section class="page-hero">
+        <p class="eyebrow">Finance Calculator</p>
+        <h1 th:text="${title}">계산기</h1>
+        <p th:text="${description}">설명</p>
+    </section>
+</div>
+
+<div th:fragment="breadcrumbs(page)">
+    <nav class="breadcrumbs" aria-label="breadcrumb">
+        <a href="/">홈</a>
+        <span aria-hidden="true">/</span>
+        <strong th:text="${page.label}">현재 페이지</strong>
+    </nav>
+</div>
+
+<section class="faq-section" th:fragment="faqList(faqs)">
+    <h2>자주 묻는 질문</h2>
+    <div class="faq-list">
+        <details th:each="faq : ${faqs}">
+            <summary th:text="${faq.question}">질문</summary>
+            <p th:text="${faq.answer}">답변</p>
+        </details>
+    </div>
+</section>
+
+<div th:fragment="relatedLinks(currentKey)">
+    <section class="related-box">
+        <h2>관련 계산기</h2>
+        <div class="related-links">
+            <a th:each="menu : ${menus}"
+               th:if="${menu.key != currentKey and menu.key != 'home' and menu.key != 'guide' and menu.key != 'privacy' and menu.key != 'contact'}"
+               th:href="${menu.path}"
+               th:text="${menu.label}">관련 계산기</a>
+        </div>
+    </section>
+</div>
+
+<div class="notice-box" th:fragment="disclaimer(text)">
+    <strong>안내</strong>
+    <p th:text="${text}">계산 결과는 참고용입니다.</p>
+</div>
+
+<section class="calculator-side-note" th:fragment="calculatorSideNote">
+    <strong>계산 결과는 참고용</strong>
+    <p class="advice-warning">본 사이트의 계산 결과는 참고용이며 법률, 세무, 투자, 노무 자문을 대체하지 않습니다.</p>
+    <p class="advice-warning">본 계산기는 단순 참고용이며 특정 종목 매수·매도 추천이나 투자 자문이 아닙니다.</p>
+    <p>세금·급여·투자 판단 전에는 최신 기준과 전문가 확인이 필요합니다.</p>
+</section>
+</body>
+</html>

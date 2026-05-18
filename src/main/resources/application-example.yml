@@ -1,0 +1,36 @@
+server:
+  port: 8080
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: moneytools
+  thymeleaf:
+    cache: false
+    mode: HTML
+    encoding: UTF-8
+  web:
+    resources:
+      cache:
+        period: 365d
+  # Example only. The current app does not require a database by default.
+  # datasource:
+  #   url: ${DB_URL:jdbc:mysql://localhost:3306/moneytools}
+  #   username: ${DB_USERNAME:moneytools_user}
+  #   password: ${DB_PASSWORD:change-me}
+
+app:
+  name: ${APP_NAME:머니툴스}
+  base-url: ${APP_BASE_URL:}
+  description: ${APP_DESCRIPTION:배당, 적정주가, 대출이자, 실수령액, 퇴직금, 연차수당, 환율, 해외주식 세금을 한 곳에서 계산하는 금융 계산기 모음입니다.}
+  contact-email: ${APP_CONTACT_EMAIL:contact@example.com}
+  google-site-verification: ${GOOGLE_SITE_VERIFICATION:}
+  naver-site-verification: ${NAVER_SITE_VERIFICATION:}
+  adsense:
+    enabled: ${ADSENSE_ENABLED:false}
+    client-id: ${ADSENSE_CLIENT_ID:ca-pub-0000000000000000}
+    slots:
+      top: ${ADSENSE_SLOT_TOP:0000000000}
+      content: ${ADSENSE_SLOT_CONTENT:1111111111}
+      result: ${ADSENSE_SLOT_RESULT:2222222222}
+      sidebar: ${ADSENSE_SLOT_SIDEBAR:3333333333}

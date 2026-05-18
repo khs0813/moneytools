@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle}, ${pageDescription}, ${canonicalUrl})}"></head>
+<body>
+<button class="mobile-menu-button" type="button" data-menu-toggle aria-label="메뉴 열기">☰</button>
+<div class="app-shell">
+    <aside th:replace="~{fragments/nav :: sidebar(${activeMenu})}"></aside>
+    <main class="main-content">
+        <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
+        <div th:replace="~{fragments/components :: pageHero('이용안내', ${pageDescription})}"></div>
+        <section class="content-card">
+            <h2>계산 결과를 해석하는 방법</h2>
+            <p>머니툴스의 모든 계산기는 사용자가 입력한 값을 바탕으로 즉시 결과를 보여주는 참고용 도구입니다. 세금, 급여, 노무, 투자 관련 실제 결과는 법령 개정, 기관 고시, 회사 정책, 수수료, 환율 적용일에 따라 달라질 수 있습니다.</p>
+            <h2>2026년 기준 반영 항목</h2>
+            <ul class="check-list">
+                <li>실수령액 계산기의 4대보험 근로자 부담률과 국민연금 상·하한액(2026년 4월 기준)</li>
+                <li>2026년 3월 1일부터 적용되는 근로소득 간이세액표의 가족 수 개념과 현재 세율·공제 구조</li>
+                <li>해외주식 양도세 기본공제 250만원, 기본 양도세율 22%, 배당세 기본값 15.4%</li>
+                <li>퇴직금 평균임금 산정 시 직전 3개월 실제 일수, 상여금 3/12, 연차수당 3/12, 통상임금 하한</li>
+                <li>연차수당 계산 시 근로기준법 제60조의 기본 구조(1년 미만 1개월 개근 1일, 1년 이상 15일)</li>
+            </ul>
+            <h2>운영 전 다시 점검할 항목</h2>
+            <ul class="check-list">
+                <li>매년 바뀌는 4대보험 요율과 국민연금 상·하한 고시</li>
+                <li>국세청 간이세액표 개정 여부와 자녀세액공제 반영 방식</li>
+                <li>해외주식 양도세·배당세·금융소득 종합과세 기준 변경 여부</li>
+                <li>노동부 행정해석과 회사 취업규칙에 따른 퇴직금·연차수당 예외사항</li>
+                <li>AdSense client-id, 광고 slot, ads.txt</li>
+                <li>Google Search Console, Naver Search Advisor 인증 메타 태그</li>
+            </ul>
+        </section>
+        <div th:replace="~{fragments/ads :: ad(${adSlotContent}, '본문 광고')}"></div>
+        <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
+</div>
+</body>
+</html>

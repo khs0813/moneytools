@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">머니툴스 대표 이미지</title>
+  <desc id="desc">배당 계산기, 적정주가 계산기, 대출이자 계산기 등 금융 계산기를 제공하는 머니툴스</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#dff7ef"/>
+      <stop offset="55%" stop-color="#eef1ff"/>
+      <stop offset="100%" stop-color="#ffe8df"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="36" fill="url(#bg)"/>
+  <g transform="translate(90 88)">
+    <rect width="140" height="140" rx="34" fill="#ffffff" opacity="0.92"/>
+    <rect x="34" y="34" width="72" height="72" rx="24" fill="#6c8cff"/>
+    <path d="M52 89h38v-12H67V52H52z" fill="#fff"/>
+    <path d="M74 52h16v25h16v12H74z" fill="#fff" opacity="0.82"/>
+  </g>
+  <text x="90" y="300" font-family="Apple SD Gothic Neo, Noto Sans KR, Segoe UI, sans-serif" font-size="78" font-weight="800" fill="#243044">머니툴스</text>
+  <text x="90" y="382" font-family="Apple SD Gothic Neo, Noto Sans KR, Segoe UI, sans-serif" font-size="34" font-weight="600" fill="#52607a">배당 · 적정주가 · 대출이자 · 실수령액 · 퇴직금 · 해외주식 세금 계산기</text>
+  <g transform="translate(90 444)">
+    <rect width="206" height="62" rx="18" fill="#ffffff" opacity="0.86"/>
+    <text x="34" y="40" font-family="Apple SD Gothic Neo, Noto Sans KR, Segoe UI, sans-serif" font-size="28" font-weight="700" fill="#3b4a66">SEO 준비 완료</text>
+  </g>
+</svg>

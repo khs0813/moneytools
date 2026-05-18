@@ -1,0 +1,24 @@
+# Build outputs
+build/
+target/
+out/
+
+# Gradle
+.gradle/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Local environment and secrets
+.env
+.env.*
+application-secret.yml
+application-local.yml
+src/main/resources/application-secret.yml
+src/main/resources/application-local.yml
+
+# Logs and OS files
+*.log
+.DS_Store

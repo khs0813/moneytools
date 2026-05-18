@@ -1,0 +1,36 @@
+server:
+  port: 8080
+  forward-headers-strategy: framework
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json,application/xml,image/svg+xml
+
+spring:
+  application:
+    name: moneytools
+  thymeleaf:
+    cache: false
+    mode: HTML
+    encoding: UTF-8
+  web:
+    resources:
+      cache:
+        period: 365d
+
+app:
+  name: ${APP_NAME:머니툴스}
+  # 운영 도메인을 설정하면 canonical, sitemap, OG URL이 고정됩니다.
+  # 비워두면 요청 호스트를 기준으로 절대 URL을 생성합니다.
+  base-url: ${APP_BASE_URL:}
+  description: ${APP_DESCRIPTION:배당, 적정주가, 대출이자, 실수령액, 퇴직금, 연차수당, 환율, 해외주식 세금을 한 곳에서 계산하는 금융 계산기 모음입니다.}
+  contact-email: ${APP_CONTACT_EMAIL:contact@example.com}
+  google-site-verification: ${GOOGLE_SITE_VERIFICATION:}
+  naver-site-verification: ${NAVER_SITE_VERIFICATION:}
+  adsense:
+    enabled: ${ADSENSE_ENABLED:false}
+    client-id: ${ADSENSE_CLIENT_ID:ca-pub-0000000000000000}
+    slots:
+      top: ${ADSENSE_SLOT_TOP:0000000000}
+      content: ${ADSENSE_SLOT_CONTENT:1111111111}
+      result: ${ADSENSE_SLOT_RESULT:2222222222}
+      sidebar: ${ADSENSE_SLOT_SIDEBAR:3333333333}

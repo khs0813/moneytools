@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle}, ${pageDescription}, ${canonicalUrl})}"></head>
+<body>
+<button class="mobile-menu-button" type="button" data-menu-toggle aria-label="메뉴 열기">☰</button>
+<div class="app-shell">
+    <aside th:replace="~{fragments/nav :: sidebar(${activeMenu})}"></aside>
+    <main class="main-content">
+        <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
+        <div th:replace="~{fragments/components :: pageHero('대출이자 계산기', ${pageDescription})}"></div>
+        <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
+
+        <section class="calculator-layout">
+            <form class="calculator-form" th:action="@{/loan-interest-calculator}" th:object="${form}" method="post">
+                <h2>입력값</h2>
+                <label>대출원금
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" placeholder="예: 100,000,000" id="principal" name="principal" th:value="${@inputFieldValueFormatter.formatInteger(form, 'principal')}">
+                    <small class="field-help">쉼표를 포함해도 되며, 최대 999,999,999,999,999원까지 입력할 수 있습니다.</small>
+                    <span class="field-error" th:if="${#fields.hasErrors('principal')}" th:errors="*{principal}"></span>
+                </label>
+                <label>연이율(%)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="annualRate" name="annualRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'annualRate')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('annualRate')}" th:errors="*{annualRate}"></span>
+                </label>
+                <label>대출기간(년)
+                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" id="years" name="years" th:value="${@inputFieldValueFormatter.formatInteger(form, 'years')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('years')}" th:errors="*{years}"></span>
+                </label>
+                <label>상환방식
+                    <select th:field="*{repaymentType}">
+                        <option value="EQUAL_PAYMENT">원리금균등</option>
+                        <option value="EQUAL_PRINCIPAL">원금균등</option>
+                        <option value="BULLET">만기일시상환</option>
+                    </select>
+                    <span class="field-error" th:if="${#fields.hasErrors('repaymentType')}" th:errors="*{repaymentType}"></span>
+                </label>
+                <button class="primary-button" type="submit">계산하기</button>
+            </form>
+
+            <div th:if="${result == null}" th:replace="~{fragments/components :: calculatorSideNote}"></div>
+            <section class="result-panel" th:if="${result != null}" data-result-card>
+                <h2>계산 결과</h2>
+                <div class="result-grid">
+                    <div><span>첫 달 상환금</span><strong th:text="${#numbers.formatDecimal(result.firstMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>평균 월 상환금</span><strong th:text="${#numbers.formatDecimal(result.averageMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>총 이자</span><strong th:text="${#numbers.formatDecimal(result.totalInterest, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>총 상환액</span><strong th:text="${#numbers.formatDecimal(result.totalPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                </div>
+                <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
+            </section>
+        </section>
+
+        <section class="content-card" th:if="${result != null}">
+            <div class="table-header">
+                <h2>월별 상환표</h2>
+                <button class="ghost-button" type="button" data-download-table="loan-schedule">CSV 다운로드</button>
+            </div>
+            <div class="table-scroll">
+                <table id="loan-schedule" class="data-table">
+                    <thead>
+                    <tr>
+                        <th>회차</th><th>상환금</th><th>원금</th><th>이자</th><th>잔액</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="row : ${result.schedule}">
+                        <td th:text="${row.month}">1</td>
+                        <td th:text="${#numbers.formatDecimal(row.payment, 0, 'COMMA', 0, 'POINT')}">0</td>
+                        <td th:text="${#numbers.formatDecimal(row.principalPayment, 0, 'COMMA', 0, 'POINT')}">0</td>
+                        <td th:text="${#numbers.formatDecimal(row.interestPayment, 0, 'COMMA', 0, 'POINT')}">0</td>
+                        <td th:text="${#numbers.formatDecimal(row.remainingPrincipal, 0, 'COMMA', 0, 'POINT')}">0</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="content-card">
+            <h2>상환방식 안내</h2>
+            <p>원리금균등은 매월 납부액을 일정하게 맞추는 방식입니다. 원금균등은 매월 같은 원금을 갚아 시간이 갈수록 월 납부액이 줄어듭니다. 만기일시상환은 매월 이자만 내고 마지막 달에 원금을 갚습니다.</p>
+        </section>
+        <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
+        <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
+        <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
+</div>
+</body>
+</html>

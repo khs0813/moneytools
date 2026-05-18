@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle}, ${pageDescription}, ${canonicalUrl})}"></head>
+<body>
+<button class="mobile-menu-button" type="button" data-menu-toggle aria-label="메뉴 열기">☰</button>
+<div class="app-shell">
+    <aside th:replace="~{fragments/nav :: sidebar(${activeMenu})}"></aside>
+    <main class="main-content">
+        <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
+        <div th:replace="~{fragments/components :: pageHero('실수령액 계산기', ${pageDescription})}"></div>
+        <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
+
+        <section class="calculator-layout">
+            <form class="calculator-form" th:action="@{/salary-calculator}" th:object="${form}" method="post">
+                <h2>입력값</h2>
+                <label>입력 기준
+                    <select th:field="*{incomeType}">
+                        <option value="MONTHLY">월급</option>
+                        <option value="ANNUAL">연봉</option>
+                    </select>
+                    <span class="field-error" th:if="${#fields.hasErrors('incomeType')}" th:errors="*{incomeType}"></span>
+                </label>
+                <label>금액
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="amount" name="amount" th:value="${@inputFieldValueFormatter.formatInteger(form, 'amount')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></span>
+                </label>
+                <label>월 비과세액
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="taxFreeAmount" name="taxFreeAmount" th:value="${@inputFieldValueFormatter.formatInteger(form, 'taxFreeAmount')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('taxFreeAmount')}" th:errors="*{taxFreeAmount}"></span>
+                </label>
+                <label>공제대상 가족 수(본인 포함)
+                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" id="dependents" name="dependents" th:value="${@inputFieldValueFormatter.formatInteger(form, 'dependents')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('dependents')}" th:errors="*{dependents}"></span>
+                </label>
+                <label>8세 이상 20세 이하 자녀 수
+                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" id="children" name="children" th:value="${@inputFieldValueFormatter.formatInteger(form, 'children')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('children')}" th:errors="*{children}"></span>
+                </label>
+                <label class="checkbox-row">
+                    <input type="checkbox" th:field="*{applyInsurance}"> 4대보험 적용
+                </label>
+                <button class="primary-button" type="submit">계산하기</button>
+            </form>
+
+            <div th:if="${result == null}" th:replace="~{fragments/components :: calculatorSideNote}"></div>
+            <section class="result-panel" th:if="${result != null}" data-result-card>
+                <h2>계산 결과</h2>
+                <div class="result-grid">
+                    <div><span>월 세전 급여</span><strong th:text="${#numbers.formatDecimal(result.grossMonthly, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>국민연금</span><strong th:text="${#numbers.formatDecimal(result.nationalPension, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>건강보험</span><strong th:text="${#numbers.formatDecimal(result.healthInsurance, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>장기요양보험</span><strong th:text="${#numbers.formatDecimal(result.longTermCareInsurance, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>고용보험</span><strong th:text="${#numbers.formatDecimal(result.employmentInsurance, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>소득세</span><strong th:text="${#numbers.formatDecimal(result.incomeTax, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>지방소득세</span><strong th:text="${#numbers.formatDecimal(result.localIncomeTax, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>총 공제액</span><strong th:text="${#numbers.formatDecimal(result.totalDeduction, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>예상 월 실수령액</span><strong th:text="${#numbers.formatDecimal(result.netMonthly, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>예상 연 실수령액</span><strong th:text="${#numbers.formatDecimal(result.netAnnual, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                </div>
+                <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
+            </section>
+        </section>
+
+        <div th:replace="~{fragments/components :: disclaimer('이 페이지에는 2026년 기준 국민연금 4.75%, 건강보험 3.595%, 장기요양보험 0.4724%, 고용보험 0.9%와 2026-03-01 적용 간이세액표 개념을 반영한 추정 로직을 적용했습니다. 8세 이상 20세 이하 자녀 수에 따른 월 원천징수세액 차감도 함께 반영합니다. 산재보험은 근로자 공제가 아니므로 실수령액에서 제외했습니다.')}" ></div>
+        <section class="content-card">
+            <h2>계산 기준</h2>
+            <p>월 급여(비과세 제외)에서 국민연금, 건강보험, 장기요양보험, 고용보험, 소득세, 지방소득세를 차감해 예상 실수령액을 표시합니다. 국민연금은 2026년 기준 근로자 부담률 4.75%와 기준소득월액 상·하한을 반영하고, 소득세는 2026년 3월 1일부터 적용되는 근로소득 간이세액표의 가족 수 개념과 현재 세율·공제 구조를 반영한 추정치입니다. 공제대상가족 중 8세 이상 20세 이하 자녀가 있으면 월 원천징수세액에서 자녀 1명 12,500원, 2명 29,160원, 3명 이상은 2명 초과 1명당 25,000원을 추가 차감합니다.</p>
+        </section>
+        <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
+        <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
+        <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
+</div>
+</body>
+</html>

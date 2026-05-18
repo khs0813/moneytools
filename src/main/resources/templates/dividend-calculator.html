@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle}, ${pageDescription}, ${canonicalUrl})}"></head>
+<body>
+<button class="mobile-menu-button" type="button" data-menu-toggle aria-label="메뉴 열기">☰</button>
+<div class="app-shell">
+    <aside th:replace="~{fragments/nav :: sidebar(${activeMenu})}"></aside>
+    <main class="main-content">
+        <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
+        <div th:replace="~{fragments/components :: pageHero('배당 계산기', ${pageDescription})}"></div>
+        <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
+
+        <section class="calculator-layout">
+            <form class="calculator-form" th:action="@{/dividend-calculator}" th:object="${form}" method="post">
+                <h2>입력값</h2>
+                <label>보유 주식 수
+                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" id="shares" name="shares" th:value="${@inputFieldValueFormatter.formatInteger(form, 'shares')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('shares')}" th:errors="*{shares}"></span>
+                </label>
+                <label>주당 배당금
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="dividendPerShare" name="dividendPerShare" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'dividendPerShare')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('dividendPerShare')}" th:errors="*{dividendPerShare}"></span>
+                </label>
+                <label>배당 주기
+                    <select th:field="*{period}">
+                        <option value="MONTHLY">월배당</option>
+                        <option value="QUARTERLY">분기배당</option>
+                        <option value="SEMI_ANNUAL">반기배당</option>
+                        <option value="ANNUAL">연배당</option>
+                    </select>
+                    <span class="field-error" th:if="${#fields.hasErrors('period')}" th:errors="*{period}"></span>
+                </label>
+                <label class="checkbox-row">
+                    <input type="checkbox" th:field="*{taxApplied}"> 세후 금액 계산
+                </label>
+                <label>원천징수 세율(%)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="taxRate" name="taxRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'taxRate')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('taxRate')}" th:errors="*{taxRate}"></span>
+                </label>
+                <button class="primary-button" type="submit">계산하기</button>
+            </form>
+
+            <div th:if="${result == null}" th:replace="~{fragments/components :: calculatorSideNote}"></div>
+            <section class="result-panel" th:if="${result != null}" data-result-card>
+                <h2>계산 결과</h2>
+                <div class="result-grid">
+                    <div><span>1회 세전 배당금</span><strong th:text="${#numbers.formatDecimal(result.oneTimeGross, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>1회 세후 배당금</span><strong th:text="${#numbers.formatDecimal(result.oneTimeNet, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>월 예상 세후 배당금</span><strong th:text="${#numbers.formatDecimal(result.monthlyNet, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>연 예상 세후 배당금</span><strong th:text="${#numbers.formatDecimal(result.annualNet, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                </div>
+                <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
+            </section>
+        </section>
+
+        <section class="content-card">
+            <h2>계산식</h2>
+            <p>1회 배당금 = 보유 주식 수 × 주당 배당금입니다. 배당 주기에 따라 연 배당금을 계산하고, 연 배당금을 12로 나누어 월 환산 배당금을 표시합니다.</p>
+        </section>
+        <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
+        <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
+        <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
+</div>
+</body>
+</html>

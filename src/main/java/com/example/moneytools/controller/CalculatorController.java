@@ -1,0 +1,251 @@
+package com.example.moneytools.controller;
+
+import com.example.moneytools.dto.*;
+import com.example.moneytools.seo.FaqItem;
+import com.example.moneytools.seo.PageInfo;
+import com.example.moneytools.seo.PublicUrlService;
+import com.example.moneytools.seo.SeoService;
+import com.example.moneytools.seo.SitePages;
+import com.example.moneytools.service.*;
+import jakarta.validation.Valid;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
+
+@Controller
+public class CalculatorController {
+    private final SeoService seoService;
+    private final PublicUrlService publicUrlService;
+    private final DividendCalculatorService dividendService;
+    private final FairValueCalculatorService fairValueService;
+    private final LoanCalculatorService loanService;
+    private final SalaryCalculatorService salaryService;
+    private final SeveranceCalculatorService severanceService;
+    private final AnnualLeaveCalculatorService annualLeaveService;
+    private final ExchangeCalculatorService exchangeService;
+    private final OverseasStockTaxCalculatorService overseasStockTaxService;
+
+    public CalculatorController(SeoService seoService,
+                                PublicUrlService publicUrlService,
+                                DividendCalculatorService dividendService,
+                                FairValueCalculatorService fairValueService,
+                                LoanCalculatorService loanService,
+                                SalaryCalculatorService salaryService,
+                                SeveranceCalculatorService severanceService,
+                                AnnualLeaveCalculatorService annualLeaveService,
+                                ExchangeCalculatorService exchangeService,
+                                OverseasStockTaxCalculatorService overseasStockTaxService) {
+        this.seoService = seoService;
+        this.publicUrlService = publicUrlService;
+        this.dividendService = dividendService;
+        this.fairValueService = fairValueService;
+        this.loanService = loanService;
+        this.salaryService = salaryService;
+        this.severanceService = severanceService;
+        this.annualLeaveService = annualLeaveService;
+        this.exchangeService = exchangeService;
+        this.overseasStockTaxService = overseasStockTaxService;
+    }
+
+    @GetMapping("/dividend-calculator")
+    public String dividend(Model model) {
+        prepare(model, "dividend", dividendFaqs());
+        model.addAttribute("form", new DividendRequest());
+        return "dividend-calculator";
+    }
+
+    @PostMapping("/dividend-calculator")
+    public String calculateDividend(@Valid @ModelAttribute("form") DividendRequest form, BindingResult bindingResult, Model model) {
+        prepare(model, "dividend", dividendFaqs());
+        if (!bindingResult.hasErrors()) model.addAttribute("result", dividendService.calculate(form));
+        return "dividend-calculator";
+    }
+
+    @GetMapping("/fair-value-calculator")
+    public String fairValue(Model model) {
+        prepare(model, "fair-value", fairValueFaqs());
+        model.addAttribute("form", new FairValueRequest());
+        return "fair-value-calculator";
+    }
+
+    @PostMapping("/fair-value-calculator")
+    public String calculateFairValue(@Valid @ModelAttribute("form") FairValueRequest form, BindingResult bindingResult, Model model) {
+        prepare(model, "fair-value", fairValueFaqs());
+        if (!bindingResult.hasErrors()) model.addAttribute("result", fairValueService.calculate(form));
+        return "fair-value-calculator";
+    }
+
+    @GetMapping("/loan-interest-calculator")
+    public String loan(Model model) {
+        prepare(model, "loan", loanFaqs());
+        model.addAttribute("form", new LoanRequest());
+        return "loan-interest-calculator";
+    }
+
+    @PostMapping("/loan-interest-calculator")
+    public String calculateLoan(@Valid @ModelAttribute("form") LoanRequest form, BindingResult bindingResult, Model model) {
+        prepare(model, "loan", loanFaqs());
+        if (!bindingResult.hasErrors()) model.addAttribute("result", loanService.calculate(form));
+        return "loan-interest-calculator";
+    }
+
+    @GetMapping("/salary-calculator")
+    public String salary(Model model) {
+        prepare(model, "salary", salaryFaqs());
+        model.addAttribute("form", new SalaryRequest());
+        return "salary-calculator";
+    }
+
+    @PostMapping("/salary-calculator")
+    public String calculateSalary(@Valid @ModelAttribute("form") SalaryRequest form, BindingResult bindingResult, Model model) {
+        prepare(model, "salary", salaryFaqs());
+        if (!bindingResult.hasErrors()) model.addAttribute("result", salaryService.calculate(form));
+        return "salary-calculator";
+    }
+
+    @GetMapping("/severance-pay-calculator")
+    public String severance(Model model) {
+        prepare(model, "severance", severanceFaqs());
+        model.addAttribute("form", new SeveranceRequest());
+        return "severance-pay-calculator";
+    }
+
+    @PostMapping("/severance-pay-calculator")
+    public String calculateSeverance(@Valid @ModelAttribute("form") SeveranceRequest form, BindingResult bindingResult, Model model) {
+        prepare(model, "severance", severanceFaqs());
+        if (!bindingResult.hasErrors() && !form.getEndDate().isBefore(form.getStartDate())) {
+            model.addAttribute("result", severanceService.calculate(form));
+        } else if (form.getEndDate() != null && form.getStartDate() != null && form.getEndDate().isBefore(form.getStartDate())) {
+            model.addAttribute("dateError", "퇴사일은 입사일보다 빠를 수 없습니다.");
+        }
+        return "severance-pay-calculator";
+    }
+
+    @GetMapping("/annual-leave-pay-calculator")
+    public String annualLeave(Model model) {
+        prepare(model, "annual-leave", annualLeaveFaqs());
+        model.addAttribute("form", new AnnualLeaveRequest());
+        return "annual-leave-pay-calculator";
+    }
+
+    @PostMapping("/annual-leave-pay-calculator")
+    public String calculateAnnualLeave(@Valid @ModelAttribute("form") AnnualLeaveRequest form, BindingResult bindingResult, Model model) {
+        prepare(model, "annual-leave", annualLeaveFaqs());
+        if (!bindingResult.hasErrors() && !form.getCalculationDate().isBefore(form.getStartDate())) {
+            model.addAttribute("result", annualLeaveService.calculate(form));
+        } else if (form.getCalculationDate() != null && form.getStartDate() != null && form.getCalculationDate().isBefore(form.getStartDate())) {
+            model.addAttribute("dateError", "계산 기준일은 입사일보다 빠를 수 없습니다.");
+        }
+        return "annual-leave-pay-calculator";
+    }
+
+    @GetMapping("/exchange-calculator")
+    public String exchange(Model model) {
+        prepare(model, "exchange", exchangeFaqs());
+        model.addAttribute("form", new ExchangeRequest());
+        return "exchange-calculator";
+    }
+
+    @PostMapping("/exchange-calculator")
+    public String calculateExchange(@Valid @ModelAttribute("form") ExchangeRequest form, BindingResult bindingResult, Model model) {
+        prepare(model, "exchange", exchangeFaqs());
+        if (!bindingResult.hasErrors()) model.addAttribute("result", exchangeService.calculate(form));
+        return "exchange-calculator";
+    }
+
+    @GetMapping("/overseas-stock-tax-calculator")
+    public String overseasTax(Model model) {
+        prepare(model, "overseas-tax", overseasTaxFaqs());
+        model.addAttribute("form", new OverseasStockTaxRequest());
+        return "overseas-stock-tax-calculator";
+    }
+
+    @PostMapping("/overseas-stock-tax-calculator")
+    public String calculateOverseasTax(@Valid @ModelAttribute("form") OverseasStockTaxRequest form, BindingResult bindingResult, Model model) {
+        prepare(model, "overseas-tax", overseasTaxFaqs());
+        if (!bindingResult.hasErrors()) model.addAttribute("result", overseasStockTaxService.calculate(form));
+        return "overseas-stock-tax-calculator";
+    }
+
+    private void prepare(Model model, String key, List<FaqItem> faqs) {
+        PageInfo page = SitePages.require(key);
+        model.addAttribute("page", page);
+        model.addAttribute("activeMenu", page.key());
+        model.addAttribute("pageTitle", page.title());
+        model.addAttribute("pageDescription", page.description());
+        model.addAttribute("canonicalUrl", publicUrlService.absoluteUrl(page.path()));
+        model.addAttribute("faqs", faqs);
+        model.addAttribute("structuredData", seoService.structuredData(page, faqs));
+    }
+
+    private List<FaqItem> dividendFaqs() {
+        return List.of(
+                new FaqItem("세후 배당금은 어떻게 계산하나요?", "1회 배당금에 원천징수 세율을 차감하고, 배당 주기에 따라 월·연 기준으로 환산합니다."),
+                new FaqItem("월배당과 분기배당을 모두 계산할 수 있나요?", "배당 주기를 월, 분기, 반기, 연 단위로 선택할 수 있습니다."),
+                new FaqItem("해외주식 배당세도 반영되나요?", "세율을 직접 입력할 수 있어 국가별 원천징수율을 참고해 입력할 수 있습니다.")
+        );
+    }
+
+    private List<FaqItem> fairValueFaqs() {
+        return List.of(
+                new FaqItem("적정주가는 투자 권유인가요?", "아닙니다. EPS와 PER 등 단순 입력값을 바탕으로 계산한 참고용 수치입니다."),
+                new FaqItem("안전마진은 무엇인가요?", "계산된 적정가에서 일정 비율을 할인해 보수적인 매수가를 구하기 위한 값입니다."),
+                new FaqItem("성장률과 할인율은 어떻게 쓰이나요?", "기본 EPS×PER 값에 성장률을 반영하고 할인율로 현재가치 관점의 보정값을 적용합니다.")
+        );
+    }
+
+    private List<FaqItem> loanFaqs() {
+        return List.of(
+                new FaqItem("원리금균등과 원금균등의 차이는 무엇인가요?", "원리금균등은 매월 비슷한 금액을 내고, 원금균등은 매월 같은 원금을 갚아 초기 상환액이 큽니다."),
+                new FaqItem("월별 상환표를 내려받을 수 있나요?", "결과 표의 CSV 다운로드 버튼으로 브라우저에서 상환표를 저장할 수 있습니다."),
+                new FaqItem("중도상환수수료도 반영되나요?", "초기 버전은 기본 상환 방식 중심이며, 중도상환수수료는 2차 기능으로 확장할 수 있습니다.")
+        );
+    }
+
+    private List<FaqItem> salaryFaqs() {
+        return List.of(
+                new FaqItem("실수령액은 정확한 급여명세서와 같나요?", "회사별 비과세 항목, 가족 수, 자녀세액공제, 원천징수 정책에 따라 달라질 수 있습니다. 이 페이지는 2026년 기준 세율과 간이세액표 구조를 반영한 추정치입니다."),
+                new FaqItem("가족 수는 어떻게 입력하나요?", "국세청 간이세액표 기준과 동일하게 공제대상 가족 수는 본인을 포함해 입력합니다."),
+                new FaqItem("산재보험이 안 보이는 이유는 무엇인가요?", "산재보험은 통상 사업주 전액 부담 항목이므로 근로자 실수령액 공제 항목에는 넣지 않았습니다."),
+                new FaqItem("연봉 입력도 가능한가요?", "월급 또는 연봉 기준을 선택할 수 있으며, 연봉 선택 시 12개월로 나누어 월 실수령액을 계산합니다.")
+        );
+    }
+
+    private List<FaqItem> severanceFaqs() {
+        return List.of(
+                new FaqItem("1년 미만 근무자도 퇴직금이 나오나요?", "근로자퇴직급여 보장법상 계속근로기간 1년 미만이면 퇴직금이 발생하지 않으므로 이 계산기도 재직일수 365일 미만이면 0원으로 표시합니다."),
+                new FaqItem("평균임금은 어떻게 계산하나요?", "퇴직 전 3개월 임금 총액에 연간 상여금 3/12, 직전 1년 발생 연차수당 3/12를 더한 뒤 직전 3개월의 실제 총일수로 나눠 계산합니다."),
+                new FaqItem("통상임금도 반영되나요?", "네. 계산된 평균임금이 입력한 1일 통상임금보다 낮으면 통상임금을 적용해 하한을 보정합니다.")
+        );
+    }
+
+    private List<FaqItem> annualLeaveFaqs() {
+        return List.of(
+                new FaqItem("발생 연차는 어떻게 계산하나요?", "근로기준법 제60조의 기본 구조를 따라 1년 미만 또는 80% 미만 출근자는 1개월 개근 시 1일, 1년 이상 80% 이상 출근자는 15일을 전제로 계산합니다."),
+                new FaqItem("연차수당은 어떻게 계산하나요?", "잔여 연차일수에 1일 통상임금을 곱해 계산합니다. 별도의 규정이 없으면 통상임금을 기준으로 보는 구조를 기본값으로 두었습니다."),
+                new FaqItem("회사 정책과 다른 경우가 있나요?", "네. 회계연도 기준 운영, 사용촉진, 출근율, 단시간 근로 여부에 따라 실제 부여일수와 수당은 달라질 수 있습니다.")
+        );
+    }
+
+    private List<FaqItem> exchangeFaqs() {
+        return List.of(
+                new FaqItem("실시간 환율을 자동 반영하나요?", "초기 버전은 환율을 직접 입력하는 방식입니다."),
+                new FaqItem("환전 수수료는 어떻게 계산하나요?", "환전 전 금액에 수수료율을 곱해 차감한 결과를 보여줍니다."),
+                new FaqItem("통화 단위는 제한되나요?", "기본 통화 목록을 제공하며, 환율만 알면 어떤 통화 조합도 계산 로직을 확장할 수 있습니다.")
+        );
+    }
+
+    private List<FaqItem> overseasTaxFaqs() {
+        return List.of(
+                new FaqItem("해외주식 양도세 기본공제를 반영하나요?", "네. 2026년 기준 연간 기본공제 250만원을 기본값으로 넣었고, 필요하면 직접 수정할 수 있습니다."),
+                new FaqItem("양도세율 기본값 22%는 무엇인가요?", "기본값 22%는 국세 20%와 지방소득세 2%를 합친 값입니다. 중소기업 특례 등 예외가 있으면 직접 수정해 계산할 수 있습니다."),
+                new FaqItem("배당세 15.4%는 언제 쓰나요?", "국내 원천징수 기준의 기본값입니다. 다만 연간 금융소득이 2천만원을 초과하거나 외국납부세액공제가 필요한 경우 실제 신고세액은 달라질 수 있습니다."),
+                new FaqItem("실제 신고세액과 같나요?", "아닙니다. 실제 신고는 거래일별 기준환율, 손익통산, 외국납부세액공제, 최신 세법에 따라 달라질 수 있습니다.")
+        );
+    }
+}
