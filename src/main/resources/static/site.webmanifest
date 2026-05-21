@@ -1,6 +1,6 @@
 {
-  "name": "머니툴스",
-  "short_name": "머니툴스",
+  "name": "머니계산기",
+  "short_name": "머니계산기",
   "lang": "ko-KR",
   "start_url": "/",
   "display": "standalone",

@@ -1,6 +1,6 @@
-# 머니툴스
+# 머니계산기
 
-머니툴스는 배당, 적정주가, 대출이자, 실수령액, 퇴직금, 연차수당, 환율, 해외주식 세금을 한 곳에서 계산하는 Spring Boot 기반 금융 계산기 웹사이트입니다. Thymeleaf 서버사이드 렌더링으로 화면을 구성하고, 검색 노출과 광고 운영을 고려한 SEO/AdSense 설정 구조를 포함합니다.
+머니계산기는 배당, 적정주가, 대출이자, 실수령액, 퇴직금, 연차수당, 환율, 해외주식 세금을 한 곳에서 계산하는 Spring Boot 기반 금융 계산기 웹사이트입니다. Thymeleaf 서버사이드 렌더링으로 화면을 구성하고, 검색 노출과 광고 운영을 고려한 SEO/AdSense 설정 구조를 포함합니다.
 
 ## 기술 스택
 
@@ -58,7 +58,7 @@ spring:
 ## 환경변수 예시
 
 ```bash
-export APP_NAME="머니툴스"
+export APP_NAME="머니계산기"
 export APP_BASE_URL="https://your-domain.com"
 export APP_CONTACT_EMAIL="contact@your-domain.com"
 export GOOGLE_SITE_VERIFICATION="google-search-console-value"

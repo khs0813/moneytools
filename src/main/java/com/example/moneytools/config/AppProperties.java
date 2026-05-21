@@ -8,7 +8,7 @@ import java.util.Map;
 
 @ConfigurationProperties(prefix = "app")
 public class AppProperties {
-    private String name = "머니툴스";
+    private String name = "머니계산기";
     private String baseUrl = "";
     private String description = "금융 계산기 모음";
     private String contactEmail = "contact@example.com";
