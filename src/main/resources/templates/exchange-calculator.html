@@ -10,7 +10,7 @@
         <div th:replace="~{fragments/components :: pageHero('환율 계산기', ${pageDescription})}"></div>
         <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
 
-        <section class="calculator-layout">
+        <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form" th:action="@{/exchange-calculator}" th:object="${form}" method="post">
                 <h2>입력값</h2>
                 <label>금액
@@ -39,8 +39,6 @@
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
-
-            <div th:if="${result == null}" th:replace="~{fragments/components :: calculatorSideNote}"></div>
             <section class="result-panel" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
@@ -50,6 +48,7 @@
                 </div>
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
             </section>
+            <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
         </section>
 
         <section class="content-card">

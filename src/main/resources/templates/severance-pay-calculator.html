@@ -14,7 +14,7 @@
         </section>
         <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
 
-        <section class="calculator-layout">
+        <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form" th:action="@{/severance-pay-calculator}" th:object="${form}" method="post">
                 <h2>입력값</h2>
                 <label>입사일
@@ -44,8 +44,6 @@
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
-
-            <div th:if="${result == null}" th:replace="~{fragments/components :: calculatorSideNote}"></div>
             <section class="result-panel" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
@@ -58,6 +56,7 @@
                 </div>
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
             </section>
+            <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
         </section>
 
         <div th:replace="~{fragments/components :: disclaimer('퇴직금은 근로기준법상 직전 3개월 평균임금을 기본으로 하되, 그 평균임금이 통상임금보다 낮으면 통상임금을 적용합니다. 이 페이지는 2026년 기준 법령 구조를 반영해 실제 3개월 일수와 통상임금 하한을 함께 고려합니다.')}" ></div>

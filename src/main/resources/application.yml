@@ -18,7 +18,7 @@ spring:
         period: 365d
 
 app:
-  name: ${APP_NAME: 머니계산기}
+  name: ${APP_NAME:머니계산기}
   # 운영 도메인을 설정하면 canonical, sitemap, OG URL이 고정됩니다.
   # 비워두면 요청 호스트를 기준으로 절대 URL을 생성합니다.
   base-url: ${APP_BASE_URL:}
