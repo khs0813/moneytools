@@ -28,7 +28,7 @@ app:
   naver-site-verification: ${NAVER_SITE_VERIFICATION:}
   adsense:
     enabled: ${ADSENSE_ENABLED:false}
-    client-id: ${ADSENSE_CLIENT_ID:ca-pub-0000000000000000}
+    client-id: ${ADSENSE_CLIENT_ID:ca-pub-7766989656523085}
     slots:
       top: ${ADSENSE_SLOT_TOP:0000000000}
       content: ${ADSENSE_SLOT_CONTENT:1111111111}
