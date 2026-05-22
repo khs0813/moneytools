@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle}, ${pageDescription}, ${canonicalUrl})}"></head>
+<body>
+<button class="mobile-menu-button" type="button" data-menu-toggle aria-label="메뉴 열기">☰</button>
+<div class="app-shell">
+    <aside th:replace="~{fragments/nav :: sidebar(${activeMenu})}"></aside>
+    <main class="main-content">
+        <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
+        <div th:replace="~{fragments/components :: pageHero('연봉 실수령액 계산기', ${pageDescription})}"></div>
+        <div class="notice-box salary-estimate-notice">
+            <strong>간이 계산 안내</strong>
+            <p>간이 계산 결과이며 실제 급여명세서와 차이가 있을 수 있음</p>
+        </div>
+        <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
+
+        <section class="calculator-layout" data-annual-salary-layout>
+            <form class="calculator-form two-column-form" data-annual-salary-calculator>
+                <h2>입력값</h2>
+                <label>연봉
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="annualSalary" value="50,000,000">
+                </label>
+                <label>비과세 월 식대
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="monthlyTaxFreeMeal" value="200,000">
+                </label>
+                <label>부양가족 수
+                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" id="dependents" value="1">
+                </label>
+                <label>20세 이하 자녀 수
+                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" id="childrenUnder20" value="0">
+                </label>
+                <label class="checkbox-row">
+                    <input type="checkbox" id="retirementIncluded">
+                    퇴직금 포함
+                </label>
+                <label class="checkbox-row">
+                    <input type="checkbox" id="monthlyBonusEnabled">
+                    월 보너스 있음
+                </label>
+                <label>월 보너스 금액
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="monthlyBonusAmount" value="0">
+                </label>
+                <button class="primary-button" type="submit">계산하기</button>
+            </form>
+            <section class="result-panel" data-result-card data-annual-salary-result-panel hidden>
+                <h2>계산 결과</h2>
+                <div class="result-grid">
+                    <div><span>월 세전 급여</span><strong data-salary-result="grossMonthly">0원</strong></div>
+                    <div><span>국민연금 예상 공제액</span><strong data-salary-result="nationalPension">0원</strong></div>
+                    <div><span>건강보험 예상 공제액</span><strong data-salary-result="healthInsurance">0원</strong></div>
+                    <div><span>장기요양보험 예상 공제액</span><strong data-salary-result="longTermCareInsurance">0원</strong></div>
+                    <div><span>고용보험 예상 공제액</span><strong data-salary-result="employmentInsurance">0원</strong></div>
+                    <div><span>근로소득세 예상액</span><strong data-salary-result="incomeTax">0원</strong></div>
+                    <div><span>지방소득세 예상액</span><strong data-salary-result="localIncomeTax">0원</strong></div>
+                    <div><span>총 공제액</span><strong data-salary-result="totalDeduction">0원</strong></div>
+                    <div><span>월 실수령액</span><strong data-salary-result="netMonthly">0원</strong></div>
+                    <div><span>연 실수령액</span><strong data-salary-result="netAnnual">0원</strong></div>
+                </div>
+                <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
+            </section>
+            <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
+        </section>
+
+        <section class="content-card">
+            <h2>계산 기준</h2>
+            <p>4대보험과 지방소득세 요율은 JavaScript 상수로 분리되어 있으며, 근로소득세는 MVP용 단순 구간별 추정 함수로 계산합니다. 추후 간이세액표 기반 로직으로 교체할 수 있도록 별도 함수로 분리했습니다.</p>
+        </section>
+        <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
+        <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
+        <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
+</div>
+</body>
+</html>

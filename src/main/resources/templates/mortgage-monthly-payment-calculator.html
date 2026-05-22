@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle}, ${pageDescription}, ${canonicalUrl})}"></head>
+<body>
+<button class="mobile-menu-button" type="button" data-menu-toggle aria-label="메뉴 열기">☰</button>
+<div class="app-shell">
+    <aside th:replace="~{fragments/nav :: sidebar(${activeMenu})}"></aside>
+    <main class="main-content">
+        <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
+        <div th:replace="~{fragments/components :: pageHero('주담대 월납입 계산기', ${pageDescription})}"></div>
+        <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
+
+        <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
+            <form class="calculator-form two-column-form" th:action="@{/mortgage-monthly-payment-calculator}" th:object="${form}" method="post">
+                <h2>입력값</h2>
+                <label>주택 가격
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="housePrice" name="housePrice" th:value="${@inputFieldValueFormatter.formatInteger(form, 'housePrice')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('housePrice')}" th:errors="*{housePrice}"></span>
+                </label>
+                <label>보유 현금
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="cashOnHand" name="cashOnHand" th:value="${@inputFieldValueFormatter.formatInteger(form, 'cashOnHand')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('cashOnHand')}" th:errors="*{cashOnHand}"></span>
+                </label>
+                <label>예상 대출금액
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="expectedLoanAmount" name="expectedLoanAmount" th:value="${@inputFieldValueFormatter.formatInteger(form, 'expectedLoanAmount')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('expectedLoanAmount')}" th:errors="*{expectedLoanAmount}"></span>
+                </label>
+                <label>연 이자율(%)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="annualRate" name="annualRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'annualRate')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('annualRate')}" th:errors="*{annualRate}"></span>
+                </label>
+                <label>대출 기간(년)
+                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" id="years" name="years" th:value="${@inputFieldValueFormatter.formatInteger(form, 'years')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('years')}" th:errors="*{years}"></span>
+                </label>
+                <label>상환 방식
+                    <select th:field="*{repaymentType}">
+                        <option value="EQUAL_PAYMENT">원리금균등</option>
+                        <option value="EQUAL_PRINCIPAL">원금균등</option>
+                        <option value="BULLET">만기일시</option>
+                    </select>
+                    <span class="field-error" th:if="${#fields.hasErrors('repaymentType')}" th:errors="*{repaymentType}"></span>
+                </label>
+                <label>LTV 비율(%)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="ltvRatio" name="ltvRatio" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'ltvRatio')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('ltvRatio')}" th:errors="*{ltvRatio}"></span>
+                </label>
+                <label>연소득
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="annualIncome" name="annualIncome" th:value="${@inputFieldValueFormatter.formatInteger(form, 'annualIncome')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('annualIncome')}" th:errors="*{annualIncome}"></span>
+                </label>
+                <label>기존 대출 월 상환액
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="existingMonthlyDebtPayment" name="existingMonthlyDebtPayment" th:value="${@inputFieldValueFormatter.formatInteger(form, 'existingMonthlyDebtPayment')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('existingMonthlyDebtPayment')}" th:errors="*{existingMonthlyDebtPayment}"></span>
+                </label>
+                <button class="primary-button" type="submit">계산하기</button>
+            </form>
+            <section class="result-panel" th:if="${result != null}" data-result-card>
+                <h2>계산 결과</h2>
+                <div class="risk-summary" th:classappend="${'risk-' + result.riskLevel}">
+                    <span>위험도</span>
+                    <strong th:text="${result.riskLabel}">안전</strong>
+                </div>
+                <div class="result-grid">
+                    <div><span>예상 월 납입금</span><strong th:text="${#numbers.formatDecimal(result.estimatedMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>총 이자</span><strong th:text="${#numbers.formatDecimal(result.totalInterest, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>총 상환금액</span><strong th:text="${#numbers.formatDecimal(result.totalPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>필요한 자기자본</span><strong th:text="${#numbers.formatDecimal(result.requiredEquity, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>LTV 기준 최대 대출 가능 금액</span><strong th:text="${#numbers.formatDecimal(result.maxLoanByLtv, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>연소득 대비 월 상환 부담률</span><strong th:text="${#numbers.formatDecimal(result.monthlyBurdenRate, 0, 'COMMA', 1, 'POINT')} + '%'">0%</strong></div>
+                    <div><span>기존 대출 포함 월 상환 부담률</span><strong th:text="${#numbers.formatDecimal(result.monthlyBurdenRateWithExistingDebt, 0, 'COMMA', 1, 'POINT')} + '%'">0%</strong></div>
+                    <div><span>보유 현금 대비 부족 금액</span><strong th:text="${#numbers.formatDecimal(result.cashShortfall, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                </div>
+                <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
+            </section>
+            <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
+        </section>
+
+        <section class="content-card">
+            <h2>계산 기준</h2>
+            <p>원리금균등은 대출원금, 월이자율, 전체 개월 수를 이용해 매월 같은 납입금을 계산합니다. 원금균등은 첫 달 납입금을 기준으로 보여주며, 만기일시는 매월 이자만 납입하고 만기 시 원금을 상환하는 구조로 계산합니다.</p>
+            <p>위험도는 기존 대출을 포함한 월 상환 부담률을 기준으로 25% 이하 안전, 25% 초과 40% 이하 주의, 40% 초과 위험으로 표시합니다.</p>
+        </section>
+        <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
+        <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
+        <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle}, ${pageDescription}, ${canonicalUrl})}"></head>
+<body>
+<button class="mobile-menu-button" type="button" data-menu-toggle aria-label="메뉴 열기">☰</button>
+<div class="app-shell">
+    <aside th:replace="~{fragments/nav :: sidebar(${activeMenu})}"></aside>
+    <main class="main-content">
+        <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
+        <div th:replace="~{fragments/components :: pageHero('대출 갈아타기 계산기', ${pageDescription})}"></div>
+        <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
+
+        <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
+            <form class="calculator-form two-column-form" th:action="@{/loan-refinance-calculator}" th:object="${form}" method="post">
+                <h2>입력값</h2>
+                <label>현재 대출 잔액
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="currentBalance" name="currentBalance" th:value="${@inputFieldValueFormatter.formatInteger(form, 'currentBalance')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('currentBalance')}" th:errors="*{currentBalance}"></span>
+                </label>
+                <label>현재 대출 금리(%)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="currentAnnualRate" name="currentAnnualRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'currentAnnualRate')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('currentAnnualRate')}" th:errors="*{currentAnnualRate}"></span>
+                </label>
+                <label>현재 남은 기간(년)
+                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" id="currentRemainingYears" name="currentRemainingYears" th:value="${@inputFieldValueFormatter.formatInteger(form, 'currentRemainingYears')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('currentRemainingYears')}" th:errors="*{currentRemainingYears}"></span>
+                </label>
+                <label>신규 대출 금리(%)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="newAnnualRate" name="newAnnualRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'newAnnualRate')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('newAnnualRate')}" th:errors="*{newAnnualRate}"></span>
+                </label>
+                <label>신규 대출 기간(년)
+                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" id="newYears" name="newYears" th:value="${@inputFieldValueFormatter.formatInteger(form, 'newYears')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('newYears')}" th:errors="*{newYears}"></span>
+                </label>
+                <label>중도상환수수료율(%)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="prepaymentPenaltyRate" name="prepaymentPenaltyRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'prepaymentPenaltyRate')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('prepaymentPenaltyRate')}" th:errors="*{prepaymentPenaltyRate}"></span>
+                </label>
+                <label>인지세 및 기타 비용
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="additionalCost" name="additionalCost" th:value="${@inputFieldValueFormatter.formatInteger(form, 'additionalCost')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('additionalCost')}" th:errors="*{additionalCost}"></span>
+                </label>
+                <label>갈아타기 예상 실행일
+                    <input type="date" id="refinanceDate" name="refinanceDate" th:value="*{refinanceDate}">
+                    <span class="field-error" th:if="${#fields.hasErrors('refinanceDate')}" th:errors="*{refinanceDate}"></span>
+                </label>
+                <label>상환 방식
+                    <select th:field="*{repaymentType}">
+                        <option value="EQUAL_PAYMENT">원리금균등</option>
+                        <option value="EQUAL_PRINCIPAL">원금균등</option>
+                    </select>
+                    <span class="field-error" th:if="${#fields.hasErrors('repaymentType')}" th:errors="*{repaymentType}"></span>
+                </label>
+                <button class="primary-button" type="submit">계산하기</button>
+            </form>
+            <section class="result-panel" th:if="${result != null}" data-result-card>
+                <h2>계산 결과</h2>
+                <div class="risk-summary" th:classappend="${'risk-' + result.recommendationLevel}">
+                    <span>추천 여부</span>
+                    <strong th:text="${result.recommendation}">갈아타기 유리</strong>
+                </div>
+                <div class="result-grid">
+                    <div><span>기존 대출 월 납입액</span><strong th:text="${#numbers.formatDecimal(result.currentMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>신규 대출 월 납입액</span><strong th:text="${#numbers.formatDecimal(result.newMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>월 절감액</span><strong th:text="${#numbers.formatDecimal(result.monthlySavings, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>기존 대출 총 이자</span><strong th:text="${#numbers.formatDecimal(result.currentTotalInterest, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>신규 대출 총 이자</span><strong th:text="${#numbers.formatDecimal(result.newTotalInterest, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>총 이자 절감액</span><strong th:text="${#numbers.formatDecimal(result.totalInterestSavings, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>중도상환수수료</span><strong th:text="${#numbers.formatDecimal(result.prepaymentPenalty, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>기타 비용 포함 총 비용</span><strong th:text="${#numbers.formatDecimal(result.totalSwitchingCost, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>실제 절감액</span><strong th:text="${#numbers.formatDecimal(result.netSavings, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>손익분기점 개월 수</span><strong th:text="${result.breakEvenMonths > 0 ? result.breakEvenMonths + '개월' : '회수 어려움'}">0개월</strong></div>
+                </div>
+                <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
+            </section>
+            <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
+        </section>
+
+        <section class="content-card">
+            <h2>계산 기준</h2>
+            <p>기존 대출 잔액을 신규 대출로 갈아탄다고 가정하고, 현재 조건과 신규 조건의 월 납입액과 총 이자를 비교합니다. 중도상환수수료는 현재 대출 잔액에 수수료율을 곱해 계산하고, 인지세 및 기타 비용을 더해 총 비용을 구합니다.</p>
+            <p>추천 여부는 실제 절감액과 손익분기점 기준의 임시 판단입니다. 실제 대환 가능 여부와 금리는 금융사 심사, 담보, 신용도, 대출 규제에 따라 달라질 수 있습니다.</p>
+        </section>
+        <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
+        <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
+        <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
+</div>
+</body>
+</html>
