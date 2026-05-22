@@ -239,4 +239,103 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  const ANNUAL_SALARY_RATE_CONFIG = {
+    nationalPensionEmployeeRate: 0.045,
+    healthInsuranceEmployeeRate: 0.03545,
+    longTermCareInsuranceRate: 0.1295,
+    employmentInsuranceEmployeeRate: 0.009,
+    localIncomeTaxRate: 0.1
+  };
+
+  const SIMPLE_INCOME_TAX_BRACKETS = [
+    { limit: 14_000_000, rate: 0.06, quickDeduction: 0 },
+    { limit: 50_000_000, rate: 0.15, quickDeduction: 1_260_000 },
+    { limit: 88_000_000, rate: 0.24, quickDeduction: 5_760_000 },
+    { limit: 150_000_000, rate: 0.35, quickDeduction: 15_440_000 },
+    { limit: 300_000_000, rate: 0.38, quickDeduction: 19_940_000 },
+    { limit: 500_000_000, rate: 0.40, quickDeduction: 25_940_000 },
+    { limit: 1_000_000_000, rate: 0.42, quickDeduction: 35_940_000 },
+    { limit: Number.POSITIVE_INFINITY, rate: 0.45, quickDeduction: 65_940_000 }
+  ];
+
+  const parseNumberInput = (input) => {
+    const plain = normalizePlainNumber(input?.value ?? '');
+    const number = Number(plain);
+    return Number.isFinite(number) ? number : 0;
+  };
+
+  const formatWon = (value) => `${Math.round(Math.max(0, value)).toLocaleString('ko-KR')}원`;
+
+  const estimateMonthlyIncomeTax = (monthlyTaxableIncome, dependents, childrenUnder20) => {
+    const annualTaxableIncome = monthlyTaxableIncome * 12;
+    const simplifiedDeduction = Math.max(1, dependents) * 1_500_000 + Math.max(0, childrenUnder20) * 1_000_000;
+    const taxableBase = Math.max(0, annualTaxableIncome - simplifiedDeduction);
+    const bracket = SIMPLE_INCOME_TAX_BRACKETS.find((item) => taxableBase <= item.limit)
+      ?? SIMPLE_INCOME_TAX_BRACKETS[SIMPLE_INCOME_TAX_BRACKETS.length - 1];
+    const annualIncomeTax = Math.max(0, taxableBase * bracket.rate - bracket.quickDeduction);
+    return annualIncomeTax / 12;
+  };
+
+  const calculateAnnualSalaryNetPay = (values) => {
+    const baseMonthlySalary = values.retirementIncluded ? values.annualSalary / 13 : values.annualSalary / 12;
+    const monthlyBonus = values.monthlyBonusEnabled ? values.monthlyBonusAmount : 0;
+    const grossMonthly = baseMonthlySalary + monthlyBonus;
+    const taxableMonthlyIncome = Math.max(0, grossMonthly - values.monthlyTaxFreeMeal);
+
+    const nationalPension = taxableMonthlyIncome * ANNUAL_SALARY_RATE_CONFIG.nationalPensionEmployeeRate;
+    const healthInsurance = taxableMonthlyIncome * ANNUAL_SALARY_RATE_CONFIG.healthInsuranceEmployeeRate;
+    const longTermCareInsurance = healthInsurance * ANNUAL_SALARY_RATE_CONFIG.longTermCareInsuranceRate;
+    const employmentInsurance = taxableMonthlyIncome * ANNUAL_SALARY_RATE_CONFIG.employmentInsuranceEmployeeRate;
+    const incomeTax = estimateMonthlyIncomeTax(taxableMonthlyIncome, values.dependents, values.childrenUnder20);
+    const localIncomeTax = incomeTax * ANNUAL_SALARY_RATE_CONFIG.localIncomeTaxRate;
+    const totalDeduction = nationalPension + healthInsurance + longTermCareInsurance + employmentInsurance + incomeTax + localIncomeTax;
+    const netMonthly = Math.max(0, grossMonthly - totalDeduction);
+
+    return {
+      grossMonthly,
+      nationalPension,
+      healthInsurance,
+      longTermCareInsurance,
+      employmentInsurance,
+      incomeTax,
+      localIncomeTax,
+      totalDeduction,
+      netMonthly,
+      netAnnual: netMonthly * 12
+    };
+  };
+
+  const annualSalaryForm = document.querySelector('[data-annual-salary-calculator]');
+  if (annualSalaryForm) {
+    const annualSalaryLayout = document.querySelector('[data-annual-salary-layout]');
+    const annualSalaryResultPanel = document.querySelector('[data-annual-salary-result-panel]');
+    const resultTargets = Object.fromEntries(
+      Array.from(document.querySelectorAll('[data-salary-result]')).map((element) => [element.dataset.salaryResult, element])
+    );
+    const renderAnnualSalaryResult = () => {
+      const result = calculateAnnualSalaryNetPay({
+        annualSalary: parseNumberInput(document.getElementById('annualSalary')),
+        monthlyTaxFreeMeal: parseNumberInput(document.getElementById('monthlyTaxFreeMeal')),
+        dependents: parseNumberInput(document.getElementById('dependents')),
+        childrenUnder20: parseNumberInput(document.getElementById('childrenUnder20')),
+        retirementIncluded: document.getElementById('retirementIncluded')?.checked ?? false,
+        monthlyBonusEnabled: document.getElementById('monthlyBonusEnabled')?.checked ?? false,
+        monthlyBonusAmount: parseNumberInput(document.getElementById('monthlyBonusAmount'))
+      });
+
+      Object.entries(result).forEach(([key, value]) => {
+        if (resultTargets[key]) {
+          resultTargets[key].textContent = formatWon(value);
+        }
+      });
+      annualSalaryResultPanel?.removeAttribute('hidden');
+      annualSalaryLayout?.classList.add('has-result');
+    };
+
+    annualSalaryForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      renderAnnualSalaryResult();
+    });
+  }
+
 });

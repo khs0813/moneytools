@@ -14,7 +14,7 @@
         <a th:each="menu : ${menus}"
            th:href="${menu.path}"
            th:text="${menu.label}"
-           th:classappend="${activeMenu == menu.key} ? ' active' : ''">메뉴</a>
+           th:classappend="${(activeMenu == menu.key ? ' active' : '') + (menu.key == 'guide' ? ' utility-start' : '')}">메뉴</a>
     </nav>
 
     <div class="sidebar-note">

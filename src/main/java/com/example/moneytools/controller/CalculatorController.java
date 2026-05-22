@@ -24,6 +24,8 @@ public class CalculatorController {
     private final DividendCalculatorService dividendService;
     private final FairValueCalculatorService fairValueService;
     private final LoanCalculatorService loanService;
+    private final LoanRefinanceCalculatorService loanRefinanceService;
+    private final MortgageCalculatorService mortgageService;
     private final SalaryCalculatorService salaryService;
     private final SeveranceCalculatorService severanceService;
     private final AnnualLeaveCalculatorService annualLeaveService;
@@ -35,6 +37,8 @@ public class CalculatorController {
                                 DividendCalculatorService dividendService,
                                 FairValueCalculatorService fairValueService,
                                 LoanCalculatorService loanService,
+                                LoanRefinanceCalculatorService loanRefinanceService,
+                                MortgageCalculatorService mortgageService,
                                 SalaryCalculatorService salaryService,
                                 SeveranceCalculatorService severanceService,
                                 AnnualLeaveCalculatorService annualLeaveService,
@@ -45,6 +49,8 @@ public class CalculatorController {
         this.dividendService = dividendService;
         this.fairValueService = fairValueService;
         this.loanService = loanService;
+        this.loanRefinanceService = loanRefinanceService;
+        this.mortgageService = mortgageService;
         this.salaryService = salaryService;
         this.severanceService = severanceService;
         this.annualLeaveService = annualLeaveService;
@@ -92,6 +98,40 @@ public class CalculatorController {
         prepare(model, "loan", loanFaqs());
         if (!bindingResult.hasErrors()) model.addAttribute("result", loanService.calculate(form));
         return "loan-interest-calculator";
+    }
+
+    @GetMapping("/loan-refinance-calculator")
+    public String loanRefinance(Model model) {
+        prepare(model, "loan-refinance", loanRefinanceFaqs());
+        model.addAttribute("form", new LoanRefinanceRequest());
+        return "loan-refinance-calculator";
+    }
+
+    @PostMapping("/loan-refinance-calculator")
+    public String calculateLoanRefinance(@Valid @ModelAttribute("form") LoanRefinanceRequest form, BindingResult bindingResult, Model model) {
+        prepare(model, "loan-refinance", loanRefinanceFaqs());
+        if (!bindingResult.hasErrors()) model.addAttribute("result", loanRefinanceService.calculate(form));
+        return "loan-refinance-calculator";
+    }
+
+    @GetMapping("/mortgage-monthly-payment-calculator")
+    public String mortgage(Model model) {
+        prepare(model, "mortgage", mortgageFaqs());
+        model.addAttribute("form", new MortgageRequest());
+        return "mortgage-monthly-payment-calculator";
+    }
+
+    @PostMapping("/mortgage-monthly-payment-calculator")
+    public String calculateMortgage(@Valid @ModelAttribute("form") MortgageRequest form, BindingResult bindingResult, Model model) {
+        prepare(model, "mortgage", mortgageFaqs());
+        if (!bindingResult.hasErrors()) model.addAttribute("result", mortgageService.calculate(form));
+        return "mortgage-monthly-payment-calculator";
+    }
+
+    @GetMapping("/annual-salary-net-calculator")
+    public String annualSalaryNet(Model model) {
+        prepare(model, "annual-salary-net", annualSalaryNetFaqs());
+        return "annual-salary-net-calculator";
     }
 
     @GetMapping("/salary-calculator")
@@ -204,6 +244,30 @@ public class CalculatorController {
                 new FaqItem("원리금균등과 원금균등의 차이는 무엇인가요?", "원리금균등은 매월 비슷한 금액을 내고, 원금균등은 매월 같은 원금을 갚아 초기 상환액이 큽니다."),
                 new FaqItem("월별 상환표를 내려받을 수 있나요?", "결과 표의 CSV 다운로드 버튼으로 브라우저에서 상환표를 저장할 수 있습니다."),
                 new FaqItem("중도상환수수료도 반영되나요?", "초기 버전은 기본 상환 방식 중심이며, 중도상환수수료는 2차 기능으로 확장할 수 있습니다.")
+        );
+    }
+
+    private List<FaqItem> loanRefinanceFaqs() {
+        return List.of(
+                new FaqItem("손익분기점 개월 수는 어떻게 계산하나요?", "중도상환수수료와 기타 비용을 월 절감액으로 나누어 비용을 회수하는 데 걸리는 개월 수를 계산합니다."),
+                new FaqItem("기존 대출과 신규 대출 기간이 달라도 되나요?", "네. 현재 남은 기간과 신규 대출 기간을 각각 입력해 총 이자와 월 납입액을 비교합니다."),
+                new FaqItem("추천 여부는 실제 대출 심사 결과인가요?", "아닙니다. 실제 절감액과 손익분기점 기준의 임시 판단이며, 실제 갈아타기 전에는 금융사 조건을 확인해야 합니다.")
+        );
+    }
+
+    private List<FaqItem> mortgageFaqs() {
+        return List.of(
+                new FaqItem("예상 월 납입금은 어떤 값을 보여주나요?", "원리금균등은 고정 월 납입금, 원금균등은 첫 달 납입금, 만기일시는 매월 이자 납입금을 보여줍니다."),
+                new FaqItem("위험도는 어떤 부담률을 기준으로 하나요?", "기존 대출 월 상환액을 포함한 월 상환 부담률을 기준으로 안전, 주의, 위험을 임시 분류합니다."),
+                new FaqItem("LTV 기준 최대 대출 가능 금액은 실제 승인 금액인가요?", "아닙니다. 입력한 주택 가격과 LTV 비율만 반영한 단순 계산값이며, 실제 한도는 DSR, 지역, 소득, 금융사 심사에 따라 달라집니다.")
+        );
+    }
+
+    private List<FaqItem> annualSalaryNetFaqs() {
+        return List.of(
+                new FaqItem("정확한 급여명세서 금액과 같나요?", "아닙니다. 이 계산기는 JavaScript 상수와 단순 구간별 근로소득세 추정식으로 계산한 MVP용 간이 결과입니다."),
+                new FaqItem("퇴직금 포함 여부는 어떻게 반영하나요?", "퇴직금 포함을 선택하면 연봉을 13개월로 나눈 금액을 월 기준 급여로 보고, 미포함이면 12개월로 나눕니다."),
+                new FaqItem("요율은 어디서 수정하나요?", "src/main/resources/static/js/app.js의 ANNUAL_SALARY_RATE_CONFIG 상수를 수정하면 됩니다.")
         );
     }
 

@@ -86,6 +86,13 @@ button, input, select { font: inherit; }
     color: #1f2d46;
     border-color: rgba(108, 140, 255, 0.18);
 }
+.side-nav a.utility-start {
+    margin-top: 10px;
+    padding-top: 18px;
+    border-top-color: rgba(102, 112, 133, 0.2);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
 
 .sidebar-note {
     margin-top: 28px;
@@ -373,6 +380,22 @@ h3 { margin: 0 0 8px; font-size: 1.15rem; }
 }
 .result-grid span { display: block; color: var(--muted); font-size: 0.88rem; }
 .result-grid strong { display: block; margin-top: 6px; font-size: 1.25rem; letter-spacing: -0.02em; }
+.risk-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding: 16px;
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    background: #fff;
+}
+.risk-summary span { color: var(--muted); font-weight: 800; }
+.risk-summary strong { font-size: 1.6rem; }
+.risk-summary.risk-safe { background: var(--mint); color: #087a58; border-color: #b9eddc; }
+.risk-summary.risk-caution { background: #fff1f0; color: #b42318; border-color: #ffb4a8; }
+.risk-summary.risk-danger { background: #ffe4e0; color: #9f1c12; border-color: #ff9b8d; }
 .notice-box {
     margin-top: 22px;
     padding: 18px;
