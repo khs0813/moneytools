@@ -60,7 +60,7 @@ spring:
 ```bash
 export APP_NAME="머니계산기"
 export APP_BASE_URL="https://www.moneycalculator.co.kr"
-export APP_CONTACT_EMAIL="contact@moneycalculator.co.kr"
+export APP_CONTACT_EMAIL="moneyfinancecalculator@gmail.com"
 export GOOGLE_SITE_VERIFICATION="google-search-console-value"
 export NAVER_SITE_VERIFICATION="naver-search-advisor-value"
 export ADSENSE_ENABLED="false"
