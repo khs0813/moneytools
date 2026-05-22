@@ -39,10 +39,13 @@
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="manifest" href="/site.webmanifest">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" th:href="@{/css/styles.css(v=${staticAssetVersion})}">
 
     <script th:if="${adsenseEnabled}" async crossorigin="anonymous"
             th:src="'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + ${adsenseClient}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js" defer></script>
     <script type="application/ld+json" th:if="${structuredData != null}" th:utext="${structuredData}"></script>
 </head>
 </html>

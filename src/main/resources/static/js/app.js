@@ -41,6 +41,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  if (typeof window.flatpickr === 'function') {
+    document.querySelectorAll('input[type="date"]').forEach((input) => {
+      if (input.dataset.flatpickrReady === 'true') return;
+      input.dataset.flatpickrReady = 'true';
+
+      const wrapper = document.createElement('span');
+      wrapper.className = 'date-picker-field';
+      input.parentNode.insertBefore(wrapper, input);
+      wrapper.appendChild(input);
+
+      const button = document.createElement('button');
+      button.className = 'date-picker-button';
+      button.type = 'button';
+      button.setAttribute('aria-label', '달력 열기');
+      button.textContent = '📅';
+      wrapper.appendChild(button);
+
+      const picker = window.flatpickr(input, {
+        locale: window.flatpickr.l10ns?.ko ?? 'default',
+        dateFormat: 'Y-m-d',
+        allowInput: true,
+        disableMobile: true,
+        monthSelectorType: 'static',
+        nextArrow: '›',
+        prevArrow: '‹',
+        clickOpens: true
+      });
+
+      button.addEventListener('click', () => picker.open());
+    });
+  }
+
   const toPlainFromScientific = (value) => {
     const source = String(value ?? '').trim();
     if (!/[eE]/.test(source)) return source;

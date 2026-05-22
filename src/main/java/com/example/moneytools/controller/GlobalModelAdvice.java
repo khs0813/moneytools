@@ -61,8 +61,8 @@ public class GlobalModelAdvice {
         return SitePages.sitemap().stream()
                 .map(page -> page.lastModified().format(DateTimeFormatter.BASIC_ISO_DATE))
                 .max(String::compareTo)
-                .map(v -> v + "-moneycomma-v4")
-                .orElse("20260425-moneycomma-v4");
+                .map(v -> v + "-moneycomma-v5")
+                .orElse("20260425-moneycomma-v5");
     }
 
     @ModelAttribute("defaultImageUrl")
