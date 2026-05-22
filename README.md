@@ -59,8 +59,8 @@ spring:
 
 ```bash
 export APP_NAME="머니계산기"
-export APP_BASE_URL="https://your-domain.com"
-export APP_CONTACT_EMAIL="contact@your-domain.com"
+export APP_BASE_URL="https://www.moneycalculator.co.kr"
+export APP_CONTACT_EMAIL="contact@moneycalculator.co.kr"
 export GOOGLE_SITE_VERIFICATION="google-search-console-value"
 export NAVER_SITE_VERIFICATION="naver-search-advisor-value"
 export ADSENSE_ENABLED="false"
@@ -114,6 +114,8 @@ export ADSENSE_SLOT_SIDEBAR="3333333333"
 ## 운영 전 점검
 
 - `APP_BASE_URL`을 실제 운영 도메인으로 설정
+- `moneycalculator.co.kr`과 `www.moneycalculator.co.kr` DNS를 배포 서버로 연결
+- 검색 대표 주소는 `https://www.moneycalculator.co.kr`로 사용
 - Search Console 및 Naver 인증값 설정
 - AdSense 승인 후 client ID와 slot ID 교체
 - `src/main/resources/static/ads.txt`의 publisher ID 교체

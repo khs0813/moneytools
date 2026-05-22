@@ -11,7 +11,7 @@ public class AppProperties {
     private String name = "머니계산기";
     private String baseUrl = "";
     private String description = "금융 계산기 모음";
-    private String contactEmail = "contact@example.com";
+    private String contactEmail = "contact@moneycalculator.co.kr";
     private String googleSiteVerification = "";
     private String naverSiteVerification = "";
     private Adsense adsense = new Adsense();
