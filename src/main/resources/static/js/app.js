@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         monthSelectorType: 'static',
         nextArrow: '›',
         prevArrow: '‹',
-        clickOpens: true
+        clickOpens: false
       });
 
       button.addEventListener('click', () => picker.open());
