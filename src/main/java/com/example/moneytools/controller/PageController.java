@@ -40,9 +40,7 @@ public class PageController {
         PageInfo page = SitePages.require("guide");
         prepare(model, page, List.of(
                 new FaqItem("이 사이트의 계산 결과를 공식 자료로 제출해도 되나요?", "아니요. 계산 결과는 참고용이며 공식 신고·증빙 자료가 아닙니다."),
-                new FaqItem("2026년 기준은 어디까지 반영됐나요?", "4대보험 근로자 부담률, 국민연금 상·하한액, 현재 세율 구조, 해외주식 기본공제, 퇴직금·연차의 핵심 법정 계산 구조를 프로젝트에 반영했습니다."),
-                new FaqItem("환율은 자동으로 가져오나요?", "초기 버전은 직접 입력 방식입니다. 실시간 환율 API 연동은 2차 고도화로 확장할 수 있습니다."),
-                new FaqItem("새 계산기를 추가할 수 있나요?", "Controller, DTO, Service, Template을 추가하면 같은 구조로 쉽게 확장할 수 있습니다.")
+                new FaqItem("2026년 기준은 어디까지 반영됐나요?", "4대보험 근로자 부담률, 국민연금 상·하한액, 현재 세율 구조, 해외주식 기본공제, 퇴직금·연차의 핵심 법정 계산 구조를 프로젝트에 반영했습니다.")
         ));
         return "guide";
     }
