@@ -162,13 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
     allowSign: input.dataset.signed === 'true'
   });
 
-  const getEditingValue = (value, options) => {
-    if (options.mode === 'integer') {
-      return sanitizeIntegerTyping(value, options.allowSign);
-    }
-    return sanitizeDecimalTyping(value, options.allowSign);
-  };
-
   const getDisplayValue = (value, options) => {
     if (options.mode === 'integer') {
       return formatIntegerDisplay(value, options.allowSign);
@@ -244,15 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (initialValue && initialValue !== input.value) {
       input.value = initialValue;
     }
-  });
-
-  document.querySelectorAll('form').forEach((form) => {
-    form.addEventListener('submit', () => {
-      form.querySelectorAll('[data-number-input], [data-money-input]').forEach((input) => {
-        const options = getNumberOptions(input);
-        input.value = getEditingValue(input.value, options);
-      });
-    });
   });
 
 });
