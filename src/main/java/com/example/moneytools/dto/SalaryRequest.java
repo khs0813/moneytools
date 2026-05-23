@@ -1,5 +1,6 @@
 package com.example.moneytools.dto;
 
+import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -11,10 +12,10 @@ public class SalaryRequest {
     @Pattern(regexp = "MONTHLY|ANNUAL", message = "유효한 입력 기준을 선택해주세요.")
     private String incomeType = "MONTHLY";
 
-    @NotNull @DecimalMin("0.0")
+    @NotNull @DecimalMin("0.0") @DecimalMax("999999999999999.0")
     private Double amount = 3500000.0;
 
-    @NotNull @DecimalMin("0.0")
+    @NotNull @DecimalMin("0.0") @DecimalMax("999999999999999.0")
     private Double taxFreeAmount = 200000.0;
 
     @NotNull @Min(1) @Max(20)

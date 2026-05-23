@@ -1,6 +1,8 @@
 package com.example.moneytools.dto;
 
+import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,10 +16,10 @@ public class AnnualLeaveRequest {
     @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate calculationDate = LocalDate.now();
 
-    @NotNull @Min(0)
+    @NotNull @Min(0) @Max(36500)
     private Integer usedLeaveDays = 5;
 
-    @NotNull @DecimalMin("0.0")
+    @NotNull @DecimalMin("0.0") @DecimalMax("999999999999999.0")
     private Double dailyOrdinaryWage = 120000.0;
 
     public LocalDate getStartDate() { return startDate; }

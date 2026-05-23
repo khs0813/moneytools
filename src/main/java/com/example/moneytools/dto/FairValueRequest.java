@@ -5,10 +5,10 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 
 public class FairValueRequest {
-    @NotNull @DecimalMin("0.0")
+    @NotNull @DecimalMin("0.0") @DecimalMax("999999999999999.0")
     private Double eps = 5000.0;
 
-    @NotNull @DecimalMin("0.0")
+    @NotNull @DecimalMin("0.0") @DecimalMax("1000.0")
     private Double targetPer = 12.0;
 
     @NotNull @DecimalMin("-100.0") @DecimalMax("300.0")

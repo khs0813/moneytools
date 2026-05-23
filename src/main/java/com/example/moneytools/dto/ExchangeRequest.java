@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public class ExchangeRequest {
-    @NotNull @DecimalMin("0.0")
+    @NotNull @DecimalMin("0.0") @DecimalMax("999999999999999.0")
     private Double amount = 1000.0;
 
     @NotNull
@@ -17,7 +17,7 @@ public class ExchangeRequest {
     @Pattern(regexp = "USD|KRW|JPY|EUR|CNY", message = "유효한 받는 통화를 선택해주세요.")
     private String toCurrency = "KRW";
 
-    @NotNull @DecimalMin("0.0")
+    @NotNull @DecimalMin("0.0") @DecimalMax("999999999999999.0")
     private Double exchangeRate = 1350.0;
 
     @NotNull @DecimalMin("0.0") @DecimalMax("100.0")

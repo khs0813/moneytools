@@ -1,5 +1,6 @@
 package com.example.moneytools.dto;
 
+import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,16 +14,16 @@ public class SeveranceRequest {
     @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate endDate = LocalDate.now();
 
-    @NotNull @DecimalMin("0.0")
+    @NotNull @DecimalMin("0.0") @DecimalMax("999999999999999.0")
     private Double totalWageForLastThreeMonths = 10_500_000.0;
 
-    @NotNull @DecimalMin("0.0")
+    @NotNull @DecimalMin("0.0") @DecimalMax("999999999999999.0")
     private Double annualBonus = 0.0;
 
-    @NotNull @DecimalMin("0.0")
+    @NotNull @DecimalMin("0.0") @DecimalMax("999999999999999.0")
     private Double annualLeaveAllowance = 0.0;
 
-    @NotNull @DecimalMin("0.0")
+    @NotNull @DecimalMin("0.0") @DecimalMax("999999999999999.0")
     private Double ordinaryDailyWage = 0.0;
 
     public LocalDate getStartDate() { return startDate; }

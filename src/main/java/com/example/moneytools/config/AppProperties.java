@@ -3,6 +3,8 @@ package com.example.moneytools.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.StringUtils;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -19,7 +21,7 @@ public class AppProperties {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public String getBaseUrl() { return trimTrailingSlash(baseUrl); }
+    public String getBaseUrl() { return sanitizeBaseUrl(baseUrl); }
     public void setBaseUrl(String baseUrl) { this.baseUrl = baseUrl; }
 
     public String getDescription() { return description; }
@@ -47,7 +49,7 @@ public class AppProperties {
     }
 
     public String buildUrl(String base, String path) {
-        String normalizedBase = trimTrailingSlash(base);
+        String normalizedBase = sanitizeBaseUrl(base);
         if (!StringUtils.hasText(normalizedBase)) {
             return normalizePath(path);
         }
@@ -67,6 +69,36 @@ public class AppProperties {
         }
         String trimmed = value.trim();
         return trimmed.endsWith("/") ? trimmed.substring(0, trimmed.length() - 1) : trimmed;
+    }
+
+    private String sanitizeBaseUrl(String value) {
+        String trimmed = trimTrailingSlash(value);
+        if (!StringUtils.hasText(trimmed) || containsControlCharacter(trimmed)) {
+            return "";
+        }
+        try {
+            URI uri = new URI(trimmed);
+            String scheme = uri.getScheme();
+            if (!("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme))) {
+                return "";
+            }
+            if (!StringUtils.hasText(uri.getHost()) || uri.getRawUserInfo() != null
+                    || uri.getRawQuery() != null || uri.getRawFragment() != null) {
+                return "";
+            }
+            return uri.toString();
+        } catch (URISyntaxException ex) {
+            return "";
+        }
+    }
+
+    private boolean containsControlCharacter(String value) {
+        for (int i = 0; i < value.length(); i++) {
+            if (Character.isISOControl(value.charAt(i))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String normalizePath(String path) {

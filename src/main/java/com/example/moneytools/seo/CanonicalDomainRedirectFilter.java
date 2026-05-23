@@ -6,8 +6,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Component
 public class CanonicalDomainRedirectFilter extends OncePerRequestFilter {
@@ -36,12 +38,12 @@ public class CanonicalDomainRedirectFilter extends OncePerRequestFilter {
     }
 
     private String canonicalLocation(HttpServletRequest request) {
-        StringBuilder location = new StringBuilder(CANONICAL_ORIGIN).append(request.getRequestURI());
-        String query = request.getQueryString();
-        if (query != null && !query.isBlank()) {
-            location.append('?').append(query);
-        }
-        return location.toString();
+        return UriComponentsBuilder.fromUriString(CANONICAL_ORIGIN)
+                .replacePath(request.getRequestURI())
+                .replaceQuery(request.getQueryString())
+                .build()
+                .encode(StandardCharsets.UTF_8)
+                .toUriString();
     }
 
     private String normalizedHost(HttpServletRequest request) {
