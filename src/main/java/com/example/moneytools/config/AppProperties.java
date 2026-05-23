@@ -8,8 +8,12 @@ import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import java.util.regex.Pattern;
+
 @ConfigurationProperties(prefix = "app")
 public class AppProperties {
+    private static final Pattern SAFE_EMAIL = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,63}$");
+
     private String name = "머니계산기";
     private String baseUrl = "";
     private String description = "금융 계산기 모음";
@@ -27,7 +31,10 @@ public class AppProperties {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public String getContactEmail() { return contactEmail; }
+    public String getContactEmail() {
+        String trimmed = contactEmail == null ? "" : contactEmail.trim();
+        return SAFE_EMAIL.matcher(trimmed).matches() ? trimmed : "moneyfinancecalculator@gmail.com";
+    }
     public void setContactEmail(String contactEmail) { this.contactEmail = contactEmail; }
 
     public String getGoogleSiteVerification() { return googleSiteVerification; }

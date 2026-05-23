@@ -34,9 +34,14 @@ public class SecurityHeadersFilter extends OncePerRequestFilter {
         response.setHeader("Content-Security-Policy", CONTENT_SECURITY_POLICY);
         response.setHeader("X-Content-Type-Options", "nosniff");
         response.setHeader("X-Frame-Options", "SAMEORIGIN");
+        response.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
         response.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
         response.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()");
         response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+        if ("POST".equalsIgnoreCase(request.getMethod())) {
+            response.setHeader("Cache-Control", "no-store");
+            response.setHeader("Pragma", "no-cache");
+        }
         filterChain.doFilter(request, response);
     }
 }
