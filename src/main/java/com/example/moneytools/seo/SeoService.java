@@ -115,7 +115,10 @@ public class SeoService {
 
     private String toJson(Object value) {
         try {
-            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(value);
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(value)
+                    .replace("<", "\\u003C")
+                    .replace(">", "\\u003E")
+                    .replace("&", "\\u0026");
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Could not serialize structured data", e);
         }

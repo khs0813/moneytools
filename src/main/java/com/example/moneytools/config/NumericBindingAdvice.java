@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 
 @ControllerAdvice
 public class NumericBindingAdvice {
+    private static final int MAX_NUMERIC_TEXT_LENGTH = 128;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -21,12 +22,18 @@ public class NumericBindingAdvice {
 
     private static String normalize(String text) {
         if (text == null) return null;
+        if (text.length() > MAX_NUMERIC_TEXT_LENGTH) {
+            throw new IllegalArgumentException("Numeric input is too long.");
+        }
 
         String normalized = text
                 .replace(",", "")
                 .replace("，", "")
                 .replace(" ", "")
                 .trim();
+        if (normalized.length() > MAX_NUMERIC_TEXT_LENGTH) {
+            throw new IllegalArgumentException("Numeric input is too long.");
+        }
 
         if (normalized.isBlank()) {
             return normalized;
