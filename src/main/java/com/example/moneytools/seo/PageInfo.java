@@ -12,4 +12,7 @@ public record PageInfo(
         boolean inSitemap,
         LocalDate lastModified
 ) {
+    public boolean calculator() {
+        return path != null && path.endsWith("-calculator");
+    }
 }

@@ -33,9 +33,7 @@ public class SeoController {
                 + "Disallow: /admin/\n"
                 + "Disallow: /internal/\n"
                 + "Disallow: /test/\n\n"
-                + "Sitemap: https://moneycalculator.co.kr/sitemap.xml\n"
                 + "Sitemap: " + publicUrlService.absoluteUrl("/sitemap.xml") + "\n"
-                + "Sitemap: https://moneycalculator.co.kr/rss.xml\n"
                 + "Sitemap: " + publicUrlService.absoluteUrl("/rss.xml") + "\n";
     }
 

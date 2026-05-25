@@ -141,6 +141,7 @@ button, input, select { font: inherit; }
 .calculator-side-note,
 .faq-section,
 .related-box,
+.trust-box,
 .ad-wrap {
     background: rgba(255, 255, 255, 0.88);
     border: 1px solid var(--line);
@@ -251,7 +252,8 @@ h3 { margin: 0 0 8px; font-size: 1.15rem; }
 
 .content-card,
 .faq-section,
-.related-box { padding: 28px; margin-top: 24px; }
+.related-box,
+.trust-box { padding: 28px; margin-top: 24px; }
 .policy-text h2 { margin-top: 24px; }
 .check-list { padding-left: 0; list-style: none; display: grid; gap: 10px; }
 .check-list li {
@@ -538,6 +540,12 @@ span.flatpickr-weekday {
 }
 .notice-box p { margin: 6px 0 0; color: #6f3b25; }
 .notice-box strong { color: #813b1d; }
+.trust-box {
+    background: #f3fbf8;
+    border-color: #bfe8dc;
+}
+.trust-box ul,
+.calculator-standard ul { margin-bottom: 0; }
 
 .ad-wrap {
     margin: 22px 0;

@@ -30,10 +30,11 @@ public class SeoService {
     public String structuredData(PageInfo page, List<FaqItem> faqItems) {
         List<Map<String, Object>> graph = new ArrayList<>();
         graph.add(organization());
-        if ("/".equals(page.path())) {
-            graph.add(website());
-        }
+        graph.add(website());
         graph.add(webPage(page));
+        if (page.calculator()) {
+            graph.add(webApplication(page));
+        }
         graph.add(breadcrumb(page));
         if (faqItems != null && !faqItems.isEmpty()) {
             graph.add(faqPage(page, faqItems));
@@ -51,6 +52,11 @@ public class SeoService {
         organization.put("name", appProperties.getName());
         organization.put("url", publicUrlService.absoluteUrl("/"));
         organization.put("email", appProperties.getContactEmail());
+        organization.put("contactPoint", Map.of(
+                "@type", "ContactPoint",
+                "email", appProperties.getContactEmail(),
+                "contactType", "customer support"
+        ));
         organization.put("logo", publicUrlService.absoluteUrl("/img/og-default.svg"));
         return organization;
     }
@@ -81,6 +87,26 @@ public class SeoService {
         webPage.put("primaryImageOfPage", publicUrlService.absoluteUrl("/img/og-default.svg"));
         webPage.put("dateModified", modifiedDateTime(page));
         return webPage;
+    }
+
+    private Map<String, Object> webApplication(PageInfo page) {
+        String pageUrl = publicUrlService.absoluteUrl(page.path());
+        Map<String, Object> app = new LinkedHashMap<>();
+        app.put("@type", "WebApplication");
+        app.put("@id", pageUrl + "#webapplication");
+        app.put("name", page.label());
+        app.put("url", pageUrl);
+        app.put("applicationCategory", "FinanceApplication");
+        app.put("operatingSystem", "Any");
+        app.put("description", page.description());
+        app.put("inLanguage", "ko-KR");
+        app.put("isAccessibleForFree", true);
+        app.put("offers", Map.of(
+                "@type", "Offer",
+                "price", "0",
+                "priceCurrency", "KRW"
+        ));
+        return app;
     }
 
     private Map<String, Object> breadcrumb(PageInfo page) {

@@ -265,9 +265,9 @@ public class CalculatorController {
 
     private List<FaqItem> annualSalaryNetFaqs() {
         return List.of(
-                new FaqItem("정확한 급여명세서 금액과 같나요?", "아닙니다. 이 계산기는 JavaScript 상수와 단순 구간별 근로소득세 추정식으로 계산한 MVP용 간이 결과입니다."),
-                new FaqItem("퇴직금 포함 여부는 어떻게 반영하나요?", "퇴직금 포함을 선택하면 연봉을 13개월로 나눈 금액을 월 기준 급여로 보고, 미포함이면 12개월로 나눕니다."),
-                new FaqItem("요율은 어디서 수정하나요?", "src/main/resources/static/js/app.js의 ANNUAL_SALARY_RATE_CONFIG 상수를 수정하면 됩니다.")
+                new FaqItem("정확한 급여명세서 금액과 같나요?", "아닙니다. 이 계산기는 예상 금액을 빠르게 확인하기 위한 참고용 도구입니다. 실제 급여명세서 금액은 회사별 급여 정책, 비과세 항목, 공제 항목, 최신 세법에 따라 달라질 수 있습니다."),
+                new FaqItem("퇴직금 포함 여부는 어떻게 반영하나요?", "퇴직금 포함을 선택하면 연봉을 13개월 기준으로 나누어 월 급여를 추정하고, 미포함을 선택하면 12개월 기준으로 월 급여를 추정합니다."),
+                new FaqItem("계산 기준은 언제 업데이트되나요?", "4대보험 요율, 국민연금 상·하한액, 근로소득세 기준 등 주요 기준이 변경될 때 업데이트합니다.")
         );
     }
 

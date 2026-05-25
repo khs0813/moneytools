@@ -56,6 +56,7 @@
             <h2>계산식</h2>
             <p>1회 배당금 = 보유 주식 수 × 주당 배당금입니다. 배당 주기에 따라 연 배당금을 계산하고, 연 배당금을 12로 나누어 월 환산 배당금을 표시합니다.</p>
         </section>
+        <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
         <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
         <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>

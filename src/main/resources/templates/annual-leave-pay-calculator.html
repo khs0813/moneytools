@@ -51,6 +51,7 @@
             <h2>계산 기준</h2>
             <p>이 페이지는 입사일 기준 연차를 전제로 완전 근속 개월 수를 계산하고, 1년 미만은 최대 11일, 1년 이상은 15일에 2년마다 1일을 가산해 최대 25일까지 반영합니다. 미사용 연차수당은 잔여 연차일수 × 1일 통상임금으로 계산합니다.</p>
         </section>
+        <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
         <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
         <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
