@@ -14,6 +14,7 @@ public final class SitePages {
             new PageInfo("dividend", "/dividend-calculator", "배당 계산기", "배당 계산기 | 세전·세후 월배당과 연배당 계산 - 머니계산기", "보유 주식 수, 주당 배당금, 배당 주기, 원천징수 세율을 입력해 세전·세후 배당금과 월·연 환산 금액을 계산합니다.", true, true, SEO_REFRESHED_AT),
             new PageInfo("fair-value", "/fair-value-calculator", "적정주가 계산기", "적정주가 계산기 | EPS와 PER로 목표주가 계산", "EPS, 목표 PER, 성장률, 할인율, 안전마진을 입력해 참고용 적정주가와 매수가를 계산합니다.", false, false, SEO_REFRESHED_AT),
             new PageInfo("loan", "/loan-interest-calculator", "대출이자 계산기", "대출이자 계산기 | 원리금균등·원금균등·만기일시 상환 계산 - 머니계산기", "대출금액, 금리, 기간, 상환방식을 입력해 월 상환금, 총이자, 월별 상환표를 계산하세요.", true, true, SEO_REFRESHED_AT),
+            new PageInfo("stock-average", "/stock-average-calculator", "물타기 계산기", "물타기 계산기 | 주식 평균단가·추가매수 후 평단 계산 - 머니계산기", "현재 보유 수량과 평균단가, 추가 매수 수량과 단가를 입력해 물타기 후 총 보유 수량, 총 투자금, 새로운 평균단가를 계산합니다.", true, true, SEO_REFRESHED_AT),
             new PageInfo("loan-refinance", "/loan-refinance-calculator", "대출 갈아타기 계산기", "대출 갈아타기 계산기 | 이자 절감액·중도상환수수료·손익분기점 계산 - 머니계산기", "현재 대출과 신규 대출 조건, 중도상환수수료, 기타 비용을 입력해 월 절감액과 갈아타기 손익분기점을 계산합니다.", true, true, SEO_REFRESHED_AT),
             new PageInfo("mortgage", "/mortgage-monthly-payment-calculator", "주담대 월납입 계산기", "주담대 월납입 계산기 | LTV·월 상환액·부담률 계산 - 머니계산기", "주택 가격, 보유 현금, 대출금액, 금리, LTV, 연소득을 입력해 주담대 예상 월 납입금과 상환 부담률을 계산합니다.", true, true, SEO_REFRESHED_AT),
             new PageInfo("annual-salary-net", "/annual-salary-net-calculator", "연봉 실수령액 계산기", "2026 연봉 실수령액 계산기 | 세후 월급·4대보험 공제 계산 - 머니계산기", "2026년 기준으로 연봉, 비과세 식대, 부양가족 수, 자녀 수, 퇴직금 포함 여부를 입력해 예상 세후 월급과 연 실수령액을 계산합니다.", true, true, SEO_REFRESHED_AT),
@@ -38,6 +39,7 @@ public final class SitePages {
     public static List<PageInfo> navigation() {
         return List.of(
                 require("loan"),
+                require("stock-average"),
                 require("loan-refinance"),
                 require("mortgage"),
                 require("annual-salary-net"),

@@ -3,6 +3,7 @@ package com.example.moneytools.service;
 import com.example.moneytools.dto.DividendRequest;
 import com.example.moneytools.dto.LoanRequest;
 import com.example.moneytools.dto.SalaryRequest;
+import com.example.moneytools.dto.StockAverageRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,6 +37,22 @@ class CalculatorServiceTests {
         assertThat(result.totalMonths()).isEqualTo(12);
         assertThat(result.schedule()).hasSize(12);
         assertThat(result.totalPayment()).isGreaterThan(request.getPrincipal().doubleValue());
+    }
+
+    @Test
+    void stockAverageCalculatorReturnsNewAveragePrice() {
+        StockAverageRequest request = new StockAverageRequest();
+        request.setCurrentShares(100L);
+        request.setCurrentAveragePrice(50_000.0);
+        request.setAdditionalShares(50L);
+        request.setAdditionalPrice(40_000.0);
+
+        var result = new StockAverageCalculatorService().calculate(request);
+
+        assertThat(result.totalShares()).isEqualTo(150L);
+        assertThat(result.totalInvestment()).isEqualTo(7_000_000.0);
+        assertThat(result.newAveragePrice()).isBetween(46_666.66, 46_666.67);
+        assertThat(result.averagePriceChange()).isLessThan(0.0);
     }
 
 

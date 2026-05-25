@@ -31,6 +31,7 @@ public class CalculatorController {
     private final AnnualLeaveCalculatorService annualLeaveService;
     private final ExchangeCalculatorService exchangeService;
     private final OverseasStockTaxCalculatorService overseasStockTaxService;
+    private final StockAverageCalculatorService stockAverageService;
 
     public CalculatorController(SeoService seoService,
                                 PublicUrlService publicUrlService,
@@ -43,7 +44,8 @@ public class CalculatorController {
                                 SeveranceCalculatorService severanceService,
                                 AnnualLeaveCalculatorService annualLeaveService,
                                 ExchangeCalculatorService exchangeService,
-                                OverseasStockTaxCalculatorService overseasStockTaxService) {
+                                OverseasStockTaxCalculatorService overseasStockTaxService,
+                                StockAverageCalculatorService stockAverageService) {
         this.seoService = seoService;
         this.publicUrlService = publicUrlService;
         this.dividendService = dividendService;
@@ -56,6 +58,7 @@ public class CalculatorController {
         this.annualLeaveService = annualLeaveService;
         this.exchangeService = exchangeService;
         this.overseasStockTaxService = overseasStockTaxService;
+        this.stockAverageService = stockAverageService;
     }
 
     @GetMapping("/dividend-calculator")
@@ -70,6 +73,20 @@ public class CalculatorController {
         prepare(model, "dividend", dividendFaqs());
         if (!bindingResult.hasErrors()) model.addAttribute("result", dividendService.calculate(form));
         return "dividend-calculator";
+    }
+
+    @GetMapping("/stock-average-calculator")
+    public String stockAverage(Model model) {
+        prepare(model, "stock-average", stockAverageFaqs());
+        model.addAttribute("form", new StockAverageRequest());
+        return "stock-average-calculator";
+    }
+
+    @PostMapping("/stock-average-calculator")
+    public String calculateStockAverage(@Valid @ModelAttribute("form") StockAverageRequest form, BindingResult bindingResult, Model model) {
+        prepare(model, "stock-average", stockAverageFaqs());
+        if (!bindingResult.hasErrors()) model.addAttribute("result", stockAverageService.calculate(form));
+        return "stock-average-calculator";
     }
 
     @GetMapping("/fair-value-calculator")
@@ -228,6 +245,14 @@ public class CalculatorController {
                 new FaqItem("세후 배당금은 어떻게 계산하나요?", "1회 배당금에 원천징수 세율을 차감하고, 배당 주기에 따라 월·연 기준으로 환산합니다."),
                 new FaqItem("월배당과 분기배당을 모두 계산할 수 있나요?", "배당 주기를 월, 분기, 반기, 연 단위로 선택할 수 있습니다."),
                 new FaqItem("해외주식 배당세도 반영되나요?", "세율을 직접 입력할 수 있어 국가별 원천징수율을 참고해 입력할 수 있습니다.")
+        );
+    }
+
+    private List<FaqItem> stockAverageFaqs() {
+        return List.of(
+                new FaqItem("물타기 후 평균단가는 어떻게 계산하나요?", "기존 보유금액과 추가 매수금액을 더한 뒤 총 보유 수량으로 나누어 추가매수 후 평균단가를 계산합니다."),
+                new FaqItem("수수료와 세금도 반영되나요?", "현재 버전은 보유 수량, 기존 평균단가, 추가 매수 수량, 추가 매수 단가만 반영합니다. 실제 손익은 거래 수수료, 제세금, 환율에 따라 달라질 수 있습니다."),
+                new FaqItem("계산 결과가 매수 추천인가요?", "아닙니다. 물타기 계산 결과는 평균단가 확인용 참고값이며 투자 권유나 종목 추천이 아닙니다.")
         );
     }
 
