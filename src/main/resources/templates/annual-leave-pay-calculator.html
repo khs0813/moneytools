@@ -48,7 +48,7 @@
 
         <div th:replace="~{fragments/components :: disclaimer('연차 계산은 근로기준법 제60조의 기본 구조를 따라 1년 미만 또는 80% 미만 출근자는 1개월 개근 시 1일, 1년 이상 80% 이상 출근자는 15일을 전제로 산정합니다. 회사의 회계연도 기준, 출근율, 사용촉진 여부에 따라 실제 값은 달라질 수 있습니다.')}" ></div>
         <section class="content-card">
-            <h2>계산 기준</h2>
+            <h2>입력값과 결과 해석</h2>
             <p>이 페이지는 입사일 기준 연차를 전제로 완전 근속 개월 수를 계산하고, 1년 미만은 최대 11일, 1년 이상은 15일에 2년마다 1일을 가산해 최대 25일까지 반영합니다. 미사용 연차수당은 잔여 연차일수 × 1일 통상임금으로 계산합니다.</p>
         </section>
         <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>

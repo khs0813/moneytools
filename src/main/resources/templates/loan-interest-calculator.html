@@ -46,7 +46,6 @@
                 </div>
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
             </section>
-            <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
         </section>
 
         <section class="content-card" th:if="${result != null}">
@@ -73,6 +72,7 @@
                 </table>
             </div>
         </section>
+        <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
 
         <section class="content-card">
             <h2>상환방식 안내</h2>
