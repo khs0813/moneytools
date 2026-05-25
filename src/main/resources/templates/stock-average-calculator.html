@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle}, ${pageDescription}, ${canonicalUrl})}"></head>
+<body>
+<button class="mobile-menu-button" type="button" data-menu-toggle aria-label="메뉴 열기">☰</button>
+<div class="app-shell">
+    <aside th:replace="~{fragments/nav :: sidebar(${activeMenu})}"></aside>
+    <main class="main-content">
+        <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
+        <div th:replace="~{fragments/components :: pageHero('물타기 계산기', ${pageDescription})}"></div>
+        <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
+
+        <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
+            <form class="calculator-form" th:action="@{/stock-average-calculator}" th:object="${form}" method="post">
+                <h2>입력값</h2>
+                <label>현재 보유 수량
+                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" id="currentShares" name="currentShares" th:value="${@inputFieldValueFormatter.formatInteger(form, 'currentShares')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('currentShares')}" th:errors="*{currentShares}"></span>
+                </label>
+                <label>현재 평균단가
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="currentAveragePrice" name="currentAveragePrice" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'currentAveragePrice')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('currentAveragePrice')}" th:errors="*{currentAveragePrice}"></span>
+                </label>
+                <label>추가 매수 수량
+                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" id="additionalShares" name="additionalShares" th:value="${@inputFieldValueFormatter.formatInteger(form, 'additionalShares')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('additionalShares')}" th:errors="*{additionalShares}"></span>
+                </label>
+                <label>추가 매수 단가
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="additionalPrice" name="additionalPrice" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'additionalPrice')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('additionalPrice')}" th:errors="*{additionalPrice}"></span>
+                </label>
+                <button class="primary-button" type="submit">계산하기</button>
+            </form>
+            <section class="result-panel" th:if="${result != null}" data-result-card>
+                <h2>계산 결과</h2>
+                <div class="result-grid">
+                    <div><span>기존 투자금</span><strong th:text="${#numbers.formatDecimal(result.currentInvestment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>추가 투자금</span><strong th:text="${#numbers.formatDecimal(result.additionalInvestment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>총 보유 수량</span><strong th:text="${#numbers.formatInteger(result.totalShares, 0, 'COMMA')} + '주'">0주</strong></div>
+                    <div><span>총 투자금</span><strong th:text="${#numbers.formatDecimal(result.totalInvestment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>추가매수 후 평균단가</span><strong th:text="${#numbers.formatDecimal(result.newAveragePrice, 0, 'COMMA', 2, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>평균단가 변화</span><strong th:text="${#numbers.formatDecimal(result.averagePriceChange, 0, 'COMMA', 2, 'POINT')} + '원 (' + ${#numbers.formatDecimal(result.averagePriceChangeRate, 0, 'COMMA', 2, 'POINT')} + '%)'">0원</strong></div>
+                    <div><span>손익분기 단가</span><strong th:text="${#numbers.formatDecimal(result.breakEvenPrice, 0, 'COMMA', 2, 'POINT')} + '원'">0원</strong></div>
+                </div>
+                <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
+            </section>
+            <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
+        </section>
+
+        <section class="content-card">
+            <h2>계산식</h2>
+            <p>물타기 후 평균단가 = (현재 보유 수량 × 현재 평균단가 + 추가 매수 수량 × 추가 매수 단가) ÷ 총 보유 수량입니다. 손익분기 단가는 수수료와 세금을 제외한 평균단가 기준으로 표시합니다.</p>
+        </section>
+        <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
+        <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
+        <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
+        <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
+</div>
+</body>
+</html>
