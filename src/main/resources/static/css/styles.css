@@ -595,6 +595,7 @@ details p { color: var(--muted); margin-bottom: 0; }
 }
 
 .table-header { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
+.overflow-x-auto { overflow-x: auto; }
 .table-scroll { overflow-x: auto; max-height: 520px; border-radius: 18px; border: 1px solid var(--line); }
 .data-table { width: 100%; border-collapse: collapse; min-width: 720px; background: white; }
 .data-table th,

@@ -85,6 +85,14 @@
             <p>연차수당은 입사일과 계산 기준일을 바탕으로 발생 연차와 사용 연차를 비교해 잔여 연차를 추정합니다.</p>
             <p>미사용 연차수당은 잔여 연차일수에 입력한 1일 통상임금을 곱해 계산합니다.</p>
         </div>
+        <div th:if="${currentKey == 'fair-value'}">
+            <p>적정주가는 EPS와 목표 PER을 기본으로 성장률, 할인율, 안전마진을 입력해 참고용 가격 범위를 추정합니다.</p>
+            <p>계산 결과는 단순 입력값 기반의 참고값이며 특정 종목 매수·매도 추천이나 투자 자문이 아닙니다.</p>
+        </div>
+        <div th:if="${currentKey == 'exchange'}">
+            <p>환율 계산은 입력 금액과 환율을 곱한 뒤 입력한 환전 수수료율을 차감해 예상 수령 금액을 계산합니다.</p>
+            <p>실시간 고시 환율을 자동 반영하지 않으므로 실제 환전 전에는 은행·증권사 적용 환율과 우대율을 확인해야 합니다.</p>
+        </div>
     </section>
 
     <section class="content-card calculator-updated-at">
@@ -107,7 +115,7 @@
         <h3>연봉 1억원 실수령액</h3>
         <p>연봉 1억원은 월 세전 급여 기준 약 833만원입니다. 고소득 구간에서는 소득세 부담이 커지므로 세후 월급을 별도로 계산해 보는 것이 중요합니다.</p>
         <h2>연봉별 예상 월 실수령액 표</h2>
-        <div class="table-scroll">
+        <div class="table-scroll overflow-x-auto">
             <table class="data-table">
                 <caption>연봉별 예상 월 실수령액 표</caption>
                 <thead><tr><th>연봉</th><th>월 세전 급여</th><th>예상 월 실수령액</th><th>계산 기준</th></tr></thead>
@@ -134,7 +142,7 @@
         <h3>월급 500만원 실수령액</h3>
         <p>월급 500만원은 소득세 부담이 증가하는 구간입니다. 부양가족 수와 자녀 수에 따라 원천징수세액이 달라질 수 있습니다.</p>
         <h2>월급별 예상 실수령액 표</h2>
-        <div class="table-scroll">
+        <div class="table-scroll overflow-x-auto">
             <table class="data-table">
                 <caption>월급별 예상 실수령액 표</caption>
                 <thead><tr><th>월급</th><th>예상 실수령액</th><th>주요 공제 항목</th><th>계산 기준</th></tr></thead>
@@ -173,7 +181,7 @@
     <section class="content-card" th:if="${currentKey == 'loan'}">
         <h2>대출금액별 월 상환액 예시</h2>
         <p>대출 상환액은 대출금액, 금리, 기간, 상환방식에 따라 크게 달라집니다. 같은 금리라도 원리금균등, 원금균등, 만기일시상환 방식에 따라 매월 납부액과 총이자가 달라질 수 있습니다.</p>
-        <div class="table-scroll">
+        <div class="table-scroll overflow-x-auto">
             <table class="data-table">
                 <caption>대출금액별 월 상환액 예시</caption>
                 <thead><tr><th>대출금액</th><th>금리</th><th>기간</th><th>상환방식</th><th>예상 월 상환액</th><th>총이자</th></tr></thead>
@@ -194,7 +202,7 @@
     <section class="content-card" th:if="${currentKey == 'mortgage'}">
         <h2>주택 가격별 주담대 월 납입금 예시</h2>
         <p>주담대 월 납입금은 주택 가격, 보유 현금, 대출금액, 금리, 대출 기간에 따라 달라집니다. 특히 LTV와 소득 대비 상환 부담률을 함께 확인해야 무리한 대출 여부를 판단할 수 있습니다.</p>
-        <div class="table-scroll">
+        <div class="table-scroll overflow-x-auto">
             <table class="data-table">
                 <caption>주택 가격별 주담대 월 납입금 예시</caption>
                 <thead><tr><th>주택 가격</th><th>대출금액</th><th>금리</th><th>기간</th><th>예상 월 납입금</th><th>LTV</th></tr></thead>
@@ -225,7 +233,7 @@
     <section class="content-card" th:if="${currentKey == 'overseas-tax'}">
         <h2>해외주식 양도소득세 계산 예시</h2>
         <p>해외주식 양도소득세는 일반적으로 양도차익에서 기본공제를 차감한 뒤 세율을 적용해 계산합니다. 환율, 매매 수수료, 기본공제 적용 여부에 따라 실제 세금은 달라질 수 있습니다.</p>
-        <div class="table-scroll">
+        <div class="table-scroll overflow-x-auto">
             <table class="data-table">
                 <caption>해외주식 양도소득세 계산 예시</caption>
                 <thead><tr><th>매수금액</th><th>매도금액</th><th>양도차익</th><th>기본공제</th><th>과세표준</th><th>예상 세금</th></tr></thead>
@@ -246,7 +254,7 @@
     <section class="content-card" th:if="${currentKey == 'dividend'}">
         <h2>월배당과 연배당 계산 예시</h2>
         <p>배당금은 주당 배당금, 보유 주식 수, 배당 주기, 원천징수세율에 따라 달라집니다. 같은 주식 수를 보유하더라도 배당 주기가 월배당인지 분기배당인지에 따라 현금흐름이 달라질 수 있습니다.</p>
-        <div class="table-scroll">
+        <div class="table-scroll overflow-x-auto">
             <table class="data-table">
                 <caption>월배당과 연배당 계산 예시</caption>
                 <thead><tr><th>보유 주식 수</th><th>주당 배당금</th><th>배당 주기</th><th>세전 배당금</th><th>세후 배당금</th></tr></thead>
@@ -266,7 +274,7 @@
     <section class="content-card" th:if="${currentKey == 'stock-average'}">
         <h2>주식 물타기 계산 예시</h2>
         <p>물타기는 추가 매수로 평균단가를 낮추는 방법이지만, 종목의 하락이 계속되면 손실 규모가 더 커질 수 있습니다. 따라서 평균단가만 보지 말고 전체 투자금과 비중도 함께 확인해야 합니다.</p>
-        <div class="table-scroll">
+        <div class="table-scroll overflow-x-auto">
             <table class="data-table">
                 <caption>주식 물타기 계산 예시</caption>
                 <thead><tr><th>기존 수량</th><th>기존 평균단가</th><th>추가 수량</th><th>추가 단가</th><th>새 평균단가</th></tr></thead>
