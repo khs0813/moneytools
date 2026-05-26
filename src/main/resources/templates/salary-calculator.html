@@ -41,7 +41,7 @@
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
-            <section class="result-panel" th:if="${result != null}" data-result-card>
+            <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
                     <div><span>월 세전 급여</span><strong th:text="${#numbers.formatDecimal(result.grossMonthly, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
@@ -61,10 +61,6 @@
         </section>
 
         <div th:replace="~{fragments/components :: disclaimer('이 페이지에는 2026년 기준 국민연금 4.75%, 건강보험 3.595%, 장기요양보험 0.4724%, 고용보험 0.9%와 2026-03-01 적용 간이세액표 개념을 반영한 추정 로직을 적용했습니다. 8세 이상 20세 이하 자녀 수에 따른 월 원천징수세액 차감도 함께 반영합니다. 산재보험은 근로자 공제가 아니므로 실수령액에서 제외했습니다.')}" ></div>
-        <section class="content-card">
-            <h2>계산 기준</h2>
-            <p>월 급여(비과세 제외)에서 국민연금, 건강보험, 장기요양보험, 고용보험, 소득세, 지방소득세를 차감해 예상 실수령액을 표시합니다. 국민연금은 2026년 기준 근로자 부담률 4.75%와 기준소득월액 상·하한을 반영하고, 소득세는 2026년 3월 1일부터 적용되는 근로소득 간이세액표의 가족 수 개념과 현재 세율·공제 구조를 반영한 추정치입니다. 공제대상가족 중 8세 이상 20세 이하 자녀가 있으면 월 원천징수세액에서 자녀 1명 12,500원, 2명 29,160원, 3명 이상은 2명 초과 1명당 25,000원을 추가 차감합니다.</p>
-        </section>
         <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
         <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>

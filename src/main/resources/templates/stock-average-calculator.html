@@ -31,7 +31,7 @@
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
-            <section class="result-panel" th:if="${result != null}" data-result-card>
+            <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
                     <div><span>기존 투자금</span><strong th:text="${#numbers.formatDecimal(result.currentInvestment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
@@ -47,10 +47,6 @@
             <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
         </section>
 
-        <section class="content-card">
-            <h2>계산식</h2>
-            <p>물타기 후 평균단가 = (현재 보유 수량 × 현재 평균단가 + 추가 매수 수량 × 추가 매수 단가) ÷ 총 보유 수량입니다. 손익분기 단가는 수수료와 세금을 제외한 평균단가 기준으로 표시합니다.</p>
-        </section>
         <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
         <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>

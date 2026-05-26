@@ -39,7 +39,7 @@
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
-            <section class="result-panel" th:if="${result != null}" data-result-card>
+            <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
                     <div><span>수수료 전 금액</span><strong th:text="${#numbers.formatDecimal(result.beforeFeeAmount, 0, 'COMMA', 2, 'POINT')} + ' ' + ${form.toCurrency}">0</strong></div>
@@ -51,10 +51,7 @@
             <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
         </section>
 
-        <section class="content-card">
-            <h2>계산식</h2>
-            <p>환전 전 금액 = 입력 금액 × 환율입니다. 환전 수수료를 차감한 뒤 최종 수령 예상 금액을 표시합니다. 초기 버전은 환율을 직접 입력합니다.</p>
-        </section>
+        <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
         <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
         <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>

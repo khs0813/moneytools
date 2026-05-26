@@ -56,7 +56,7 @@
                 <label class="checkbox-row"><input type="checkbox" th:field="*{applyBasicDeduction}"> 기본공제 적용</label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
-            <section class="result-panel" th:if="${result != null}" data-result-card>
+            <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
                     <div><span>매수금액 원화환산</span><strong th:text="${#numbers.formatDecimal(result.buyAmountKrw, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
@@ -75,10 +75,6 @@
         </section>
 
         <div th:replace="~{fragments/components :: disclaimer('2026년 기준 해외 상장주식 양도차익은 기본공제 250만원을 차감한 과세표준에 기본적으로 22%(양도소득세 20% + 지방소득세 2%)를 적용하도록 기본값을 설정했습니다. 배당은 국내 원천징수 기준 15.4%를 기본값으로 두었지만, 연간 금융소득 2천만원 초과 또는 외국납부세액공제 반영 여부에 따라 실제 신고세액은 달라질 수 있습니다.')}" ></div>
-        <section class="content-card">
-            <h2>계산식</h2>
-            <p>양도차익은 매수일 환율로 환산한 매수금액과 매도일 환율로 환산한 매도금액의 차이에서 수수료를 빼서 계산합니다. 과세표준은 양도차익에서 연간 기본공제 250만원을 차감해 계산하고, 기본 양도세율은 22%로 설정했습니다. 배당금은 배당기준 환율로 원화 환산한 뒤 기본 배당세율 15.4%를 적용합니다.</p>
-        </section>
         <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
         <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>

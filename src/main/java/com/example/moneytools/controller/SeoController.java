@@ -30,11 +30,7 @@ public class SeoController {
     public String robots() {
         return "User-agent: *\n"
                 + "Allow: /\n\n"
-                + "Disallow: /admin/\n"
-                + "Disallow: /internal/\n"
-                + "Disallow: /test/\n\n"
-                + "Sitemap: " + publicUrlService.absoluteUrl("/sitemap.xml") + "\n"
-                + "Sitemap: " + publicUrlService.absoluteUrl("/rss.xml") + "\n";
+                + "Sitemap: " + publicUrlService.absoluteUrl("/sitemap.xml") + "\n";
     }
 
     @GetMapping(value = "/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)

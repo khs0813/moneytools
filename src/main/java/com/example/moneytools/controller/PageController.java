@@ -45,11 +45,16 @@ public class PageController {
         return "guide";
     }
 
-    @GetMapping("/privacy-policy")
+    @GetMapping("/privacy")
     public String privacy(Model model) {
         PageInfo page = SitePages.require("privacy");
         prepare(model, page, List.of());
         return "privacy-policy";
+    }
+
+    @GetMapping("/privacy-policy")
+    public String privacyPolicyRedirect() {
+        return "redirect:/privacy";
     }
 
     @GetMapping("/contact")

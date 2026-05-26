@@ -54,7 +54,7 @@
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
-            <section class="result-panel" th:if="${result != null}" data-result-card>
+            <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="risk-summary" th:classappend="${'risk-' + result.recommendationLevel}">
                     <span>추천 여부</span>

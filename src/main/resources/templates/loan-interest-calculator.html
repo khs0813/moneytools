@@ -36,7 +36,7 @@
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
-            <section class="result-panel" th:if="${result != null}" data-result-card>
+            <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
                     <div><span>첫 달 상환금</span><strong th:text="${#numbers.formatDecimal(result.firstMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
@@ -55,6 +55,7 @@
             </div>
             <div class="table-scroll">
                 <table id="loan-schedule" class="data-table">
+                    <caption>월별 대출 상환표</caption>
                     <thead>
                     <tr>
                         <th>회차</th><th>상환금</th><th>원금</th><th>이자</th><th>잔액</th>

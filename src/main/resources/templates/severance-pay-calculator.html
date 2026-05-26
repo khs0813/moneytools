@@ -44,7 +44,7 @@
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
-            <section class="result-panel" th:if="${result != null}" data-result-card>
+            <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
                     <div><span>재직일수</span><strong th:text="${#numbers.formatInteger(result.serviceDays, 0, 'COMMA')} + '일'">0일</strong></div>
@@ -60,10 +60,6 @@
         </section>
 
         <div th:replace="~{fragments/components :: disclaimer('퇴직금은 근로기준법상 직전 3개월 평균임금을 기본으로 하되, 그 평균임금이 통상임금보다 낮으면 통상임금을 적용합니다. 이 페이지는 2026년 기준 법령 구조를 반영해 실제 3개월 일수와 통상임금 하한을 함께 고려합니다.')}" ></div>
-        <section class="content-card">
-            <h2>계산식</h2>
-            <p>1일 평균임금은 퇴직일 이전 3개월 동안 지급된 임금 총액에 연간 상여금의 3/12, 직전 1년 발생 연차수당의 3/12를 더한 뒤 같은 기간의 실제 총일수로 나누어 계산합니다. 계산된 평균임금이 1일 통상임금보다 낮으면 통상임금을 적용하고, 예상 퇴직금은 적용 1일 임금 × 30일 × 재직일수 ÷ 365로 계산합니다.</p>
-        </section>
         <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
         <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>

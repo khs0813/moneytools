@@ -66,7 +66,7 @@ public class GlobalModelAdvice {
     }
 
     @ModelAttribute("defaultImageUrl")
-    public String defaultImageUrl() { return publicUrlService.absoluteUrl("/img/og-default.svg"); }
+    public String defaultImageUrl() { return publicUrlService.absoluteUrl("/og-image.png"); }
 
     @ModelAttribute("googleSiteVerification")
     public String googleSiteVerification() { return appProperties.getGoogleSiteVerification(); }

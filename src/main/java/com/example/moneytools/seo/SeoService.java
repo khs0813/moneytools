@@ -57,7 +57,7 @@ public class SeoService {
                 "email", appProperties.getContactEmail(),
                 "contactType", "customer support"
         ));
-        organization.put("logo", publicUrlService.absoluteUrl("/img/og-default.svg"));
+        organization.put("logo", publicUrlService.absoluteUrl("/og-image.png"));
         return organization;
     }
 
@@ -69,6 +69,7 @@ public class SeoService {
         site.put("url", publicUrlService.absoluteUrl("/"));
         site.put("description", appProperties.getDescription());
         site.put("publisher", Map.of("@id", publicUrlService.absoluteUrl("/") + "#organization"));
+        site.put("inLanguage", "ko-KR");
         return site;
     }
 
@@ -83,8 +84,8 @@ public class SeoService {
         webPage.put("isPartOf", Map.of("@id", publicUrlService.absoluteUrl("/") + "#website"));
         webPage.put("about", Map.of("@id", publicUrlService.absoluteUrl("/") + "#organization"));
         webPage.put("inLanguage", "ko-KR");
-        webPage.put("image", publicUrlService.absoluteUrl("/img/og-default.svg"));
-        webPage.put("primaryImageOfPage", publicUrlService.absoluteUrl("/img/og-default.svg"));
+        webPage.put("image", publicUrlService.absoluteUrl("/og-image.png"));
+        webPage.put("primaryImageOfPage", publicUrlService.absoluteUrl("/og-image.png"));
         webPage.put("dateModified", modifiedDateTime(page));
         return webPage;
     }
@@ -97,7 +98,7 @@ public class SeoService {
         app.put("name", page.label());
         app.put("url", pageUrl);
         app.put("applicationCategory", "FinanceApplication");
-        app.put("operatingSystem", "Any");
+        app.put("operatingSystem", "Web");
         app.put("description", page.description());
         app.put("inLanguage", "ko-KR");
         app.put("isAccessibleForFree", true);

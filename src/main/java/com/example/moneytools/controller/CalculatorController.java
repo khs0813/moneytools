@@ -238,7 +238,171 @@ public class CalculatorController {
         model.addAttribute("canonicalUrl", publicUrlService.absoluteUrl(page.path()));
         model.addAttribute("faqs", faqs);
         model.addAttribute("structuredData", seoService.structuredData(page, faqs));
+        addExampleTables(model);
     }
+
+    private void addExampleTables(Model model) {
+        model.addAttribute("annualSalaryExamples", annualSalaryExamples());
+        model.addAttribute("monthlySalaryExamples", monthlySalaryExamples());
+        model.addAttribute("loanExamples", loanExamples());
+        model.addAttribute("mortgageExamples", mortgageExamples());
+        model.addAttribute("overseasTaxExamples", overseasTaxExamples());
+        model.addAttribute("dividendExamples", dividendExamples());
+        model.addAttribute("stockAverageExamples", stockAverageExamples());
+    }
+
+    private List<SalaryExampleRow> annualSalaryExamples() {
+        return List.of(30_000_000L, 40_000_000L, 50_000_000L, 60_000_000L, 70_000_000L, 100_000_000L).stream()
+                .map(annualSalary -> {
+                    SalaryRequest request = salaryRequest("ANNUAL", annualSalary);
+                    SalaryResult result = salaryService.calculate(request);
+                    return new SalaryExampleRow(labelWon(annualSalary), result.grossMonthly(), result.netMonthly(), "2026년, 1인·비과세 20만원 기준");
+                })
+                .toList();
+    }
+
+    private List<MonthlySalaryExampleRow> monthlySalaryExamples() {
+        return List.of(2_000_000L, 3_000_000L, 4_000_000L, 5_000_000L).stream()
+                .map(monthlySalary -> {
+                    SalaryResult result = salaryService.calculate(salaryRequest("MONTHLY", monthlySalary));
+                    return new MonthlySalaryExampleRow(labelWon(monthlySalary), result.netMonthly(), "4대보험, 소득세, 지방소득세", "2026년, 1인·비과세 20만원 기준");
+                })
+                .toList();
+    }
+
+    private SalaryRequest salaryRequest(String incomeType, long amount) {
+        SalaryRequest request = new SalaryRequest();
+        request.setIncomeType(incomeType);
+        request.setAmount((double) amount);
+        request.setTaxFreeAmount(200_000.0);
+        request.setDependents(1);
+        request.setChildren(0);
+        request.setApplyInsurance(true);
+        return request;
+    }
+
+    private List<LoanExampleRow> loanExamples() {
+        return List.of(
+                loanExample(10_000_000L, 5.0, 3),
+                loanExample(30_000_000L, 5.0, 5),
+                loanExample(50_000_000L, 5.0, 5),
+                loanExample(100_000_000L, 4.5, 30)
+        );
+    }
+
+    private LoanExampleRow loanExample(long principal, double rate, int years) {
+        LoanRequest request = new LoanRequest();
+        request.setPrincipal(principal);
+        request.setAnnualRate(rate);
+        request.setYears(years);
+        request.setRepaymentType("EQUAL_PAYMENT");
+        LoanResult result = loanService.calculate(request);
+        return new LoanExampleRow(labelWon(principal), rate + "%", years + "년", "원리금균등", result.averageMonthlyPayment(), result.totalInterest());
+    }
+
+    private List<MortgageExampleRow> mortgageExamples() {
+        return List.of(
+                mortgageExample(300_000_000L, 200_000_000L),
+                mortgageExample(500_000_000L, 300_000_000L),
+                mortgageExample(700_000_000L, 400_000_000L),
+                mortgageExample(1_000_000_000L, 500_000_000L)
+        );
+    }
+
+    private MortgageExampleRow mortgageExample(long housePrice, long loanAmount) {
+        MortgageRequest request = new MortgageRequest();
+        request.setHousePrice(housePrice);
+        request.setCashOnHand(Math.max(0, housePrice - loanAmount));
+        request.setExpectedLoanAmount(loanAmount);
+        request.setAnnualRate(4.0);
+        request.setYears(30);
+        request.setRepaymentType("EQUAL_PAYMENT");
+        request.setLtvRatio(70.0);
+        request.setAnnualIncome(80_000_000L);
+        request.setExistingMonthlyDebtPayment(0L);
+        MortgageResult result = mortgageService.calculate(request);
+        return new MortgageExampleRow(labelWon(housePrice), labelWon(loanAmount), "4.0%", "30년", result.estimatedMonthlyPayment(), loanAmount * 100.0 / housePrice);
+    }
+
+    private List<OverseasTaxExampleRow> overseasTaxExamples() {
+        return List.of(
+                overseasTaxExample(10_000_000, 13_000_000),
+                overseasTaxExample(20_000_000, 30_000_000),
+                overseasTaxExample(50_000_000, 70_000_000)
+        );
+    }
+
+    private OverseasTaxExampleRow overseasTaxExample(double buyAmount, double sellAmount) {
+        OverseasStockTaxRequest request = new OverseasStockTaxRequest();
+        request.setBuyAmountForeign(buyAmount);
+        request.setSellAmountForeign(sellAmount);
+        request.setDividendForeign(0.0);
+        request.setBuyExchangeRate(1.0);
+        request.setSellExchangeRate(1.0);
+        request.setDividendExchangeRate(1.0);
+        request.setFeeKrw(0.0);
+        request.setApplyBasicDeduction(true);
+        request.setBasicDeductionKrw(2_500_000.0);
+        request.setCapitalGainsTaxRate(22.0);
+        request.setDividendTaxRate(15.4);
+        OverseasStockTaxResult result = overseasStockTaxService.calculate(request);
+        return new OverseasTaxExampleRow(labelWon((long) buyAmount), labelWon((long) sellAmount), result.capitalGainKrw(), 2_500_000, result.taxableCapitalGainKrw(), result.capitalGainsTaxKrw());
+    }
+
+    private List<DividendExampleRow> dividendExamples() {
+        return List.of(
+                dividendExample(100L, 500.0, "QUARTERLY", "분기"),
+                dividendExample(300L, 500.0, "QUARTERLY", "분기"),
+                dividendExample(100L, 1_000.0, "MONTHLY", "월")
+        );
+    }
+
+    private DividendExampleRow dividendExample(long shares, double dividendPerShare, String period, String label) {
+        DividendRequest request = new DividendRequest();
+        request.setShares(shares);
+        request.setDividendPerShare(dividendPerShare);
+        request.setPeriod(period);
+        request.setTaxApplied(true);
+        request.setTaxRate(15.4);
+        DividendResult result = dividendService.calculate(request);
+        return new DividendExampleRow(shares + "주", labelWon((long) dividendPerShare), label, result.oneTimeGross(), result.oneTimeNet());
+    }
+
+    private List<StockAverageExampleRow> stockAverageExamples() {
+        return List.of(
+                stockAverageExample(100L, 50_000.0, 50L, 40_000.0),
+                stockAverageExample(100L, 50_000.0, 100L, 40_000.0),
+                stockAverageExample(100L, 50_000.0, 200L, 35_000.0)
+        );
+    }
+
+    private StockAverageExampleRow stockAverageExample(long currentShares, double currentAveragePrice, long additionalShares, double additionalPrice) {
+        StockAverageRequest request = new StockAverageRequest();
+        request.setCurrentShares(currentShares);
+        request.setCurrentAveragePrice(currentAveragePrice);
+        request.setAdditionalShares(additionalShares);
+        request.setAdditionalPrice(additionalPrice);
+        StockAverageResult result = stockAverageService.calculate(request);
+        return new StockAverageExampleRow(currentShares + "주", labelWon((long) currentAveragePrice), additionalShares + "주", labelWon((long) additionalPrice), result.newAveragePrice());
+    }
+
+    private String labelWon(long value) {
+        if (value >= 100_000_000 && value % 100_000_000 == 0) {
+            return (value / 100_000_000) + "억원";
+        }
+        if (value >= 10_000_000 && value % 10_000_000 == 0) {
+            return (value / 10_000_000) + ",000만원";
+        }
+        return String.format("%,d원", value);
+    }
+
+    public record SalaryExampleRow(String annualSalary, double grossMonthly, double netMonthly, String basis) {}
+    public record MonthlySalaryExampleRow(String monthlySalary, double netMonthly, String deductions, String basis) {}
+    public record LoanExampleRow(String principal, String rate, String years, String repaymentType, double monthlyPayment, double totalInterest) {}
+    public record MortgageExampleRow(String housePrice, String loanAmount, String rate, String years, double monthlyPayment, double ltv) {}
+    public record OverseasTaxExampleRow(String buyAmount, String sellAmount, double capitalGain, double deduction, double taxableGain, double tax) {}
+    public record DividendExampleRow(String shares, String dividendPerShare, String period, double grossDividend, double netDividend) {}
+    public record StockAverageExampleRow(String currentShares, String currentAveragePrice, String additionalShares, String additionalPrice, double newAveragePrice) {}
 
     private List<FaqItem> dividendFaqs() {
         return List.of(
@@ -267,6 +431,8 @@ public class CalculatorController {
     private List<FaqItem> loanFaqs() {
         return List.of(
                 new FaqItem("원리금균등과 원금균등의 차이는 무엇인가요?", "원리금균등은 매월 비슷한 금액을 내고, 원금균등은 매월 같은 원금을 갚아 초기 상환액이 큽니다."),
+                new FaqItem("원리금균등과 원금균등 중 어떤 방식이 유리한가요?", "원금균등은 초기 월 납입액이 크지만 총이자가 줄어드는 경향이 있습니다. 원리금균등은 매월 납입액이 일정해 현금흐름 관리가 쉽습니다."),
+                new FaqItem("만기일시상환은 어떤 경우에 사용하나요?", "만기일시상환은 매월 이자만 내고 만기에 원금을 한 번에 갚는 방식입니다. 단기 자금 운용에는 유리할 수 있지만 만기 원금 상환 부담이 큽니다."),
                 new FaqItem("월별 상환표를 내려받을 수 있나요?", "결과 표의 CSV 다운로드 버튼으로 브라우저에서 상환표를 저장할 수 있습니다."),
                 new FaqItem("중도상환수수료도 반영되나요?", "초기 버전은 기본 상환 방식 중심이며, 중도상환수수료는 2차 기능으로 확장할 수 있습니다.")
         );
@@ -282,6 +448,8 @@ public class CalculatorController {
 
     private List<FaqItem> mortgageFaqs() {
         return List.of(
+                new FaqItem("LTV는 무엇인가요?", "LTV는 주택 가격 대비 대출금액 비율입니다. 예를 들어 5억원 주택에 3억원을 대출받으면 LTV는 60%입니다."),
+                new FaqItem("월 상환 부담률은 왜 중요한가요?", "월 상환 부담률은 소득 대비 대출 상환액의 비중을 보여줍니다. 비율이 높을수록 생활비나 비상자금 여력이 줄어들 수 있습니다."),
                 new FaqItem("예상 월 납입금은 어떤 값을 보여주나요?", "원리금균등은 고정 월 납입금, 원금균등은 첫 달 납입금, 만기일시는 매월 이자 납입금을 보여줍니다."),
                 new FaqItem("위험도는 어떤 부담률을 기준으로 하나요?", "기존 대출 월 상환액을 포함한 월 상환 부담률을 기준으로 안전, 주의, 위험을 임시 분류합니다."),
                 new FaqItem("LTV 기준 최대 대출 가능 금액은 실제 승인 금액인가요?", "아닙니다. 입력한 주택 가격과 LTV 비율만 반영한 단순 계산값이며, 실제 한도는 DSR, 지역, 소득, 금융사 심사에 따라 달라집니다.")
@@ -332,6 +500,8 @@ public class CalculatorController {
     private List<FaqItem> overseasTaxFaqs() {
         return List.of(
                 new FaqItem("해외주식 양도세 기본공제를 반영하나요?", "네. 2026년 기준 연간 기본공제 250만원을 기본값으로 넣었고, 필요하면 직접 수정할 수 있습니다."),
+                new FaqItem("해외주식 양도소득세 기본공제는 얼마인가요?", "해외주식 양도차익은 기본공제를 차감한 뒤 과세되는 구조입니다. 다만 실제 신고 기준은 세법 개정이나 개인 상황에 따라 달라질 수 있으므로 최신 기준을 확인해야 합니다."),
+                new FaqItem("배당세와 양도세는 다른가요?", "배당세는 배당금을 받을 때 적용되는 세금이고, 양도세는 주식을 매도해 차익이 발생했을 때 적용되는 세금입니다."),
                 new FaqItem("양도세율 기본값 22%는 무엇인가요?", "기본값 22%는 국세 20%와 지방소득세 2%를 합친 값입니다. 중소기업 특례 등 예외가 있으면 직접 수정해 계산할 수 있습니다."),
                 new FaqItem("배당세 15.4%는 언제 쓰나요?", "국내 원천징수 기준의 기본값입니다. 다만 연간 금융소득이 2천만원을 초과하거나 외국납부세액공제가 필요한 경우 실제 신고세액은 달라질 수 있습니다."),
                 new FaqItem("실제 신고세액과 같나요?", "아닙니다. 실제 신고는 거래일별 기준환율, 손익통산, 외국납부세액공제, 최신 세법에 따라 달라질 수 있습니다.")
