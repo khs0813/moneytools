@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle}, ${pageDescription}, ${canonicalUrl})}"></head>
+<body>
+<button class="mobile-menu-button" type="button" data-menu-toggle aria-label="메뉴 열기">☰</button>
+<div class="app-shell">
+    <aside th:replace="~{fragments/nav :: sidebar(${activeMenu})}"></aside>
+    <main class="main-content">
+        <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
+        <div th:replace="~{fragments/components :: pageHero('국내 주식 세금 계산기', ${pageDescription})}"></div>
+        <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
+
+        <section class="calculator-layout" data-domestic-stock-tax-layout>
+            <form class="calculator-form two-column-form" data-domestic-stock-tax-calculator>
+                <h2>입력값</h2>
+                <label>매수금액
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="domesticBuyAmount" value="10,000,000">
+                </label>
+                <label>매도금액
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="domesticSellAmount" value="13,000,000">
+                </label>
+                <label>매매 수수료 합계
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="domesticFeeAmount" value="0">
+                </label>
+                <label>증권거래세율(%)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="domesticTransactionTaxRate" value="0.15">
+                </label>
+                <label class="checkbox-row">
+                    <input type="checkbox" id="domesticApplyCapitalGainsTax">
+                    양도소득세 대상
+                </label>
+                <label>양도소득세율(%)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="domesticCapitalGainsTaxRate" value="">
+                </label>
+                <button class="primary-button" type="submit">계산하기</button>
+            </form>
+            <section class="result-panel" aria-live="polite" data-result-card data-domestic-stock-tax-result-panel hidden>
+                <h2>계산 결과</h2>
+                <div class="result-grid">
+                    <div><span>양도차익</span><strong data-domestic-stock-tax-result="capitalGain">0원</strong></div>
+                    <div><span>예상 증권거래세</span><strong data-domestic-stock-tax-result="transactionTax">0원</strong></div>
+                    <div><span>예상 양도소득세</span><strong data-domestic-stock-tax-result="capitalGainsTax">0원</strong></div>
+                    <div><span>총 예상 매도세금</span><strong data-domestic-stock-tax-result="totalTax">0원</strong></div>
+                    <div><span>세후 매도차익</span><strong data-domestic-stock-tax-result="afterTaxProfit">0원</strong></div>
+                </div>
+                <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
+            </section>
+            <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
+        </section>
+
+        <div th:replace="~{fragments/components :: disclaimer('국내 상장주식 세금은 시장, 종목, 대주주 여부, 비상장주식 여부, 세법 개정에 따라 달라질 수 있습니다. 이 계산기는 매도금액 기준 증권거래세와 선택 입력한 양도소득세를 단순 추정하는 참고용 도구입니다.')}" ></div>
+        <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
+        <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
+        <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
+        <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle}, ${pageDescription}, ${canonicalUrl})}"></head>
+<body>
+<button class="mobile-menu-button" type="button" data-menu-toggle aria-label="메뉴 열기">☰</button>
+<div class="app-shell">
+    <aside th:replace="~{fragments/nav :: sidebar(${activeMenu})}"></aside>
+    <main class="main-content">
+        <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
+        <div th:replace="~{fragments/components :: pageHero('배당소득세 계산 방법', ${pageDescription})}"></div>
+        <section class="content-card">
+            <h2>세전 배당금 계산</h2>
+            <p>세전 배당금은 보유 주식 수에 주당 배당금을 곱해 계산합니다. 월배당, 분기배당, 반기배당, 연배당에 따라 월·연 환산 금액이 달라집니다.</p>
+        </section>
+        <section class="content-card">
+            <h2>세후 배당금과 배당소득세 15.4%</h2>
+            <p>국내 배당소득세 기본 원천징수율을 15.4%로 보면, 세후 배당금은 세전 배당금에서 배당소득세를 뺀 금액입니다. 예를 들어 세전 배당금 50,000원은 15.4% 차감 후 42,300원으로 계산됩니다.</p>
+        </section>
+        <section class="content-card">
+            <h2>배당 계산기로 확인하기</h2>
+            <p>보유 주식 수, 주당 배당금, 배당 주기, 세율을 입력하면 세전 배당금과 세후 배당금을 함께 확인할 수 있습니다.</p>
+            <p><a href="/dividend-calculator">배당 계산기로 세전·세후 배당금 계산하기</a></p>
+        </section>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
+</div>
+</body>
+</html>

@@ -52,6 +52,37 @@
 </div>
 
 <div th:fragment="seoContent(currentKey)">
+    <section class="content-card" th:if="${currentKey == 'annual-salary-net'}">
+        <h2>연봉별 실수령액 예시</h2>
+        <h3>연봉 3000만원 실수령액</h3>
+        <p>연봉 3,000만원은 월 세전 급여 기준 약 250만원입니다. 실제 월 실수령액은 비과세 식대, 부양가족 수, 자녀 수, 4대보험 공제액에 따라 달라질 수 있습니다.</p>
+        <h3>연봉 4000만원 실수령액</h3>
+        <p>연봉 4,000만원은 월 세전 급여 기준 약 333만원입니다. 국민연금, 건강보험, 고용보험, 소득세, 지방소득세를 차감한 금액이 실제 수령액에 가깝습니다.</p>
+        <h3>연봉 5000만원 실수령액</h3>
+        <p>연봉 5,000만원은 월 세전 급여 기준 약 416만원입니다. 부양가족이 있거나 비과세 식대가 적용되면 실제 실수령액이 달라질 수 있습니다.</p>
+        <h3>연봉 6000만원 실수령액</h3>
+        <p>연봉 6,000만원은 월 세전 급여 기준 약 500만원입니다. 소득세와 4대보험 부담이 함께 증가하므로 세전 금액과 세후 금액의 차이가 커집니다.</p>
+        <h3>연봉 7000만원 실수령액</h3>
+        <p>연봉 7,000만원은 월 세전 급여 기준 약 583만원입니다. 실제 수령액은 공제 조건에 따라 차이가 있으므로 계산기에 부양가족 수와 비과세 금액을 함께 입력하는 것이 좋습니다.</p>
+        <h3>연봉 1억원 실수령액</h3>
+        <p>연봉 1억원은 월 세전 급여 기준 약 833만원입니다. 고소득 구간에서는 소득세 부담이 커지므로 세후 월급을 별도로 계산해 보는 것이 중요합니다.</p>
+        <h2>연봉별 예상 월 실수령액 표</h2>
+        <div class="table-scroll overflow-x-auto">
+            <table class="data-table">
+                <caption>연봉별 예상 월 실수령액 표</caption>
+                <thead><tr><th>연봉</th><th>월 세전 급여</th><th>예상 월 실수령액</th><th>계산 기준</th></tr></thead>
+                <tbody>
+                <tr th:each="row : ${annualSalaryExamples}">
+                    <td th:text="${row.annualSalary}">3,000만원</td>
+                    <td th:text="|약 ${#numbers.formatDecimal(row.grossMonthly, 0, 'COMMA', 0, 'POINT')}원|">약 2,500,000원</td>
+                    <td th:text="${#numbers.formatDecimal(row.netMonthly, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
+                    <td th:text="${row.basis}">2026년, 1인 기준</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
     <section class="content-card calculator-standard">
         <h2>계산 기준</h2>
         <ul>
@@ -104,37 +135,6 @@
     <section class="content-card calculator-updated-at">
         <h2>업데이트 정보</h2>
         <p>최종 업데이트: 2026년 5월</p>
-    </section>
-
-    <section class="content-card" th:if="${currentKey == 'annual-salary-net'}">
-        <h2>연봉별 실수령액 예시</h2>
-        <h3>연봉 3000만원 실수령액</h3>
-        <p>연봉 3,000만원은 월 세전 급여 기준 약 250만원입니다. 실제 월 실수령액은 비과세 식대, 부양가족 수, 자녀 수, 4대보험 공제액에 따라 달라질 수 있습니다.</p>
-        <h3>연봉 4000만원 실수령액</h3>
-        <p>연봉 4,000만원은 월 세전 급여 기준 약 333만원입니다. 국민연금, 건강보험, 고용보험, 소득세, 지방소득세를 차감한 금액이 실제 수령액에 가깝습니다.</p>
-        <h3>연봉 5000만원 실수령액</h3>
-        <p>연봉 5,000만원은 월 세전 급여 기준 약 416만원입니다. 부양가족이 있거나 비과세 식대가 적용되면 실제 실수령액이 달라질 수 있습니다.</p>
-        <h3>연봉 6000만원 실수령액</h3>
-        <p>연봉 6,000만원은 월 세전 급여 기준 약 500만원입니다. 소득세와 4대보험 부담이 함께 증가하므로 세전 금액과 세후 금액의 차이가 커집니다.</p>
-        <h3>연봉 7000만원 실수령액</h3>
-        <p>연봉 7,000만원은 월 세전 급여 기준 약 583만원입니다. 실제 수령액은 공제 조건에 따라 차이가 있으므로 계산기에 부양가족 수와 비과세 금액을 함께 입력하는 것이 좋습니다.</p>
-        <h3>연봉 1억원 실수령액</h3>
-        <p>연봉 1억원은 월 세전 급여 기준 약 833만원입니다. 고소득 구간에서는 소득세 부담이 커지므로 세후 월급을 별도로 계산해 보는 것이 중요합니다.</p>
-        <h2>연봉별 예상 월 실수령액 표</h2>
-        <div class="table-scroll overflow-x-auto">
-            <table class="data-table">
-                <caption>연봉별 예상 월 실수령액 표</caption>
-                <thead><tr><th>연봉</th><th>월 세전 급여</th><th>예상 월 실수령액</th><th>계산 기준</th></tr></thead>
-                <tbody>
-                <tr th:each="row : ${annualSalaryExamples}">
-                    <td th:text="${row.annualSalary}">3,000만원</td>
-                    <td th:text="|약 ${#numbers.formatDecimal(row.grossMonthly, 0, 'COMMA', 0, 'POINT')}원|">약 2,500,000원</td>
-                    <td th:text="${#numbers.formatDecimal(row.netMonthly, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
-                    <td th:text="${row.basis}">2026년, 1인 기준</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
     </section>
 
     <section class="content-card" th:if="${currentKey == 'salary'}">
