@@ -45,6 +45,37 @@ public class PageController {
         return "guide";
     }
 
+    @GetMapping("/stock-tax-calculator")
+    public String stockTax(Model model) {
+        PageInfo page = SitePages.require("stock-tax");
+        prepare(model, page, List.of(
+                new FaqItem("국내주식과 해외주식 매도세금은 어떻게 다른가요?", "국내 상장주식 일반 투자자는 보통 증권거래세 중심으로 확인하고, 해외주식은 양도차익에서 기본공제 250만원을 차감한 뒤 양도소득세를 계산합니다."),
+                new FaqItem("주식 매도 세금 계산은 어디서 하나요?", "국내주식은 국내 주식 세금 계산기에서 매도금액 기준 증권거래세를 확인하고, 해외주식은 해외주식 세금 계산기에서 양도소득세와 배당세를 함께 확인할 수 있습니다.")
+        ));
+        return "stock-tax-calculator";
+    }
+
+    @GetMapping("/guide/stock-tax")
+    public String stockTaxGuide(Model model) {
+        PageInfo page = SitePages.require("guide-stock-tax");
+        prepare(model, page, List.of());
+        return "guide-stock-tax";
+    }
+
+    @GetMapping("/guide/overseas-stock-tax")
+    public String overseasStockTaxGuide(Model model) {
+        PageInfo page = SitePages.require("guide-overseas-stock-tax");
+        prepare(model, page, List.of());
+        return "guide-overseas-stock-tax";
+    }
+
+    @GetMapping("/guide/dividend-tax")
+    public String dividendTaxGuide(Model model) {
+        PageInfo page = SitePages.require("guide-dividend-tax");
+        prepare(model, page, List.of());
+        return "guide-dividend-tax";
+    }
+
     @GetMapping("/privacy")
     public String privacy(Model model) {
         PageInfo page = SitePages.require("privacy");

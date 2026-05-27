@@ -215,6 +215,12 @@ public class CalculatorController {
         return "exchange-calculator";
     }
 
+    @GetMapping("/domestic-stock-tax-calculator")
+    public String domesticStockTax(Model model) {
+        prepare(model, "domestic-stock-tax", domesticStockTaxFaqs());
+        return "domestic-stock-tax-calculator";
+    }
+
     @GetMapping("/overseas-stock-tax-calculator")
     public String overseasTax(Model model) {
         prepare(model, "overseas-tax", overseasTaxFaqs());
@@ -505,6 +511,14 @@ public class CalculatorController {
                 new FaqItem("양도세율 기본값 22%는 무엇인가요?", "기본값 22%는 국세 20%와 지방소득세 2%를 합친 값입니다. 중소기업 특례 등 예외가 있으면 직접 수정해 계산할 수 있습니다."),
                 new FaqItem("배당세 15.4%는 언제 쓰나요?", "국내 원천징수 기준의 기본값입니다. 다만 연간 금융소득이 2천만원을 초과하거나 외국납부세액공제가 필요한 경우 실제 신고세액은 달라질 수 있습니다."),
                 new FaqItem("실제 신고세액과 같나요?", "아닙니다. 실제 신고는 거래일별 기준환율, 손익통산, 외국납부세액공제, 최신 세법에 따라 달라질 수 있습니다.")
+        );
+    }
+
+    private List<FaqItem> domesticStockTaxFaqs() {
+        return List.of(
+                new FaqItem("국내 주식 매도세금은 무엇을 계산하나요?", "매도금액에 증권거래세율을 곱해 예상 증권거래세를 계산하고, 대주주 등 양도소득세 대상 여부는 별도 입력으로 확인합니다."),
+                new FaqItem("국내 상장주식도 양도소득세가 발생하나요?", "일반적인 소액주주 상장주식 거래는 양도소득세가 과세되지 않는 경우가 많지만, 대주주나 비상장주식 등 요건에 따라 양도소득세가 발생할 수 있습니다."),
+                new FaqItem("해외주식과 계산 방식이 다른가요?", "해외주식은 양도차익에서 기본공제 250만원을 차감한 과세표준에 세율을 적용하는 구조라 국내주식 증권거래세 계산과 다릅니다.")
         );
     }
 }

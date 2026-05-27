@@ -370,4 +370,66 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const domesticStockTaxForm = document.querySelector('[data-domestic-stock-tax-calculator]');
+  if (domesticStockTaxForm) {
+    const layout = document.querySelector('[data-domestic-stock-tax-layout]');
+    const resultPanel = document.querySelector('[data-domestic-stock-tax-result-panel]');
+    const applyCapitalGainsTaxInput = document.getElementById('domesticApplyCapitalGainsTax');
+    const capitalGainsTaxRateInput = document.getElementById('domesticCapitalGainsTaxRate');
+    const resultTargets = Object.fromEntries(
+      Array.from(document.querySelectorAll('[data-domestic-stock-tax-result]'))
+        .map((element) => [element.dataset.domesticStockTaxResult, element])
+    );
+
+    const syncCapitalGainsTaxRate = () => {
+      if (!capitalGainsTaxRateInput) return;
+      if (applyCapitalGainsTaxInput?.checked) {
+        if (!capitalGainsTaxRateInput.value.trim()) {
+          capitalGainsTaxRateInput.value = '22';
+        }
+        return;
+      }
+      capitalGainsTaxRateInput.value = '';
+    };
+
+    syncCapitalGainsTaxRate();
+    applyCapitalGainsTaxInput?.addEventListener('change', syncCapitalGainsTaxRate);
+
+    const renderDomesticStockTaxResult = () => {
+      const buyAmount = parseNumberInput(document.getElementById('domesticBuyAmount'));
+      const sellAmount = parseNumberInput(document.getElementById('domesticSellAmount'));
+      const feeAmount = parseNumberInput(document.getElementById('domesticFeeAmount'));
+      const transactionTaxRate = parseNumberInput(document.getElementById('domesticTransactionTaxRate')) / 100;
+      const capitalGainsTaxRate = parseNumberInput(document.getElementById('domesticCapitalGainsTaxRate')) / 100;
+      const applyCapitalGainsTax = applyCapitalGainsTaxInput?.checked ?? false;
+
+      const capitalGain = Math.max(0, sellAmount - buyAmount - feeAmount);
+      const transactionTax = sellAmount * transactionTaxRate;
+      const capitalGainsTax = applyCapitalGainsTax ? capitalGain * capitalGainsTaxRate : 0;
+      const totalTax = transactionTax + capitalGainsTax;
+      const afterTaxProfit = Math.max(0, sellAmount - buyAmount - feeAmount - totalTax);
+
+      const result = {
+        capitalGain,
+        transactionTax,
+        capitalGainsTax,
+        totalTax,
+        afterTaxProfit
+      };
+
+      Object.entries(result).forEach(([key, value]) => {
+        if (resultTargets[key]) {
+          resultTargets[key].textContent = formatWon(value);
+        }
+      });
+      resultPanel?.removeAttribute('hidden');
+      layout?.classList.add('has-result');
+    };
+
+    domesticStockTaxForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      renderDomesticStockTaxResult();
+    });
+  }
+
 });
