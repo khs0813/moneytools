@@ -6,11 +6,10 @@
     <span class="ad-label" th:text="${label}">AD</span>
     <div th:if="${adsenseEnabled}" class="ad-box">
         <ins class="adsbygoogle"
-             style="display:block"
              th:attr="data-ad-client=${adsenseClient},data-ad-slot=${slot}"
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
-        <script>
+        <script th:nonce="${cspNonce}">
             (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
     </div>

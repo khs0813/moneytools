@@ -46,6 +46,6 @@
             th:src="'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + ${adsenseClient}"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/ko.js" defer></script>
-    <script type="application/ld+json" th:if="${structuredData != null}" th:utext="${structuredData}"></script>
+    <script type="application/ld+json" th:if="${structuredData != null}" th:nonce="${cspNonce}" th:utext="${structuredData}"></script>
 </head>
 </html>

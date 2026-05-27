@@ -1,8 +1,10 @@
 package com.example.moneytools.controller;
 
 import com.example.moneytools.config.AppProperties;
+import com.example.moneytools.config.SecurityHeadersFilter;
 import com.example.moneytools.seo.PublicUrlService;
 import com.example.moneytools.seo.SitePages;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -73,4 +75,10 @@ public class GlobalModelAdvice {
 
     @ModelAttribute("naverSiteVerification")
     public String naverSiteVerification() { return appProperties.getNaverSiteVerification(); }
+
+    @ModelAttribute("cspNonce")
+    public String cspNonce(HttpServletRequest request) {
+        Object nonce = request.getAttribute(SecurityHeadersFilter.CSP_NONCE_ATTRIBUTE);
+        return nonce instanceof String value ? value : "";
+    }
 }
