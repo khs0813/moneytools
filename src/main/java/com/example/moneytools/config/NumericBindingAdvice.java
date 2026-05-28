@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @ControllerAdvice
 public class NumericBindingAdvice {
     private static final int MAX_NUMERIC_TEXT_LENGTH = 128;
+    private static final int MAX_SCIENTIFIC_EXPONENT_ABS = 128;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -41,10 +42,18 @@ public class NumericBindingAdvice {
 
         if (normalized.contains("e") || normalized.contains("E")) {
             try {
-                normalized = new BigDecimal(normalized).stripTrailingZeros().toPlainString();
+                BigDecimal value = new BigDecimal(normalized);
+                if (Math.abs(value.scale()) > MAX_SCIENTIFIC_EXPONENT_ABS) {
+                    throw new IllegalArgumentException("Numeric exponent is too large.");
+                }
+                normalized = value.stripTrailingZeros().toPlainString();
             } catch (NumberFormatException ignored) {
                 // 원본 값으로 검증 오류를 유도한다.
             }
+        }
+
+        if (normalized.length() > MAX_NUMERIC_TEXT_LENGTH) {
+            throw new IllegalArgumentException("Numeric input is too long.");
         }
 
         return normalized;
@@ -58,6 +67,10 @@ public class NumericBindingAdvice {
         @Override
         public void setAsText(String text) throws IllegalArgumentException {
             super.setAsText(normalize(text));
+            Object value = getValue();
+            if (value instanceof Double doubleValue && !Double.isFinite(doubleValue)) {
+                throw new IllegalArgumentException("Numeric input must be finite.");
+            }
         }
     }
 

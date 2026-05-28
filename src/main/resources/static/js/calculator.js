@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const MAX_NUMERIC_TEXT_LENGTH = 128;
+  const MAX_SCIENTIFIC_EXPONENT_ABS = 128;
+
   const sidebar = document.getElementById('sidebar');
   const toggle = document.querySelector('[data-menu-toggle]');
   if (toggle && sidebar) {
@@ -87,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const [mantissa, exponentText] = working.toLowerCase().split('e');
     const exponent = Number.parseInt(exponentText, 10);
     if (!Number.isFinite(exponent)) return source;
+    if (Math.abs(exponent) > MAX_SCIENTIFIC_EXPONENT_ABS) return '';
 
     const [rawInteger = '0', rawFraction = ''] = mantissa.split('.');
     const digits = `${rawInteger}${rawFraction}`.replace(/[^\d]/g, '') || '0';
@@ -101,7 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
       result = `${digits.slice(0, decimalIndex)}.${digits.slice(decimalIndex)}`;
     }
 
-    return sign + result;
+    const plain = sign + result;
+    return plain.length <= MAX_NUMERIC_TEXT_LENGTH ? plain : '';
   };
 
   const normalizePlainNumber = (value) => {
@@ -112,6 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (/[eE]/.test(working)) {
       working = toPlainFromScientific(working);
     }
+
+    if (working.length > MAX_NUMERIC_TEXT_LENGTH) return '';
 
     let sign = '';
     if (working.startsWith('+') || working.startsWith('-')) {
