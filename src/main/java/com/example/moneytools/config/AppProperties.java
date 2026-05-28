@@ -93,6 +93,10 @@ public class AppProperties {
                     || uri.getRawQuery() != null || uri.getRawFragment() != null) {
                 return "";
             }
+            if ("moneycalculator.co.kr".equalsIgnoreCase(uri.getHost())) {
+                URI canonicalUri = new URI(uri.getScheme(), uri.getUserInfo(), "www.moneycalculator.co.kr", uri.getPort(), uri.getPath(), uri.getQuery(), uri.getFragment());
+                return canonicalUri.toString();
+            }
             return uri.toString();
         } catch (URISyntaxException ex) {
             return "";
