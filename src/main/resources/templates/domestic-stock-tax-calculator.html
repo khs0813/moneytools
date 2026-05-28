@@ -57,14 +57,14 @@
                     <caption>국내 주식 매도금액별 증권거래세 계산 예시</caption>
                     <thead><tr><th>매도금액</th><th>예시 세율</th><th>증권거래세</th><th>계산식</th></tr></thead>
                     <tbody>
-                    <tr><td>100만원</td><td>0.15%</td><td>0.15만원</td><td>100만원 × 0.15%</td></tr>
-                    <tr><td>500만원</td><td>0.15%</td><td>0.75만원</td><td>500만원 × 0.15%</td></tr>
-                    <tr><td>1,000만원</td><td>0.15%</td><td>1.5만원</td><td>1,000만원 × 0.15%</td></tr>
-                    <tr><td>3,000만원</td><td>0.15%</td><td>4.5만원</td><td>3,000만원 × 0.15%</td></tr>
+                    <tr><td>100만원</td><td>0.15%</td><td>1,500원</td><td>100만원 × 0.15%</td></tr>
+                    <tr><td>500만원</td><td>0.15%</td><td>7,500원</td><td>500만원 × 0.15%</td></tr>
+                    <tr><td>1,000만원</td><td>0.15%</td><td>15,000원</td><td>1,000만원 × 0.15%</td></tr>
+                    <tr><td>3,000만원</td><td>0.15%</td><td>45,000원</td><td>3,000만원 × 0.15%</td></tr>
                     </tbody>
                 </table>
             </div>
-            <p>예를 들어 매도금액 1,000만원과 예시 세율 0.15%는 서로 다른 표 셀에 분리되어 있으며, 예상 증권거래세는 1.5만원으로 계산됩니다.</p>
+            <p>매도금액 1,000만원에 증권거래세율 0.15%를 적용하면 예상 증권거래세는 15,000원입니다.</p>
         </section>
         <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
         <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
