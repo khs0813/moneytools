@@ -352,7 +352,7 @@ public class CalculatorController {
         request.setCapitalGainsTaxRate(22.0);
         request.setDividendTaxRate(15.4);
         OverseasStockTaxResult result = overseasStockTaxService.calculate(request);
-        return new OverseasTaxExampleRow(labelWon((long) buyAmount), labelWon((long) sellAmount), result.capitalGainKrw(), 2_500_000, result.taxableCapitalGainKrw(), result.capitalGainsTaxKrw());
+        return new OverseasTaxExampleRow(labelWonFull((long) buyAmount), labelWonFull((long) sellAmount), result.capitalGainKrw(), 2_500_000, result.taxableCapitalGainKrw(), result.capitalGainsTaxKrw());
     }
 
     private List<DividendExampleRow> dividendExamples() {
@@ -399,6 +399,10 @@ public class CalculatorController {
         if (value >= 10_000_000 && value % 10_000_000 == 0) {
             return (value / 10_000_000) + ",000만원";
         }
+        return String.format("%,d원", value);
+    }
+
+    private String labelWonFull(long value) {
         return String.format("%,d원", value);
     }
 
