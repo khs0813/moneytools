@@ -26,7 +26,7 @@ public final class SitePages {
             new PageInfo("stock-tax", "/stock-tax-calculator", "주식 세금 계산기", "주식 세금 계산기 | 국내·해외주식 매도세금 계산", "국내주식과 해외주식 매도 시 발생할 수 있는 세금 차이를 비교하고, 증권거래세·양도소득세·배당세 계산기로 예상 세금을 확인해보세요.", true, true, SEO_REFRESHED_AT),
             new PageInfo("domestic-stock-tax", "/domestic-stock-tax-calculator", "국내 주식 세금 계산기", "국내 주식 세금 계산기 | 매도세금·증권거래세 계산", "국내 주식 매도금액을 입력해 증권거래세 등 예상 매도세금을 계산하고, 국내주식과 해외주식 세금 차이를 확인해보세요.", true, true, SEO_REFRESHED_AT),
             new PageInfo("overseas-tax", "/overseas-stock-tax-calculator", "해외주식 세금 계산기", "해외주식 세금 계산기 | 양도세 250만원 공제 계산", "해외주식 매수금액, 매도금액, 환율, 수수료를 입력하면 양도소득세와 배당세를 예상 계산합니다. 기본공제 250만원도 반영할 수 있습니다.", true, true, SEO_REFRESHED_AT),
-            new PageInfo("guide", "/guide", "이용안내", "이용안내 | 계산 기준·주의사항·개인정보 안내 - 머니계산기", "머니계산기 계산기의 입력 기준, 결과 해석 방법, 데이터 저장 여부, 세금·투자·노무 관련 주의사항을 확인하세요.", true, true, SEO_REFRESHED_AT),
+            new PageInfo("guide", "/guide", "이용안내", "이용안내 | 계산 기준·주의사항·개인정보 안내 - 머니계산기", "머니계산기 계산기의 입력 기준, 결과 해석 방법, 데이터 저장 여부, 세금·투자·노무 관련 주의사항을 확인하세요.", true, true, BASE_REFRESHED_AT),
             new PageInfo("guide-stock-tax", "/guide/stock-tax", "주식 세금 계산 방법 총정리", "주식 세금 계산 방법 총정리 | 국내·해외주식 세금 비교", "국내주식 세금, 해외주식 양도소득세, 배당소득세, 증권거래세 차이를 정리하고 관련 계산기로 예상 세금을 확인하세요.", true, true, SEO_REFRESHED_AT),
             new PageInfo("guide-overseas-stock-tax", "/guide/overseas-stock-tax", "해외주식 양도소득세 계산 방법", "해외주식 양도소득세 계산 방법 | 250만원 기본공제와 과세표준", "해외주식 양도차익, 기본공제 250만원, 과세표준, 예상세금 계산 흐름을 설명하고 해외주식 세금 계산기로 연결합니다.", true, true, SEO_REFRESHED_AT),
             new PageInfo("guide-dividend-tax", "/guide/dividend-tax", "배당소득세 계산 방법", "배당소득세 계산 방법 | 세전·세후 배당금 계산", "세전 배당금, 세후 배당금, 배당소득세 15.4% 계산 예시를 정리하고 배당 계산기로 연결합니다.", true, true, SEO_REFRESHED_AT),
