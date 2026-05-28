@@ -8,19 +8,55 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('해외주식 양도소득세 계산 방법', ${pageDescription})}"></div>
+
         <section class="content-card">
             <h2>해외주식 양도차익 계산</h2>
-            <p>양도차익은 매도금액에서 매수금액과 필요경비를 뺀 금액입니다. 외화 거래는 매수일과 매도일 환율을 각각 반영하면 원화 기준 손익이 달라질 수 있습니다.</p>
+            <p>해외주식 양도차익은 원화 환산 매도금액에서 원화 환산 매수금액과 필요경비를 뺀 금액입니다. 외화로 매수·매도했다면 매수일 환율과 매도일 환율이 달라 원화 기준 손익도 달라질 수 있습니다.</p>
+            <p>기본 공식은 양도차익 = 매도금액 원화환산 - 매수금액 원화환산 - 수수료입니다.</p>
         </section>
+
         <section class="content-card">
             <h2>기본공제 250만원 적용</h2>
-            <p>해외주식 양도차익은 연간 단위로 합산한 뒤 기본공제 250만원을 차감해 과세표준을 구합니다. 손실이 있는 종목은 같은 과세기간 내 손익통산 검토가 필요합니다.</p>
+            <p>해외주식 양도차익은 연간 단위로 합산한 뒤 기본공제 250만원을 차감해 과세표준을 구합니다. 같은 과세기간 안에서 손실이 난 종목이 있다면 손익통산 여부를 함께 검토해야 합니다.</p>
+            <div class="table-scroll overflow-x-auto">
+                <table class="data-table">
+                    <caption>해외주식 기본공제 250만원 적용 예시</caption>
+                    <thead><tr><th>연간 양도차익</th><th>기본공제</th><th>과세표준</th><th>양도세율</th><th>예상 양도세</th></tr></thead>
+                    <tbody>
+                    <tr><td>2,000,000원</td><td>2,500,000원</td><td>0원</td><td>22%</td><td>0원</td></tr>
+                    <tr><td>5,000,000원</td><td>2,500,000원</td><td>2,500,000원</td><td>22%</td><td>550,000원</td></tr>
+                    <tr><td>12,000,000원</td><td>2,500,000원</td><td>9,500,000원</td><td>22%</td><td>2,090,000원</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
+
         <section class="content-card">
             <h2>과세표준과 예상세금 계산 흐름</h2>
-            <p>계산 흐름은 양도차익 산정, 기본공제 차감, 과세표준 산정, 세율 적용 순서입니다. 계산기에서는 수수료, 환율, 기본공제 적용 여부를 입력해 예상 양도소득세를 빠르게 확인할 수 있습니다.</p>
-            <p><a href="/overseas-stock-tax-calculator">해외주식 세금 계산기로 양도세와 배당세 계산하기</a></p>
+            <p>계산 흐름은 원화 환산, 필요경비 차감, 기본공제 차감, 과세표준 산정, 세율 적용 순서입니다. 환율과 수수료를 빠뜨리면 실제 손익과 차이가 커질 수 있으므로 거래내역서 기준으로 입력하는 것이 좋습니다.</p>
+            <p><a href="/overseas-stock-tax-calculator">해외주식 세금 계산기로 양도세 250만원 공제 확인하기</a></p>
         </section>
+
+        <section class="content-card">
+            <h2>FAQ</h2>
+            <h3>양도차익이 250만원보다 작으면 세금이 없나요?</h3>
+            <p>계산상 과세표준은 0원이 될 수 있습니다. 다만 연간 전체 해외주식 손익과 신고 대상 여부는 실제 거래내역 기준으로 확인해야 합니다.</p>
+            <h3>배당세도 같은 방식으로 계산하나요?</h3>
+            <p>아닙니다. 배당세는 배당금을 받을 때 원천징수되는 세금이고, 양도세는 주식을 팔아 차익이 생겼을 때 계산하는 세금입니다.</p>
+            <h3>최신 기준 확인이 필요한가요?</h3>
+            <p>필요합니다. 해외주식 세금은 세법, 신고 절차, 외국납부세액공제 처리에 따라 실제 신고세액이 달라질 수 있습니다.</p>
+        </section>
+
+        <section class="content-card">
+            <h2>관련 계산기 바로가기</h2>
+            <div class="related-links">
+                <a href="/overseas-stock-tax-calculator">해외주식 세금 계산기로 양도세 250만원 공제 확인하기</a>
+                <a href="/stock-tax-calculator">주식 세금 계산기로 국내·해외주식 매도세금 비교하기</a>
+                <a href="/dividend-calculator">배당 계산기로 세전·세후 배당금 계산하기</a>
+            </div>
+        </section>
+
+        <div th:replace="~{fragments/components :: disclaimer('해외주식 세금 계산은 참고용입니다. 실제 신고 전에는 거래일별 환율, 수수료, 손익통산, 외국납부세액공제, 최신 세법 기준을 확인해야 합니다.')}" ></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>
     </main>
 </div>

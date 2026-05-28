@@ -8,19 +8,57 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('배당소득세 계산 방법', ${pageDescription})}"></div>
+
         <section class="content-card">
             <h2>세전 배당금 계산</h2>
-            <p>세전 배당금은 보유 주식 수에 주당 배당금을 곱해 계산합니다. 월배당, 분기배당, 반기배당, 연배당에 따라 월·연 환산 금액이 달라집니다.</p>
+            <p>세전 배당금은 보유 주식 수에 주당 배당금을 곱해 계산합니다. 월배당, 분기배당, 반기배당, 연배당에 따라 1회 배당금은 같아도 월 환산액과 연 환산액이 달라질 수 있습니다.</p>
+            <p>기본 공식은 세전 배당금 = 보유 주식 수 × 주당 배당금입니다.</p>
         </section>
+
         <section class="content-card">
             <h2>세후 배당금과 배당소득세 15.4%</h2>
             <p>국내 배당소득세 기본 원천징수율을 15.4%로 보면, 세후 배당금은 세전 배당금에서 배당소득세를 뺀 금액입니다. 예를 들어 세전 배당금 50,000원은 15.4% 차감 후 42,300원으로 계산됩니다.</p>
+            <div class="table-scroll overflow-x-auto">
+                <table class="data-table">
+                    <caption>배당소득세 15.4% 계산 예시</caption>
+                    <thead><tr><th>세전 배당금</th><th>세율</th><th>배당소득세</th><th>세후 배당금</th></tr></thead>
+                    <tbody>
+                    <tr><td>50,000원</td><td>15.4%</td><td>7,700원</td><td>42,300원</td></tr>
+                    <tr><td>100,000원</td><td>15.4%</td><td>15,400원</td><td>84,600원</td></tr>
+                    <tr><td>300,000원</td><td>15.4%</td><td>46,200원</td><td>253,800원</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
+
         <section class="content-card">
-            <h2>배당 계산기로 확인하기</h2>
-            <p>보유 주식 수, 주당 배당금, 배당 주기, 세율을 입력하면 세전 배당금과 세후 배당금을 함께 확인할 수 있습니다.</p>
-            <p><a href="/dividend-calculator">배당 계산기로 세전·세후 배당금 계산하기</a></p>
+            <h2>월배당과 분기배당 계산 예시</h2>
+            <h3>월배당 계산 예시</h3>
+            <p>100주를 보유하고 주당 배당금이 월 1,000원이면 1회 세전 배당금은 100,000원입니다. 배당소득세 15.4%를 차감하면 월 세후 배당금은 84,600원, 연 세후 배당금은 약 1,015,200원입니다.</p>
+            <h3>분기배당 계산 예시</h3>
+            <p>100주를 보유하고 주당 배당금이 분기 500원이면 1회 세전 배당금은 50,000원입니다. 세후 42,300원을 분기마다 받는 구조이므로 연 세후 배당금은 약 169,200원입니다.</p>
         </section>
+
+        <section class="content-card">
+            <h2>FAQ</h2>
+            <h3>세율 15.4%는 항상 같은가요?</h3>
+            <p>국내 배당 원천징수의 일반적인 기본값으로 볼 수 있지만, 해외 배당, 금융소득종합과세, 외국납부세액공제 여부에 따라 실제 세금은 달라질 수 있습니다.</p>
+            <h3>월배당은 매월 같은 금액을 받나요?</h3>
+            <p>종목과 ETF의 배당 정책에 따라 매월 배당금이 달라질 수 있습니다. 계산기는 입력한 주당 배당금을 기준으로 단순 환산합니다.</p>
+            <h3>최신 기준 확인이 필요한가요?</h3>
+            <p>필요합니다. 배당 원천징수율, 금융소득종합과세 기준, 해외 배당 처리 방식은 실제 신고 시점의 기준을 확인해야 합니다.</p>
+        </section>
+
+        <section class="content-card">
+            <h2>관련 계산기 바로가기</h2>
+            <div class="related-links">
+                <a href="/dividend-calculator">배당 계산기로 세전·세후 배당금 계산하기</a>
+                <a href="/stock-tax-calculator">주식 세금 계산기로 국내·해외주식 매도세금 비교하기</a>
+                <a href="/overseas-stock-tax-calculator">해외주식 세금 계산기로 양도세 250만원 공제 확인하기</a>
+            </div>
+        </section>
+
+        <div th:replace="~{fragments/components :: disclaimer('배당소득세 계산은 참고용입니다. 실제 원천징수와 신고세액은 국내외 세율, 금융소득종합과세, 외국납부세액공제, 최신 세법 기준에 따라 달라질 수 있습니다.')}" ></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>
     </main>
 </div>

@@ -25,28 +25,59 @@
             <div class="table-scroll overflow-x-auto">
                 <table class="data-table">
                     <caption>국내주식과 해외주식 세금 차이</caption>
-                    <thead><tr><th>구분</th><th>주요 세금</th><th>계산 기준</th><th>연결 계산기</th></tr></thead>
+                    <thead><tr><th>구분</th><th>주요 세금</th><th>계산 기준</th><th>자주 확인할 항목</th><th>연결 계산기</th></tr></thead>
                     <tbody>
                     <tr>
                         <td>국내 상장주식</td>
                         <td>증권거래세, 조건별 양도소득세</td>
-                        <td>매도금액 또는 양도차익</td>
-                        <td><a href="/domestic-stock-tax-calculator">국내 주식 세금 계산기로 매도세금 확인하기</a></td>
+                        <td>매도금액 × 증권거래세율</td>
+                        <td>시장별 세율, 대주주 여부, 비상장·장외거래 여부</td>
+                        <td><a href="/domestic-stock-tax-calculator">국내 주식 세금 계산기로 증권거래세 계산하기</a></td>
                     </tr>
                     <tr>
                         <td>해외주식</td>
                         <td>양도소득세, 배당소득세</td>
                         <td>양도차익 - 기본공제 250만원</td>
-                        <td><a href="/overseas-stock-tax-calculator">해외주식 세금 계산기로 양도세와 배당세 계산하기</a></td>
+                        <td>환율, 수수료, 손익통산, 양도세 22% 기본값</td>
+                        <td><a href="/overseas-stock-tax-calculator">해외주식 세금 계산기로 양도세 250만원 공제 확인하기</a></td>
                     </tr>
                     <tr>
                         <td>배당금</td>
                         <td>배당소득세</td>
                         <td>세전 배당금 × 원천징수세율</td>
+                        <td>국내 기본 15.4%, 해외 원천징수와 외국납부세액공제</td>
                         <td><a href="/dividend-calculator">배당 계산기로 세전·세후 배당금 계산하기</a></td>
                     </tr>
                     </tbody>
                 </table>
+            </div>
+        </section>
+
+        <section class="content-card">
+            <h2>주식 매도 세금 계산기 사용법</h2>
+            <p>먼저 국내주식인지 해외주식인지 구분한 뒤 매도금액, 매수금액, 수수료, 환율, 배당 여부를 확인합니다. 국내 상장주식은 매도금액 기준 증권거래세를 빠르게 확인하고, 해외주식은 양도차익에서 기본공제 250만원을 차감한 과세표준을 계산하는 흐름이 핵심입니다.</p>
+            <p>국내·해외 거래가 섞여 있다면 이 페이지에서 차이를 먼저 비교한 뒤 각각의 전용 계산기로 이동해 입력값을 넣는 것이 좋습니다.</p>
+        </section>
+
+        <section class="content-card">
+            <h2>국내주식 매도세금 계산 예시</h2>
+            <p>예를 들어 국내주식을 1,000만원에 매도하고 증권거래세율을 0.15%로 입력하면 예상 증권거래세는 15,000원입니다. 일반적인 소액주주 상장주식 거래라면 양도소득세보다 매도금액 기준 증권거래세 확인이 먼저입니다.</p>
+            <p><a href="/domestic-stock-tax-calculator">국내 주식 세금 계산기로 증권거래세 계산하기</a></p>
+        </section>
+
+        <section class="content-card">
+            <h2>해외주식 매도세금 계산 예시</h2>
+            <p>해외주식을 원화 환산 기준 1,000만원에 매수해 1,400만원에 매도했다면 양도차익은 400만원입니다. 기본공제 250만원을 적용하면 과세표준은 150만원이고, 양도세율 22%를 적용한 예상 세금은 33만원입니다.</p>
+            <p><a href="/overseas-stock-tax-calculator">해외주식 세금 계산기로 양도세 250만원 공제 확인하기</a></p>
+        </section>
+
+        <section class="content-card">
+            <h2>주식세금 계산기 선택 방법</h2>
+            <p>국내 상장주식 매도금액의 증권거래세를 알고 싶다면 국내 주식 세금 계산기를 사용합니다. 해외주식 매도차익, 기본공제 250만원, 환율, 수수료를 함께 반영하려면 해외주식 세금 계산기를 사용하고, 배당금의 세전·세후 현금흐름은 배당 계산기에서 따로 확인합니다.</p>
+            <div class="related-links">
+                <a href="/domestic-stock-tax-calculator">국내 주식 세금 계산기로 증권거래세 계산하기</a>
+                <a href="/overseas-stock-tax-calculator">해외주식 세금 계산기로 양도세 250만원 공제 확인하기</a>
+                <a href="/dividend-calculator">배당 계산기로 세전·세후 배당금 계산하기</a>
             </div>
         </section>
 
