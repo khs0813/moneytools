@@ -35,6 +35,9 @@ public class SeoService {
         if (page.calculator()) {
             graph.add(webApplication(page));
         }
+        if (page.key().startsWith("guide-")) {
+            graph.add(article(page));
+        }
         graph.add(breadcrumb(page));
         if (faqItems != null && !faqItems.isEmpty()) {
             graph.add(faqPage(page, faqItems));
@@ -108,6 +111,24 @@ public class SeoService {
                 "priceCurrency", "KRW"
         ));
         return app;
+    }
+
+    private Map<String, Object> article(PageInfo page) {
+        String pageUrl = publicUrlService.absoluteUrl(page.path());
+        Map<String, Object> article = new LinkedHashMap<>();
+        article.put("@type", "Article");
+        article.put("@id", pageUrl + "#article");
+        article.put("mainEntityOfPage", Map.of("@id", pageUrl + "#webpage"));
+        article.put("headline", page.title());
+        article.put("description", page.description());
+        article.put("url", pageUrl);
+        article.put("image", publicUrlService.absoluteUrl("/og-image.png"));
+        article.put("author", Map.of("@id", publicUrlService.absoluteUrl("/") + "#organization"));
+        article.put("publisher", Map.of("@id", publicUrlService.absoluteUrl("/") + "#organization"));
+        article.put("inLanguage", "ko-KR");
+        article.put("datePublished", modifiedDateTime(page));
+        article.put("dateModified", modifiedDateTime(page));
+        return article;
     }
 
     private Map<String, Object> breadcrumb(PageInfo page) {

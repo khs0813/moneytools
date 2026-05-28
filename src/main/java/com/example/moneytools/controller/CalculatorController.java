@@ -352,7 +352,14 @@ public class CalculatorController {
         request.setCapitalGainsTaxRate(22.0);
         request.setDividendTaxRate(15.4);
         OverseasStockTaxResult result = overseasStockTaxService.calculate(request);
-        return new OverseasTaxExampleRow(labelWonFull((long) buyAmount), labelWonFull((long) sellAmount), result.capitalGainKrw(), 2_500_000, result.taxableCapitalGainKrw(), result.capitalGainsTaxKrw());
+        return new OverseasTaxExampleRow(
+                labelManwon(result.buyAmountKrw()),
+                labelManwon(result.sellAmountKrw()),
+                labelManwon(result.capitalGainKrw()),
+                labelManwon(2_500_000),
+                labelManwon(result.taxableCapitalGainKrw()),
+                labelManwon(result.capitalGainsTaxKrw())
+        );
     }
 
     private List<DividendExampleRow> dividendExamples() {
@@ -402,15 +409,19 @@ public class CalculatorController {
         return String.format("%,d원", value);
     }
 
-    private String labelWonFull(long value) {
-        return String.format("%,d원", value);
+    private String labelManwon(double value) {
+        double manwon = value / 10_000.0;
+        if (Math.abs(manwon - Math.rint(manwon)) < 0.0001) {
+            return String.format("%,.0f만원", manwon);
+        }
+        return String.format("%,.1f만원", manwon);
     }
 
     public record SalaryExampleRow(String annualSalary, double grossMonthly, double netMonthly, String basis) {}
     public record MonthlySalaryExampleRow(String monthlySalary, double netMonthly, String deductions, String basis) {}
     public record LoanExampleRow(String principal, String rate, String years, String repaymentType, double monthlyPayment, double totalInterest) {}
     public record MortgageExampleRow(String housePrice, String loanAmount, String rate, String years, double monthlyPayment, double ltv) {}
-    public record OverseasTaxExampleRow(String buyAmount, String sellAmount, double capitalGain, double deduction, double taxableGain, double tax) {}
+    public record OverseasTaxExampleRow(String buyAmount, String sellAmount, String capitalGain, String deduction, String taxableGain, String tax) {}
     public record DividendExampleRow(String shares, String dividendPerShare, String period, double grossDividend, double netDividend) {}
     public record StockAverageExampleRow(String currentShares, String currentAveragePrice, String additionalShares, String additionalPrice, double newAveragePrice) {}
 

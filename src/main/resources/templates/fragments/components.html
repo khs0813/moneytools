@@ -261,12 +261,12 @@
                 <thead><tr><th>매수금액</th><th>매도금액</th><th>양도차익</th><th>기본공제</th><th>과세표준</th><th>예상 세금</th></tr></thead>
                 <tbody>
                 <tr th:each="row : ${overseasTaxExamples}">
-                    <td th:text="${row.buyAmount}">10,000,000원</td>
-                    <td th:text="${row.sellAmount}">13,000,000원</td>
-                    <td th:text="${#numbers.formatDecimal(row.capitalGain, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
-                    <td th:text="${#numbers.formatDecimal(row.deduction, 0, 'COMMA', 0, 'POINT')} + '원'">2,500,000원</td>
-                    <td th:text="${#numbers.formatDecimal(row.taxableGain, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
-                    <td th:text="${#numbers.formatDecimal(row.tax, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
+                    <td th:text="${row.buyAmount}">1,000만원</td>
+                    <td th:text="${row.sellAmount}">1,300만원</td>
+                    <td th:text="${row.capitalGain}">300만원</td>
+                    <td th:text="${row.deduction}">250만원</td>
+                    <td th:text="${row.taxableGain}">50만원</td>
+                    <td th:text="${row.tax}">11만원</td>
                 </tr>
                 </tbody>
             </table>
