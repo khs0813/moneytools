@@ -31,6 +31,7 @@ public final class SitePages {
             new PageInfo("guide-overseas-stock-tax", "/guide/overseas-stock-tax", "해외주식 양도소득세 계산 방법", "해외주식 양도소득세 계산 방법 | 250만원 기본공제와 과세표준", "해외주식 양도차익, 기본공제 250만원, 과세표준, 예상세금 계산 흐름을 설명하고 해외주식 세금 계산기로 연결합니다.", true, true, SEO_REFRESHED_AT),
             new PageInfo("guide-dividend-tax", "/guide/dividend-tax", "배당소득세 계산 방법", "배당소득세 계산 방법 | 세전·세후 배당금 계산", "세전 배당금, 세후 배당금, 배당소득세 15.4% 계산 예시를 정리하고 배당 계산기로 연결합니다.", true, true, SEO_REFRESHED_AT),
             new PageInfo("privacy", "/privacy", "개인정보처리방침", "개인정보처리방침 | 머니계산기", "머니계산기의 개인정보 처리 기준과 광고·쿠키 사용 안내를 확인하세요.", true, true, BASE_REFRESHED_AT),
+            new PageInfo("disclaimer", "/disclaimer", "면책고지", "면책고지 | 머니계산기", "머니계산기에서 제공하는 계산 결과와 정보의 이용 범위, 한계, 책임 제한 기준을 확인하세요.", true, true, BASE_REFRESHED_AT),
             new PageInfo("contact", "/contact", "문의하기", "문의하기 | 머니계산기", "머니계산기 오류 제보, 계산 기준 문의, 제휴 문의를 보낼 수 있습니다.", true, true, BASE_REFRESHED_AT)
     );
 

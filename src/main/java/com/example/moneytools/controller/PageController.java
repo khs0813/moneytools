@@ -92,6 +92,13 @@ public class PageController {
         return "redirect:/privacy";
     }
 
+    @GetMapping("/disclaimer")
+    public String disclaimer(Model model) {
+        PageInfo page = SitePages.require("disclaimer");
+        prepare(model, page, List.of());
+        return "disclaimer";
+    }
+
     @GetMapping("/contact")
     public String contact(Model model) {
         PageInfo page = SitePages.require("contact");

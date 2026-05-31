@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle}, ${pageDescription}, ${canonicalUrl})}"></head>
+<body>
+<button class="mobile-menu-button" type="button" data-menu-toggle aria-label="메뉴 열기">☰</button>
+<div class="app-shell">
+    <aside th:replace="~{fragments/nav :: sidebar(${activeMenu})}"></aside>
+    <main class="main-content">
+        <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
+        <div th:replace="~{fragments/components :: pageHero('면책고지', ${pageDescription})}"></div>
+
+        <section class="content-card policy-text">
+            <p>머니계산기에서 제공하는 계산기, 표, 설명, 예시, 안내 문구는 사용자의 이해를 돕기 위한 참고 정보입니다. 본 사이트의 정보는 법률, 세무, 회계, 노무, 금융, 투자 또는 기타 전문 자문을 대체하지 않습니다.</p>
+
+            <h2>1. 계산 결과의 성격</h2>
+            <p>계산 결과는 사용자가 입력한 값과 사이트에 구현된 산식, 기본값, 정책 기준을 바탕으로 산출한 예상값입니다. 실제 결과는 최신 법령, 고시, 회사 정책, 금융기관 심사 기준, 거래 조건, 환율, 수수료, 반올림 방식, 개인별 상황에 따라 달라질 수 있습니다.</p>
+
+            <h2>2. 공식 자료로 사용할 수 없음</h2>
+            <p>본 사이트의 계산 결과와 안내 내용은 신고, 납부, 급여 정산, 대출 심사, 투자 결정, 분쟁 대응, 법적 제출을 위한 공식 자료가 아닙니다. 실제 신고, 계약, 거래, 제출 전에는 관련 기관의 공식 안내와 전문가 검토를 확인해야 합니다.</p>
+
+            <h2>3. 금융 및 투자 관련 유의사항</h2>
+            <p>주식, 배당, 적정주가, 환율, 대출 관련 계산 결과는 특정 금융상품의 매수, 매도, 보유, 대출 실행 또는 갈아타기를 권유하는 것이 아닙니다. 투자와 금융 거래의 최종 판단과 그 결과에 대한 책임은 이용자 본인에게 있습니다.</p>
+
+            <h2>4. 세금, 급여, 노무 관련 유의사항</h2>
+            <p>세금, 실수령액, 퇴직금, 연차수당 계산은 일반적인 기준을 바탕으로 한 추정입니다. 실제 세액, 급여 공제, 퇴직금, 연차 발생 및 수당은 법령 개정, 과세관청 해석, 회사 규정, 근로계약, 개인별 공제 조건에 따라 달라질 수 있습니다.</p>
+
+            <h2>5. 정보의 정확성과 변경 가능성</h2>
+            <p>머니계산기는 정확한 정보를 제공하기 위해 노력하지만, 모든 정보의 완전성, 정확성, 최신성, 특정 목적 적합성을 보장하지 않습니다. 법령, 세율, 보험료율, 금융 조건, 서비스 운영 방식은 예고 없이 변경될 수 있습니다.</p>
+
+            <h2>6. 외부 서비스와 광고</h2>
+            <p>본 사이트에는 광고, 외부 링크, 제3자 서비스가 포함될 수 있습니다. 외부 사이트나 광고를 통해 제공되는 정보, 상품, 서비스, 개인정보 처리에 대해서는 해당 제공자의 정책과 약관이 적용됩니다.</p>
+
+            <h2>7. 책임 제한</h2>
+            <p>이용자가 본 사이트의 정보나 계산 결과를 사용해 내린 판단, 거래, 신고, 제출, 계약, 기타 행위로 인해 발생한 손해에 대해 머니계산기는 관련 법령이 허용하는 범위 내에서 책임을 지지 않습니다.</p>
+
+            <h2>8. 오류 제보</h2>
+            <p>계산 기준 오류, 표시 오류, 오래된 정보가 의심되는 경우 문의하기 페이지 또는 아래 이메일로 알려 주세요. 확인 가능한 범위에서 검토하고 필요한 경우 수정하겠습니다.</p>
+            <p><a th:href="'mailto:' + ${contactEmail}" th:text="${contactEmail}">moneyfinancecalculator@gmail.com</a></p>
+
+            <h2>9. 시행일</h2>
+            <p>이 면책고지는 2026년 5월 31일부터 적용됩니다.</p>
+        </section>
+
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
+</div>
+</body>
+</html>
