@@ -5,9 +5,6 @@ import org.springframework.util.StringUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import java.util.regex.Pattern;
 
 @ConfigurationProperties(prefix = "app")
@@ -122,19 +119,11 @@ public class AppProperties {
     public static class Adsense {
         private boolean enabled = false;
         private String clientId = "ca-pub-0000000000000000";
-        private Map<String, String> slots = new LinkedHashMap<>();
 
         public boolean isEnabled() { return enabled; }
         public void setEnabled(boolean enabled) { this.enabled = enabled; }
 
         public String getClientId() { return clientId; }
         public void setClientId(String clientId) { this.clientId = clientId; }
-
-        public Map<String, String> getSlots() { return slots; }
-        public void setSlots(Map<String, String> slots) { this.slots = slots; }
-
-        public String slot(String key) {
-            return slots.getOrDefault(key, "0000000000");
-        }
     }
 }

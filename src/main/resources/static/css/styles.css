@@ -141,8 +141,7 @@ button, input, select { font: inherit; }
 .calculator-side-note,
 .faq-section,
 .related-box,
-.trust-box,
-.ad-wrap {
+.trust-box {
     background: rgba(255, 255, 255, 0.88);
     border: 1px solid var(--line);
     border-radius: var(--radius-lg);
@@ -547,34 +546,6 @@ span.flatpickr-weekday {
 .trust-box ul,
 .calculator-standard ul { margin-bottom: 0; }
 
-.ad-wrap {
-    margin: 22px 0;
-    padding: 14px;
-    background: rgba(255,255,255,0.72);
-}
-.ad-label {
-    display: inline-flex;
-    margin-bottom: 8px;
-    color: var(--muted);
-    font-size: 0.78rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-.ad-placeholder,
-.ad-box {
-    min-height: 110px;
-    border-radius: 20px;
-    border: 1px dashed #c9d2e8;
-    background: linear-gradient(135deg, #f8fbff, #fff);
-    display: grid;
-    place-items: center;
-    text-align: center;
-    color: var(--muted);
-    padding: 18px;
-}
-.ad-placeholder strong { display: block; color: #59667c; }
-.adsbygoogle { display: block; }
-
 .faq-list { display: grid; gap: 10px; }
 details {
     background: #fbfcff;
@@ -659,7 +630,7 @@ details p { color: var(--muted); margin-bottom: 0; }
 }
 
 @media print {
-    .sidebar, .mobile-menu-button, .ad-wrap, .footer, .primary-button, .ghost-button { display: none !important; }
+    .sidebar, .mobile-menu-button, .footer, .primary-button, .ghost-button { display: none !important; }
     .app-shell { display: block; }
     .main-content { padding: 0; width: 100%; }
     .content-card, .calculator-form, .result-panel { box-shadow: none; border: 1px solid #ddd; }

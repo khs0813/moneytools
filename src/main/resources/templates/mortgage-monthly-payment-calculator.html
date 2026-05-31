@@ -8,7 +8,6 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('주담대 월납입 계산기', ${pageDescription})}"></div>
-        <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
 
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form two-column-form" th:action="@{/mortgage-monthly-payment-calculator}" th:object="${form}" method="post">
@@ -82,7 +81,6 @@
             <p>위험도는 기존 대출을 포함한 월 상환 부담률을 기준으로 25% 이하 안전, 25% 초과 40% 이하 주의, 40% 초과 위험으로 표시합니다.</p>
         </section>
         <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
-        <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
         <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>

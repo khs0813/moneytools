@@ -8,7 +8,6 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('적정주가 계산기', ${pageDescription})}"></div>
-        <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
 
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form" th:action="@{/fair-value-calculator}" th:object="${form}" method="post">
@@ -52,7 +51,6 @@
 
         <div th:replace="~{fragments/components :: disclaimer('본 계산기는 단순 참고용이며 특정 종목 매수·매도 추천이나 투자 자문이 아닙니다.')}"></div>
         <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
-        <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
         <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>

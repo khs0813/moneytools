@@ -8,7 +8,6 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('국내 주식 세금 계산기', ${pageDescription})}"></div>
-        <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
 
         <section class="calculator-layout" data-domestic-stock-tax-layout>
             <form class="calculator-form two-column-form" data-domestic-stock-tax-calculator>
@@ -67,7 +66,6 @@
             <p>매도금액 1,000만원에 증권거래세율 0.15%를 적용하면 예상 증권거래세는 15,000원입니다.</p>
         </section>
         <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
-        <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
         <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>

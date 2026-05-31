@@ -46,18 +46,6 @@ public class GlobalModelAdvice {
     @ModelAttribute("adsenseClient")
     public String adsenseClient() { return appProperties.getAdsense().getClientId(); }
 
-    @ModelAttribute("adSlotTop")
-    public String adSlotTop() { return appProperties.getAdsense().slot("top"); }
-
-    @ModelAttribute("adSlotContent")
-    public String adSlotContent() { return appProperties.getAdsense().slot("content"); }
-
-    @ModelAttribute("adSlotResult")
-    public String adSlotResult() { return appProperties.getAdsense().slot("result"); }
-
-    @ModelAttribute("adSlotSidebar")
-    public String adSlotSidebar() { return appProperties.getAdsense().slot("sidebar"); }
-
     @ModelAttribute("staticAssetVersion")
     public String staticAssetVersion() {
         return SitePages.sitemap().stream()

@@ -12,7 +12,6 @@
             <strong>간이 계산 안내</strong>
             <p>간이 계산 결과이며 실제 급여명세서와 차이가 있을 수 있음</p>
         </div>
-        <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
 
         <section class="calculator-layout" data-annual-salary-layout>
             <form class="calculator-form two-column-form" data-annual-salary-calculator>
@@ -62,7 +61,6 @@
         </section>
 
         <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
-        <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
         <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>

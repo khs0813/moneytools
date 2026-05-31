@@ -12,7 +12,6 @@
             <h1>퇴직금 계산기</h1>
             <p th:text="${pageDescription}">설명</p>
         </section>
-        <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
 
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form" th:action="@{/severance-pay-calculator}" th:object="${form}" method="post">
@@ -61,7 +60,6 @@
 
         <div th:replace="~{fragments/components :: disclaimer('퇴직금은 근로기준법상 직전 3개월 평균임금을 기본으로 하되, 그 평균임금이 통상임금보다 낮으면 통상임금을 적용합니다. 이 페이지는 2026년 기준 법령 구조를 반영해 실제 3개월 일수와 통상임금 하한을 함께 고려합니다.')}" ></div>
         <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
-        <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
         <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>

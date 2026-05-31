@@ -8,7 +8,6 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('해외주식 세금 계산기', ${pageDescription})}"></div>
-        <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
 
         <section class="calculator-layout overseas-tax-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form two-column-form" th:action="@{/overseas-stock-tax-calculator}" th:object="${form}" method="post">
@@ -76,7 +75,6 @@
 
         <div th:replace="~{fragments/components :: disclaimer('2026년 기준 해외 상장주식 양도차익은 기본공제 250만원을 차감한 과세표준에 기본적으로 22%(양도소득세 20% + 지방소득세 2%)를 적용하도록 기본값을 설정했습니다. 배당은 국내 원천징수 기준 15.4%를 기본값으로 두었지만, 연간 금융소득 2천만원 초과 또는 외국납부세액공제 반영 여부에 따라 실제 신고세액은 달라질 수 있습니다.')}" ></div>
         <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
-        <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
         <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>

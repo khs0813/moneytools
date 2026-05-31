@@ -8,7 +8,6 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('대출이자 계산기', ${pageDescription})}"></div>
-        <div th:replace="~{fragments/ads :: ad(${adSlotTop}, '상단 광고')}"></div>
 
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form" th:action="@{/loan-interest-calculator}" th:object="${form}" method="post">
@@ -80,7 +79,6 @@
             <p>원리금균등은 매월 납부액을 일정하게 맞추는 방식입니다. 원금균등은 매월 같은 원금을 갚아 시간이 갈수록 월 납부액이 줄어듭니다. 만기일시상환은 매월 이자만 내고 마지막 달에 원금을 갚습니다.</p>
         </section>
         <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
-        <div th:replace="~{fragments/ads :: ad(${adSlotResult}, '결과 하단 광고')}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
         <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>
