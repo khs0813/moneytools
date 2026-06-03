@@ -12,7 +12,12 @@
                     (activeMenu == 'exchange' ? '환율·해외거래 계산' :
                     (activeMenu == 'electricity-bill' or activeMenu == 'air-conditioner-cost' ? '전기요금·공과금 계산' :
                     (activeMenu == 'car-maintenance' or activeMenu == 'monthly-budget' ? '생활비·가계 예산 계산' :
-                    (activeMenu != null and #strings.startsWith(activeMenu, 'guide-') ? '설명형 금융 가이드' : '이용 안내'))))))))}">카테고리</p>
+                    (activeMenu == 'guide' or (activeMenu != null and #strings.startsWith(activeMenu, 'guide-')) ? '설명형 금융 가이드' :
+                    (activeMenu == 'about' ? '사이트 운영 안내' :
+                    (activeMenu == 'contact' ? '문의·오류 제보 안내' :
+                    (activeMenu == 'privacy' ? '개인정보 처리 안내' :
+                    (activeMenu == 'terms' ? '서비스 이용 정책' :
+                    (activeMenu == 'disclaimer' ? '면책·책임 범위 안내' : '이용 안내'))))))))))))}">카테고리</p>
         <h1 th:text="${title}">계산기</h1>
         <p th:text="${description}">설명</p>
     </section>
@@ -434,9 +439,22 @@
 
 <section class="calculator-side-note" th:fragment="calculatorSideNote">
     <strong>계산 결과는 참고용</strong>
-    <p class="advice-warning" th:if="${activeMenu == 'stock-average'}">본 계산 결과는 투자 권유, 종목 추천, 매수·매도 판단을 의미하지 않습니다.</p>
-    <p class="advice-warning" th:unless="${activeMenu == 'stock-average'}">본 사이트의 계산 결과는 참고용이며 법률, 세무, 투자, 노무 자문을 대체하지 않습니다.</p>
-    <p class="advice-warning" th:unless="${activeMenu == 'stock-average'}">본 계산기는 단순 참고용이며 특정 종목 매수·매도 추천이나 투자 자문이 아닙니다.</p>
+    <p class="advice-warning"
+       th:if="${activeMenu == 'stock-average' or activeMenu == 'fair-value' or activeMenu == 'dividend'}">본 계산 결과는 투자 권유, 종목 추천, 매수·매도 판단을 의미하지 않습니다.</p>
+    <p class="advice-warning"
+       th:if="${activeMenu == 'salary' or activeMenu == 'annual-salary-net' or activeMenu == 'severance' or activeMenu == 'annual-leave'}">본 계산 결과는 참고용이며 실제 급여명세서, 퇴직금 정산서, 연차수당 지급 기준과 다를 수 있습니다.</p>
+    <p class="advice-warning"
+       th:if="${activeMenu == 'loan' or activeMenu == 'loan-refinance' or activeMenu == 'mortgage'}">본 계산 결과는 참고용이며 실제 대출 한도, 금리, 상환표, 중도상환수수료와 다를 수 있습니다.</p>
+    <p class="advice-warning"
+       th:if="${activeMenu == 'stock-tax' or activeMenu == 'domestic-stock-tax' or activeMenu == 'overseas-tax'}">본 계산 결과는 참고용이며 실제 신고 세액, 증권사 원천징수, 환율 적용 방식과 다를 수 있습니다.</p>
+    <p class="advice-warning"
+       th:if="${activeMenu == 'exchange'}">본 계산 결과는 참고용이며 실제 환전 환율, 우대율, 수수료와 다를 수 있습니다.</p>
+    <p class="advice-warning"
+       th:if="${activeMenu == 'electricity-bill' or activeMenu == 'air-conditioner-cost'}">본 계산 결과는 참고용이며 실제 검침일, 누진 구간, 계절 구분, 청구서 반영 방식과 다를 수 있습니다.</p>
+    <p class="advice-warning"
+       th:if="${activeMenu == 'car-maintenance' or activeMenu == 'monthly-budget'}">본 계산 결과는 참고용이며 실제 가계 지출, 보험료, 정비비, 계절성 비용과 다를 수 있습니다.</p>
+    <p class="advice-warning"
+       th:if="${activeMenu != 'stock-average' and activeMenu != 'fair-value' and activeMenu != 'dividend' and activeMenu != 'salary' and activeMenu != 'annual-salary-net' and activeMenu != 'severance' and activeMenu != 'annual-leave' and activeMenu != 'loan' and activeMenu != 'loan-refinance' and activeMenu != 'mortgage' and activeMenu != 'stock-tax' and activeMenu != 'domestic-stock-tax' and activeMenu != 'overseas-tax' and activeMenu != 'exchange' and activeMenu != 'electricity-bill' and activeMenu != 'air-conditioner-cost' and activeMenu != 'car-maintenance' and activeMenu != 'monthly-budget'}">본 사이트의 계산 결과와 안내 내용은 참고용이며 법률, 세무, 투자, 노무 자문을 대체하지 않습니다.</p>
     <p>세금·급여·투자 판단 전에는 최신 기준과 전문가 확인이 필요합니다.</p>
     <p>입력하신 데이터는 저장되지 않습니다.</p>
 </section>
