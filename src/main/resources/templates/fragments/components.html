@@ -3,11 +3,25 @@
 <body>
 <div th:fragment="pageHero(title, description)">
     <section class="page-hero">
-        <p class="eyebrow">Finance Calculator</p>
+        <p class="eyebrow"
+           th:text="${activeMenu == 'salary' or activeMenu == 'annual-salary-net' ? '급여·실수령액 계산' :
+                    (activeMenu == 'severance' or activeMenu == 'annual-leave' ? '노무·퇴직·연차 계산' :
+                    (activeMenu == 'loan' or activeMenu == 'loan-refinance' or activeMenu == 'mortgage' ? '대출·주거 계산' :
+                    (activeMenu == 'stock-tax' or activeMenu == 'domestic-stock-tax' or activeMenu == 'overseas-tax' ? '세금·신고 참고 계산' :
+                    (activeMenu == 'dividend' or activeMenu == 'fair-value' or activeMenu == 'stock-average' ? '투자 판단 보조 계산' :
+                    (activeMenu == 'exchange' ? '환율·해외거래 계산' :
+                    (activeMenu == 'electricity-bill' or activeMenu == 'air-conditioner-cost' ? '전기요금·공과금 계산' :
+                    (activeMenu == 'car-maintenance' or activeMenu == 'monthly-budget' ? '생활비·가계 예산 계산' :
+                    (activeMenu != null and #strings.startsWith(activeMenu, 'guide-') ? '설명형 금융 가이드' : '이용 안내'))))))))}">카테고리</p>
         <h1 th:text="${title}">계산기</h1>
         <p th:text="${description}">설명</p>
     </section>
 </div>
+
+<section class="content-card empty-result-state" th:fragment="resultEmptyState(message)">
+    <h2>결과 안내</h2>
+    <p th:text="${message}">값을 입력하면 결과가 표시됩니다.</p>
+</section>
 
 <div th:fragment="breadcrumbs(page)">
     <nav class="breadcrumbs" aria-label="breadcrumb">
@@ -51,6 +65,57 @@
     <p th:text="${text}">계산 결과는 참고용입니다.</p>
 </div>
 
+<div th:fragment="officialSources(currentKey)">
+    <section class="content-card official-sources">
+        <h2>공식 참고자료</h2>
+        <p>아래 링크는 계산 기준을 다시 확인할 때 참고할 수 있는 공식 기관 페이지입니다. 실제 신고, 납부, 심사, 급여 정산 전에는 반드시 최신 공지와 원문을 확인해야 합니다.</p>
+        <ul class="source-list" th:if="${currentKey == 'salary' or currentKey == 'annual-salary-net' or currentKey == 'guide-salary-3000' or currentKey == 'guide-salary-5000' or currentKey == 'guide-salary-100m' or currentKey == 'guide-monthly-salary-300'}">
+            <li><a href="https://www.nts.go.kr" rel="noopener noreferrer" target="_blank">국세청 근로소득·원천세 안내</a></li>
+            <li><a href="https://www.nps.or.kr" rel="noopener noreferrer" target="_blank">국민연금공단 공식 홈페이지</a></li>
+            <li><a href="https://www.nhis.or.kr" rel="noopener noreferrer" target="_blank">국민건강보험공단 공식 홈페이지</a></li>
+            <li><a href="https://www.moel.go.kr" rel="noopener noreferrer" target="_blank">고용노동부 임금·근로기준 안내</a></li>
+        </ul>
+        <ul class="source-list" th:if="${currentKey == 'severance' or currentKey == 'annual-leave' or currentKey == 'guide-severance-average-wage'}">
+            <li><a href="https://www.moel.go.kr" rel="noopener noreferrer" target="_blank">고용노동부 퇴직금·연차휴가 안내</a></li>
+            <li><a href="https://www.law.go.kr" rel="noopener noreferrer" target="_blank">국가법령정보센터 근로기준법·근로자퇴직급여보장법</a></li>
+            <li><a href="https://www.ei.go.kr" rel="noopener noreferrer" target="_blank">고용보험 공식 사이트</a></li>
+        </ul>
+        <ul class="source-list" th:if="${currentKey == 'loan' or currentKey == 'loan-refinance' or currentKey == 'mortgage' or currentKey == 'guide-loan-100m-interest' or currentKey == 'guide-repayment-difference' or currentKey == 'guide-ltv-dsr'}">
+            <li><a href="https://www.fss.or.kr" rel="noopener noreferrer" target="_blank">금융감독원 금융소비자 정보</a></li>
+            <li><a href="https://fine.fss.or.kr" rel="noopener noreferrer" target="_blank">파인(FINE) 금융소비자 정보포털</a></li>
+            <li><a href="https://www.bok.or.kr" rel="noopener noreferrer" target="_blank">한국은행 기준금리·금융통계</a></li>
+        </ul>
+        <ul class="source-list" th:if="${currentKey == 'stock-tax' or currentKey == 'domestic-stock-tax' or currentKey == 'overseas-tax' or currentKey == 'guide-stock-tax' or currentKey == 'guide-overseas-stock-tax' or currentKey == 'guide-overseas-deduction'}">
+            <li><a href="https://www.nts.go.kr" rel="noopener noreferrer" target="_blank">국세청 양도소득세·금융소득 안내</a></li>
+            <li><a href="https://www.hometax.go.kr" rel="noopener noreferrer" target="_blank">홈택스 공식 홈페이지</a></li>
+            <li><a href="https://www.law.go.kr" rel="noopener noreferrer" target="_blank">국가법령정보센터 소득세법</a></li>
+        </ul>
+        <ul class="source-list" th:if="${currentKey == 'dividend' or currentKey == 'guide-dividend-tax' or currentKey == 'guide-dividend-100m'}">
+            <li><a href="https://www.nts.go.kr" rel="noopener noreferrer" target="_blank">국세청 배당소득·원천징수 안내</a></li>
+            <li><a href="https://www.hometax.go.kr" rel="noopener noreferrer" target="_blank">홈택스 금융소득 신고 안내</a></li>
+            <li><a href="https://www.fss.or.kr" rel="noopener noreferrer" target="_blank">금융감독원 투자자 유의사항</a></li>
+        </ul>
+        <ul class="source-list" th:if="${currentKey == 'exchange'}">
+            <li><a href="https://www.bok.or.kr" rel="noopener noreferrer" target="_blank">한국은행 환율·경제통계 안내</a></li>
+            <li><a href="https://www.kebhana.com" rel="noopener noreferrer" target="_blank">은행 환율 고시 예시</a></li>
+        </ul>
+        <ul class="source-list" th:if="${currentKey == 'electricity-bill' or currentKey == 'air-conditioner-cost' or currentKey == 'guide-aircon-8hours' or currentKey == 'guide-electricity-tier'}">
+            <li><a href="https://home.kepco.co.kr" rel="noopener noreferrer" target="_blank">한국전력 전기요금표·가정용 요금 안내</a></li>
+            <li><a href="https://www.energy.or.kr" rel="noopener noreferrer" target="_blank">한국에너지공단 에너지 절약 정보</a></li>
+        </ul>
+        <ul class="source-list" th:if="${currentKey == 'fair-value' or currentKey == 'stock-average' or currentKey == 'guide-per-limit'}">
+            <li><a href="https://dart.fss.or.kr" rel="noopener noreferrer" target="_blank">DART 전자공시시스템</a></li>
+            <li><a href="https://www.fss.or.kr" rel="noopener noreferrer" target="_blank">금융감독원 투자자 유의사항</a></li>
+            <li><a href="https://kind.krx.co.kr" rel="noopener noreferrer" target="_blank">한국거래소 공시 조회</a></li>
+        </ul>
+        <ul class="source-list" th:if="${currentKey == 'car-maintenance' or currentKey == 'monthly-budget' or currentKey == 'guide-car-cost' or currentKey == 'guide-budget-items'}">
+            <li><a href="https://www.kotsa.or.kr" rel="noopener noreferrer" target="_blank">한국교통안전공단 자동차 정보</a></li>
+            <li><a href="https://www.consumer.go.kr" rel="noopener noreferrer" target="_blank">소비자24 생활비·소비자 정보</a></li>
+            <li><a href="https://www.fss.or.kr" rel="noopener noreferrer" target="_blank">금융감독원 가계부채·금융소비자 정보</a></li>
+        </ul>
+    </section>
+</div>
+
 <div th:fragment="seoContent(currentKey)">
     <section class="content-card" th:if="${currentKey == 'annual-salary-net'}">
         <h2>실수령액 계산기 사용법</h2>
@@ -76,7 +141,7 @@
         <div class="table-scroll overflow-x-auto">
             <table class="data-table">
                 <caption>연봉별 예상 월 실수령액 표</caption>
-                <thead><tr><th>연봉</th><th>월 세전 급여</th><th>예상 월 실수령액</th><th>계산 기준</th></tr></thead>
+                <thead><tr><th scope="col">연봉</th><th scope="col">월 세전 급여</th><th scope="col">예상 월 실수령액</th><th scope="col">계산 기준</th></tr></thead>
                 <tbody>
                 <tr th:each="row : ${annualSalaryExamples}">
                     <td th:text="${row.annualSalary}">3,000만원</td>
@@ -165,7 +230,7 @@
         <div class="table-scroll overflow-x-auto">
             <table class="data-table">
                 <caption>월급별 예상 실수령액 표</caption>
-                <thead><tr><th>월급</th><th>예상 실수령액</th><th>주요 공제 항목</th><th>계산 기준</th></tr></thead>
+                <thead><tr><th scope="col">월급</th><th scope="col">예상 실수령액</th><th scope="col">주요 공제 항목</th><th scope="col">계산 기준</th></tr></thead>
                 <tbody>
                 <tr th:each="row : ${monthlySalaryExamples}">
                     <td th:text="${row.monthlySalary}">200만원</td>
@@ -204,7 +269,7 @@
         <div class="table-scroll overflow-x-auto">
             <table class="data-table">
                 <caption>대출금액별 월 상환액 예시</caption>
-                <thead><tr><th>대출금액</th><th>금리</th><th>기간</th><th>상환방식</th><th>예상 월 상환액</th><th>총이자</th></tr></thead>
+                <thead><tr><th scope="col">대출금액</th><th scope="col">금리</th><th scope="col">기간</th><th scope="col">상환방식</th><th scope="col">예상 월 상환액</th><th scope="col">총이자</th></tr></thead>
                 <tbody>
                 <tr th:each="row : ${loanExamples}">
                     <td th:text="${row.principal}">1,000만원</td>
@@ -225,7 +290,7 @@
         <div class="table-scroll overflow-x-auto">
             <table class="data-table">
                 <caption>주택 가격별 주담대 월 납입금 예시</caption>
-                <thead><tr><th>주택 가격</th><th>대출금액</th><th>금리</th><th>기간</th><th>예상 월 납입금</th><th>LTV</th></tr></thead>
+                <thead><tr><th scope="col">주택 가격</th><th scope="col">대출금액</th><th scope="col">금리</th><th scope="col">기간</th><th scope="col">예상 월 납입금</th><th scope="col">LTV</th></tr></thead>
                 <tbody>
                 <tr th:each="row : ${mortgageExamples}">
                     <td th:text="${row.housePrice}">3억원</td>
@@ -258,7 +323,7 @@
         <div class="table-scroll overflow-x-auto">
             <table class="data-table">
                 <caption>해외주식 양도소득세 계산 예시</caption>
-                <thead><tr><th>매수금액</th><th>매도금액</th><th>양도차익</th><th>기본공제</th><th>과세표준</th><th>예상 세금</th></tr></thead>
+                <thead><tr><th scope="col">매수금액</th><th scope="col">매도금액</th><th scope="col">양도차익</th><th scope="col">기본공제</th><th scope="col">과세표준</th><th scope="col">예상 세금</th></tr></thead>
                 <tbody>
                 <tr th:each="row : ${overseasTaxExamples}">
                     <td th:text="${row.buyAmount}">1,000만원</td>
@@ -297,7 +362,7 @@
         <div class="table-scroll overflow-x-auto">
             <table class="data-table">
                 <caption>월배당과 연배당 계산 예시</caption>
-                <thead><tr><th>보유 주식 수</th><th>주당 배당금</th><th>배당 주기</th><th>세전 배당금</th><th>세후 배당금</th></tr></thead>
+                <thead><tr><th scope="col">보유 주식 수</th><th scope="col">주당 배당금</th><th scope="col">배당 주기</th><th scope="col">세전 배당금</th><th scope="col">세후 배당금</th></tr></thead>
                 <tbody>
                 <tr th:each="row : ${dividendExamples}">
                     <td th:text="${row.shares}">100주</td>
@@ -331,7 +396,7 @@
         <div class="table-scroll overflow-x-auto">
             <table class="data-table">
                 <caption>주식 물타기 계산 예시</caption>
-                <thead><tr><th>기존 수량</th><th>기존 평균단가</th><th>추가 수량</th><th>추가 단가</th><th>새 평균단가</th></tr></thead>
+                <thead><tr><th scope="col">기존 수량</th><th scope="col">기존 평균단가</th><th scope="col">추가 수량</th><th scope="col">추가 단가</th><th scope="col">새 평균단가</th></tr></thead>
                 <tbody>
                 <tr th:each="row : ${stockAverageExamples}">
                     <td th:text="${row.currentShares}">100주</td>

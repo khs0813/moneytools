@@ -41,6 +41,7 @@
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
+            <div th:replace="~{fragments/components :: resultEmptyState('값을 입력하면 결과가 표시됩니다. 예시 연봉 구간 해설은 아래 본문과 표에서 확인할 수 있습니다.')}"></div>
             <section class="result-panel" aria-live="polite" data-result-card data-annual-salary-result-panel hidden>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
@@ -60,7 +61,8 @@
             <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
         </section>
 
-        <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
+        <div th:replace="~{fragments/longform :: calculatorContent(${activeMenu})}"></div>
+        <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
         <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>

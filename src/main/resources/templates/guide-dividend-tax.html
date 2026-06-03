@@ -21,7 +21,7 @@
             <div class="table-scroll overflow-x-auto">
                 <table class="data-table">
                     <caption>배당소득세 15.4% 계산 예시</caption>
-                    <thead><tr><th>세전 배당금</th><th>세율</th><th>배당소득세</th><th>세후 배당금</th></tr></thead>
+                    <thead><tr><th scope="col">세전 배당금</th><th scope="col">세율</th><th scope="col">배당소득세</th><th scope="col">세후 배당금</th></tr></thead>
                     <tbody>
                     <tr><td>50,000원</td><td>15.4%</td><td>7,700원</td><td>42,300원</td></tr>
                     <tr><td>100,000원</td><td>15.4%</td><td>15,400원</td><td>84,600원</td></tr>
@@ -37,7 +37,7 @@
             <div class="table-scroll overflow-x-auto">
                 <table class="data-table">
                     <caption>월배당과 분기배당 세후 금액 예시</caption>
-                    <thead><tr><th>배당 주기</th><th>보유 주식 수</th><th>주당 배당금</th><th>1회 세전 배당금</th><th>1회 세후 배당금</th><th>연 세후 배당금</th></tr></thead>
+                    <thead><tr><th scope="col">배당 주기</th><th scope="col">보유 주식 수</th><th scope="col">주당 배당금</th><th scope="col">1회 세전 배당금</th><th scope="col">1회 세후 배당금</th><th scope="col">연 세후 배당금</th></tr></thead>
                     <tbody>
                     <tr><td>월배당</td><td>100주</td><td>1,000원</td><td>100,000원</td><td>84,600원</td><td>1,015,200원</td></tr>
                     <tr><td>분기배당</td><td>100주</td><td>500원</td><td>50,000원</td><td>42,300원</td><td>169,200원</td></tr>
@@ -54,6 +54,7 @@
             <p><a href="/dividend-calculator">배당 계산기로 세전·세후 배당금 계산하기</a></p>
         </section>
 
+        <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
 
         <section class="content-card">

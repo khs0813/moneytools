@@ -15,7 +15,7 @@
             <div class="table-scroll overflow-x-auto">
                 <table class="data-table">
                     <caption>국내주식, 해외주식, 배당 세금 비교표</caption>
-                    <thead><tr><th>구분</th><th>세금 이름</th><th>계산 공식</th><th>예시</th><th>주의사항</th></tr></thead>
+                    <thead><tr><th scope="col">구분</th><th scope="col">세금 이름</th><th scope="col">계산 공식</th><th scope="col">예시</th><th scope="col">주의사항</th></tr></thead>
                     <tbody>
                     <tr><td>국내주식 매도</td><td>증권거래세</td><td>매도금액 × 증권거래세율</td><td>1,000만원 × 0.15% = 15,000원</td><td>시장·종목·거래 시점별 세율 확인</td></tr>
                     <tr><td>국내주식 조건부</td><td>양도소득세</td><td>양도차익 × 적용 세율</td><td>대주주·비상장주식 등 별도 판단</td><td>보유 지분, 거래 형태, 최신 기준 확인</td></tr>
@@ -33,7 +33,7 @@
             <div class="table-scroll overflow-x-auto">
                 <table class="data-table">
                     <caption>국내주식 매도세금 계산 예시</caption>
-                    <thead><tr><th>매도금액</th><th>예시 세율</th><th>증권거래세</th><th>계산식</th></tr></thead>
+                    <thead><tr><th scope="col">매도금액</th><th scope="col">예시 세율</th><th scope="col">증권거래세</th><th scope="col">계산식</th></tr></thead>
                     <tbody>
                     <tr><td>100만원</td><td>0.15%</td><td>1,500원</td><td>100만원 × 0.15%</td></tr>
                     <tr><td>500만원</td><td>0.15%</td><td>7,500원</td><td>500만원 × 0.15%</td></tr>
@@ -51,7 +51,7 @@
             <div class="table-scroll overflow-x-auto">
                 <table class="data-table">
                     <caption>해외주식 양도소득세 계산 예시</caption>
-                    <thead><tr><th>매수금액</th><th>매도금액</th><th>양도차익</th><th>기본공제</th><th>과세표준</th><th>예상 세금</th></tr></thead>
+                    <thead><tr><th scope="col">매수금액</th><th scope="col">매도금액</th><th scope="col">양도차익</th><th scope="col">기본공제</th><th scope="col">과세표준</th><th scope="col">예상 세금</th></tr></thead>
                     <tbody>
                     <tr><td>1,000만원</td><td>1,300만원</td><td>300만원</td><td>250만원</td><td>50만원</td><td>110,000원</td></tr>
                     <tr><td>1,000만원</td><td>1,400만원</td><td>400만원</td><td>250만원</td><td>150만원</td><td>330,000원</td></tr>
@@ -68,7 +68,7 @@
             <div class="table-scroll overflow-x-auto">
                 <table class="data-table">
                     <caption>배당소득세 계산 예시</caption>
-                    <thead><tr><th>세전 배당금</th><th>원천징수세율</th><th>배당소득세</th><th>세후 배당금</th></tr></thead>
+                    <thead><tr><th scope="col">세전 배당금</th><th scope="col">원천징수세율</th><th scope="col">배당소득세</th><th scope="col">세후 배당금</th></tr></thead>
                     <tbody>
                     <tr><td>50,000원</td><td>15.4%</td><td>7,700원</td><td>42,300원</td></tr>
                     <tr><td>100,000원</td><td>15.4%</td><td>15,400원</td><td>84,600원</td></tr>
@@ -79,6 +79,7 @@
             <p>예를 들어 세전 배당금 50,000원, 세율 15.4%, 배당소득세 7,700원, 세후 배당금 42,300원은 각각 다른 표 셀에 표시됩니다.</p>
         </section>
 
+        <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
 
         <section class="content-card">

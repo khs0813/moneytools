@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle}, ${pageDescription}, ${canonicalUrl})}"></head>
+<body>
+<button class="mobile-menu-button" type="button" data-menu-toggle aria-label="메뉴 열기">☰</button>
+<div class="app-shell">
+    <aside th:replace="~{fragments/nav :: sidebar(${activeMenu})}"></aside>
+    <main class="main-content">
+        <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
+        <div th:replace="~{fragments/components :: pageHero('전기요금 계산기', ${pageDescription})}"></div>
+
+        <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
+            <form class="calculator-form" th:action="@{/electricity-bill-calculator}" th:object="${form}" method="post">
+                <h2>입력값</h2>
+                <label>월 사용량(kWh)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="usageKwh" name="usageKwh" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'usageKwh')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('usageKwh')}" th:errors="*{usageKwh}"></span>
+                </label>
+                <label>계절 구분
+                    <select th:field="*{season}">
+                        <option value="NORMAL">일반</option>
+                        <option value="SUMMER">여름</option>
+                        <option value="WINTER">겨울</option>
+                    </select>
+                    <span class="field-error" th:if="${#fields.hasErrors('season')}" th:errors="*{season}"></span>
+                </label>
+                <button class="primary-button" type="submit">계산하기</button>
+            </form>
+            <div th:if="${result == null}" th:replace="~{fragments/components :: resultEmptyState('값을 입력하면 결과가 표시됩니다. 예시 계산과 해석은 아래 본문에서 먼저 확인할 수 있습니다.')}"></div>
+            <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
+                <h2>계산 결과</h2>
+                <div class="result-grid">
+                    <div><span>기본요금</span><strong th:text="${#numbers.formatDecimal(result.baseFee, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>전력량요금</span><strong th:text="${#numbers.formatDecimal(result.energyCharge, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>기후환경요금</span><strong th:text="${#numbers.formatDecimal(result.climateCharge, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>연료비조정액</span><strong th:text="${#numbers.formatDecimal(result.fuelAdjustment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>부가세</span><strong th:text="${#numbers.formatDecimal(result.vat, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>전력산업기반기금</span><strong th:text="${#numbers.formatDecimal(result.industryFund, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>예상 총 전기요금</span><strong th:text="${#numbers.formatDecimal(result.totalBill, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>평균 단가</span><strong th:text="${#numbers.formatDecimal(result.averageUnitPrice, 0, 'COMMA', 1, 'POINT')} + '원/kWh'">0원/kWh</strong></div>
+                </div>
+                <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
+            </section>
+            <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
+        </section>
+
+        <div th:replace="~{fragments/components :: disclaimer('가정용 누진요금 구조를 단순화한 참고 계산입니다. 실제 전기요금은 계약 종류, 검침일, 할인 제도, 정책 변경에 따라 달라질 수 있습니다. 공식 청구 전에는 반드시 한전 또는 계약 사업자의 고지서를 확인하시기 바랍니다.')}"></div>
+        <div th:replace="~{fragments/longform :: calculatorContent(${activeMenu})}"></div>
+        <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
+        <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
+        <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
+</div>
+</body>
+</html>

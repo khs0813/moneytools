@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle}, ${pageDescription}, ${canonicalUrl})}"></head>
+<body>
+<button class="mobile-menu-button" type="button" data-menu-toggle aria-label="메뉴 열기">☰</button>
+<div class="app-shell">
+    <aside th:replace="~{fragments/nav :: sidebar(${activeMenu})}"></aside>
+    <main class="main-content">
+        <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
+        <div th:replace="~{fragments/components :: pageHero('월 생활비 계산기', ${pageDescription})}"></div>
+
+        <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
+            <form class="calculator-form two-column-form" th:action="@{/monthly-budget-calculator}" th:object="${form}" method="post">
+                <h2>입력값</h2>
+                <label>월 소득
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="monthlyIncome" name="monthlyIncome" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'monthlyIncome')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('monthlyIncome')}" th:errors="*{monthlyIncome}"></span>
+                </label>
+                <label>주거비
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="housing" name="housing" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'housing')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('housing')}" th:errors="*{housing}"></span>
+                </label>
+                <label>식비
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="food" name="food" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'food')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('food')}" th:errors="*{food}"></span>
+                </label>
+                <label>교통비
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="transport" name="transport" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'transport')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('transport')}" th:errors="*{transport}"></span>
+                </label>
+                <label>통신비
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="communication" name="communication" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'communication')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('communication')}" th:errors="*{communication}"></span>
+                </label>
+                <label>보험료
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="insurance" name="insurance" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'insurance')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('insurance')}" th:errors="*{insurance}"></span>
+                </label>
+                <label>교육비
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="education" name="education" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'education')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('education')}" th:errors="*{education}"></span>
+                </label>
+                <label>구독비
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="subscriptions" name="subscriptions" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'subscriptions')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('subscriptions')}" th:errors="*{subscriptions}"></span>
+                </label>
+                <label>여가비
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="leisure" name="leisure" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'leisure')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('leisure')}" th:errors="*{leisure}"></span>
+                </label>
+                <label>저축 목표
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="savingsGoal" name="savingsGoal" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'savingsGoal')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('savingsGoal')}" th:errors="*{savingsGoal}"></span>
+                </label>
+                <label>기타 지출
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="other" name="other" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'other')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('other')}" th:errors="*{other}"></span>
+                </label>
+                <button class="primary-button" type="submit">계산하기</button>
+            </form>
+            <div th:if="${result == null}" th:replace="~{fragments/components :: resultEmptyState('값을 입력하면 결과가 표시됩니다. 예시 계산과 해석은 아래 본문에서 먼저 확인할 수 있습니다.')}"></div>
+            <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
+                <h2>계산 결과</h2>
+                <div class="result-grid">
+                    <div><span>월 고정비</span><strong th:text="${#numbers.formatDecimal(result.fixedExpenses, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>월 변동비</span><strong th:text="${#numbers.formatDecimal(result.variableExpenses, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>월 총지출</span><strong th:text="${#numbers.formatDecimal(result.totalExpenses, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>지출 후 잔액</span><strong th:text="${#numbers.formatDecimal(result.remainingAfterExpenses, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>저축 목표 반영 후 잔액</span><strong th:text="${#numbers.formatDecimal(result.remainingAfterSavingsGoal, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>소득 대비 지출 비율</span><strong th:text="${#numbers.formatDecimal(result.expenseRatio, 0, 'COMMA', 1, 'POINT')} + '%'">0%</strong></div>
+                </div>
+                <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
+            </section>
+            <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
+        </section>
+
+        <div th:replace="~{fragments/components :: disclaimer('월 소득과 주요 지출 항목을 단순 합산한 예산 참고값입니다. 비정기 의료비, 경조사, 여행, 큰 수리비 같은 예외 비용은 별도로 준비해야 합니다.')}"></div>
+        <div th:replace="~{fragments/longform :: calculatorContent(${activeMenu})}"></div>
+        <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
+        <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
+        <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
+</div>
+</body>
+</html>

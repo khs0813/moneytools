@@ -21,7 +21,7 @@
             <div class="table-scroll overflow-x-auto">
                 <table class="data-table">
                     <caption>해외주식 기본공제 250만원 적용 예시</caption>
-                    <thead><tr><th>연간 양도차익</th><th>기본공제</th><th>과세표준</th><th>양도세율</th><th>예상 양도세</th></tr></thead>
+                    <thead><tr><th scope="col">연간 양도차익</th><th scope="col">기본공제</th><th scope="col">과세표준</th><th scope="col">양도세율</th><th scope="col">예상 양도세</th></tr></thead>
                     <tbody>
                     <tr><td>200만원</td><td>250만원</td><td>0만원</td><td>22%</td><td>0만원</td></tr>
                     <tr><td>500만원</td><td>250만원</td><td>250만원</td><td>22%</td><td>55만원</td></tr>
@@ -38,7 +38,7 @@
             <div class="table-scroll overflow-x-auto">
                 <table class="data-table">
                     <caption>해외주식 환율 반영 양도세 계산 예시</caption>
-                    <thead><tr><th>매수 원화환산</th><th>매도 원화환산</th><th>수수료</th><th>양도차익</th><th>기본공제</th><th>예상 세금</th></tr></thead>
+                    <thead><tr><th scope="col">매수 원화환산</th><th scope="col">매도 원화환산</th><th scope="col">수수료</th><th scope="col">양도차익</th><th scope="col">기본공제</th><th scope="col">예상 세금</th></tr></thead>
                     <tbody>
                     <tr><td>1,000만원</td><td>1,300만원</td><td>0만원</td><td>300만원</td><td>250만원</td><td>11만원</td></tr>
                     <tr><td>2,000만원</td><td>3,000만원</td><td>10만원</td><td>990만원</td><td>250만원</td><td>162.8만원</td></tr>
@@ -54,6 +54,7 @@
             <p><a href="/overseas-stock-tax-calculator">해외주식 세금 계산기로 양도세 250만원 공제 확인하기</a></p>
         </section>
 
+        <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
 
         <section class="content-card">

@@ -40,6 +40,7 @@
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
+            <div th:if="${result == null}" th:replace="~{fragments/components :: resultEmptyState('값을 입력하면 결과가 표시됩니다. 예시 계산과 해석은 아래 본문에서 먼저 확인할 수 있습니다.')}"></div>
             <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
@@ -60,7 +61,8 @@
         </section>
 
         <div th:replace="~{fragments/components :: disclaimer('이 페이지에는 2026년 기준 국민연금 4.75%, 건강보험 3.595%, 장기요양보험 0.4724%, 고용보험 0.9%와 2026-03-01 적용 간이세액표 개념을 반영한 추정 로직을 적용했습니다. 8세 이상 20세 이하 자녀 수에 따른 월 원천징수세액 차감도 함께 반영합니다. 산재보험은 근로자 공제가 아니므로 실수령액에서 제외했습니다.')}" ></div>
-        <div th:replace="~{fragments/components :: seoContent(${activeMenu})}"></div>
+        <div th:replace="~{fragments/longform :: calculatorContent(${activeMenu})}"></div>
+        <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
         <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>

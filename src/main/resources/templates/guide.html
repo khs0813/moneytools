@@ -28,6 +28,21 @@
 <!--                <li>Google Search Console, Naver Search Advisor 인증 메타 태그</li>-->
 <!--            </ul>-->
         </section>
+        <section class="content-card">
+            <h2>정보성 가이드 모음</h2>
+            <p>계산기만으로 판단하기 어려운 주제는 가이드 글로 따로 정리했습니다. 각 글은 실제 계산 예시, 자주 하는 실수, 관련 계산기 링크를 포함해 계산 결과를 해석하는 데 도움이 되도록 구성했습니다.</p>
+            <div class="calculator-grid guide-grid">
+                <a class="calculator-card" th:each="guidePage : ${guidePages}" th:href="${guidePage.path}">
+                    <span class="card-badge">가이드</span>
+                    <h3 th:text="${guidePage.label}">가이드</h3>
+                    <p th:text="${guidePage.description}">설명</p>
+                </a>
+            </div>
+        </section>
+        <section class="content-card">
+            <h2>참고용 계산 결과 안내</h2>
+            <p>본 사이트의 계산 결과는 사용자가 입력한 값을 기준으로 산출한 참고용 정보이며, 실제 세금, 대출, 금융상품, 급여, 요금과 다를 수 있습니다. 중요한 의사결정 전에는 금융기관, 세무사, 노무사 등 전문가 또는 공식 기관을 통해 확인하시기 바랍니다.</p>
+        </section>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>
     </main>

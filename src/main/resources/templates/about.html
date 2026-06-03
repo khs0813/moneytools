@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle}, ${pageDescription}, ${canonicalUrl})}"></head>
+<body>
+<button class="mobile-menu-button" type="button" data-menu-toggle aria-label="메뉴 열기">☰</button>
+<div class="app-shell">
+    <aside th:replace="~{fragments/nav :: sidebar(${activeMenu})}"></aside>
+    <main class="main-content">
+        <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
+        <div th:replace="~{fragments/components :: pageHero('사이트 소개', ${pageDescription})}"></div>
+        <section class="content-card policy-text prose-block">
+            <h2>머니계산기가 하는 일</h2>
+            <p>머니계산기는 급여, 대출, 세금, 생활비, 공과금처럼 실생활에서 자주 필요한 계산을 빠르게 확인할 수 있도록 만든 정보형 계산기 사이트입니다. 단순 입력폼과 숫자 결과만 보여주는 얇은 페이지가 아니라, 각 계산기의 계산 공식, 해석 방법, 실제 예시, 자주 하는 실수, 관련 가이드를 함께 제공하는 것을 편집 원칙으로 삼고 있습니다.</p>
+            <h2>운영 목적</h2>
+            <p>사용자가 검색을 통해 들어왔을 때 바로 숫자를 확인하고 끝나는 것이 아니라, 왜 그 숫자가 나왔는지 이해하고 다음 의사결정까지 이어지도록 돕는 것이 목적입니다. 예를 들어 실수령액을 봤다면 생활비 계산기로 이어지고, 대출이자를 봤다면 상환 방식 차이나 갈아타기 판단까지 연결되는 구조를 지향합니다.</p>
+            <h2>콘텐츠 작성 원칙</h2>
+            <p>첫째, 계산 결과는 참고용임을 명확히 표시합니다. 둘째, 세금·급여·대출·공과금처럼 실제 청구나 신고와 차이가 날 수 있는 분야는 공식 기관 또는 전문가 확인 필요성을 함께 안내합니다. 셋째, title, meta description, canonical, FAQ 구조화 데이터, 내부 링크를 각 페이지에 개별 적용해 검색엔진과 사용자가 페이지 목적을 명확히 이해할 수 있도록 구성합니다.</p>
+            <h2>업데이트 기준</h2>
+            <p>보험료율, 세율, 공제 기준, 법령 구조, 공과금 체계가 바뀌면 관련 계산기와 가이드를 함께 점검합니다. 모든 기준을 실시간으로 보장하지는 않지만, 큰 구조 변경이 있을 때는 페이지 설명과 면책 문구를 함께 보강해 사용자가 오래된 기준을 그대로 믿지 않도록 관리합니다.</p>
+            <h2>광고와 사용자 경험</h2>
+            <p>광고가 계산 버튼처럼 보이거나 본문 흐름을 방해하지 않도록 콘텐츠와 구분되는 위치와 스타일을 유지하는 것을 원칙으로 합니다. 빈 광고 박스, 과도한 팝업, 자동 리디렉션, 레이아웃 깨짐처럼 승인과 사용자 경험에 불리한 요소는 지양합니다.</p>
+            <h2>문의와 수정 제안</h2>
+            <p>오류 제보, 계산 기준 수정 제안, 오래된 정보 신고는 <a th:href="'mailto:' + ${contactEmail}" th:text="${contactEmail}">moneyfinancecalculator@gmail.com</a>로 받을 수 있습니다. 계산기 이름, 입력값, 예상 결과와 실제 결과 차이를 함께 보내주면 확인이 더 빠릅니다.</p>
+        </section>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
+</div>
+</body>
+</html>
