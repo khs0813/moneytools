@@ -12,12 +12,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.Locale;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class SecurityHeadersFilter extends OncePerRequestFilter {
     public static final String CSP_NONCE_ATTRIBUTE = "cspNonce";
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+    private static final Locale DEFAULT_SITE_LOCALE = Locale.KOREA;
 
     private static final String CONTENT_SECURITY_POLICY_TEMPLATE = String.join("; ",
             "default-src 'self'",
@@ -38,6 +40,8 @@ public class SecurityHeadersFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String nonce = generateNonce();
         request.setAttribute(CSP_NONCE_ATTRIBUTE, nonce);
+        response.setLocale(DEFAULT_SITE_LOCALE);
+        response.setHeader("Content-Language", "ko-KR");
         response.setHeader("Content-Security-Policy", CONTENT_SECURITY_POLICY_TEMPLATE.formatted(nonce));
         response.setHeader("X-Content-Type-Options", "nosniff");
         response.setHeader("X-Frame-Options", "DENY");
