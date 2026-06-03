@@ -3,21 +3,32 @@
 <body>
 <div th:fragment="pageHero(title, description)">
     <section class="page-hero">
-        <p class="eyebrow"
-           th:text="${activeMenu == 'salary' or activeMenu == 'annual-salary-net' ? '급여·실수령액 계산' :
-                    (activeMenu == 'severance' or activeMenu == 'annual-leave' ? '노무·퇴직·연차 계산' :
-                    (activeMenu == 'loan' or activeMenu == 'loan-refinance' or activeMenu == 'mortgage' ? '대출·주거 계산' :
-                    (activeMenu == 'stock-tax' or activeMenu == 'domestic-stock-tax' or activeMenu == 'overseas-tax' ? '세금·신고 참고 계산' :
-                    (activeMenu == 'dividend' or activeMenu == 'fair-value' or activeMenu == 'stock-average' ? '투자 판단 보조 계산' :
-                    (activeMenu == 'exchange' ? '환율·해외거래 계산' :
-                    (activeMenu == 'electricity-bill' or activeMenu == 'air-conditioner-cost' ? '전기요금·공과금 계산' :
-                    (activeMenu == 'car-maintenance' or activeMenu == 'monthly-budget' ? '생활비·가계 예산 계산' :
-                    (activeMenu == 'guide' or (activeMenu != null and #strings.startsWith(activeMenu, 'guide-')) ? '설명형 금융 가이드' :
-                    (activeMenu == 'about' ? '사이트 운영 안내' :
-                    (activeMenu == 'contact' ? '문의·오류 제보 안내' :
-                    (activeMenu == 'privacy' ? '개인정보 처리 안내' :
-                    (activeMenu == 'terms' ? '서비스 이용 정책' :
-                    (activeMenu == 'disclaimer' ? '면책·책임 범위 안내' : '이용 안내'))))))))))))}">카테고리</p>
+        <p class="eyebrow" th:if="${activeMenu == 'salary' or activeMenu == 'annual-salary-net'}">급여·실수령액 계산</p>
+        <p class="eyebrow" th:if="${activeMenu == 'severance' or activeMenu == 'annual-leave'}">노무·퇴직·연차 계산</p>
+        <p class="eyebrow" th:if="${activeMenu == 'loan' or activeMenu == 'loan-refinance' or activeMenu == 'mortgage'}">대출·주거 계산</p>
+        <p class="eyebrow" th:if="${activeMenu == 'stock-tax' or activeMenu == 'domestic-stock-tax' or activeMenu == 'overseas-tax'}">세금·신고 참고 계산</p>
+        <p class="eyebrow" th:if="${activeMenu == 'dividend' or activeMenu == 'fair-value' or activeMenu == 'stock-average'}">투자 판단 보조 계산</p>
+        <p class="eyebrow" th:if="${activeMenu == 'exchange'}">환율·해외거래 계산</p>
+        <p class="eyebrow" th:if="${activeMenu == 'electricity-bill' or activeMenu == 'air-conditioner-cost'}">전기요금·공과금 계산</p>
+        <p class="eyebrow" th:if="${activeMenu == 'car-maintenance' or activeMenu == 'monthly-budget'}">생활비·가계 예산 계산</p>
+        <p class="eyebrow" th:if="${activeMenu == 'guide' or (activeMenu != null and #strings.startsWith(activeMenu, 'guide-'))}">설명형 금융 가이드</p>
+        <p class="eyebrow" th:if="${activeMenu == 'about'}">사이트 운영 안내</p>
+        <p class="eyebrow" th:if="${activeMenu == 'contact'}">문의·오류 제보 안내</p>
+        <p class="eyebrow" th:if="${activeMenu == 'privacy'}">개인정보 처리 안내</p>
+        <p class="eyebrow" th:if="${activeMenu == 'terms'}">서비스 이용 정책</p>
+        <p class="eyebrow" th:if="${activeMenu == 'disclaimer'}">면책·책임 범위 안내</p>
+        <p class="eyebrow" th:if="${activeMenu == null or (
+            activeMenu != 'salary' and activeMenu != 'annual-salary-net' and
+            activeMenu != 'severance' and activeMenu != 'annual-leave' and
+            activeMenu != 'loan' and activeMenu != 'loan-refinance' and activeMenu != 'mortgage' and
+            activeMenu != 'stock-tax' and activeMenu != 'domestic-stock-tax' and activeMenu != 'overseas-tax' and
+            activeMenu != 'dividend' and activeMenu != 'fair-value' and activeMenu != 'stock-average' and
+            activeMenu != 'exchange' and
+            activeMenu != 'electricity-bill' and activeMenu != 'air-conditioner-cost' and
+            activeMenu != 'car-maintenance' and activeMenu != 'monthly-budget' and
+            activeMenu != 'guide' and !(#strings.startsWith(activeMenu, 'guide-')) and
+            activeMenu != 'about' and activeMenu != 'contact' and activeMenu != 'privacy' and
+            activeMenu != 'terms' and activeMenu != 'disclaimer')}">이용 안내</p>
         <h1 th:text="${title}">계산기</h1>
         <p th:text="${description}">설명</p>
     </section>
@@ -53,14 +64,7 @@
             <a th:each="menu : ${menus}"
                th:if="${menu.key != currentKey and menu.key != 'home' and menu.key != 'guide' and menu.key != 'privacy' and menu.key != 'contact'}"
                th:href="${menu.path}"
-               th:text="${menu.key == 'annual-salary-net' ? '2026 연봉 실수령액 계산기로 세후 월급 확인하기' :
-                    (menu.key == 'loan-refinance' ? '대출 갈아타기 계산기로 이자 절감액 비교하기' :
-                    (menu.key == 'mortgage' ? '주담대 월납입 계산기로 LTV와 상환 부담률 확인하기' :
-                    (menu.key == 'stock-tax' ? '주식 세금 계산기로 국내·해외주식 매도세금 비교하기' :
-                    (menu.key == 'domestic-stock-tax' ? '국내 주식 세금 계산기로 증권거래세 계산하기' :
-                    (menu.key == 'overseas-tax' ? '해외주식 세금 계산기로 양도세 250만원 공제 확인하기' :
-                    (menu.key == 'dividend' ? '배당 계산기로 세전·세후 배당금 계산하기' :
-                    (menu.key == 'stock-average' ? '물타기 계산기로 주식 평균단가 확인하기' : menu.label)))))))}">관련 계산기</a>
+               th:text="${menu.label + ' 바로가기'}">관련 계산기</a>
         </div>
     </section>
 </div>
