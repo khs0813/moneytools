@@ -199,8 +199,10 @@ public class PageController {
     }
 
     @GetMapping("/privacy")
-    public String privacyPolicyRedirect() {
-        return "redirect:/privacy-policy";
+    public String privacyAlias(Model model) {
+        PageInfo page = SitePages.require("privacy");
+        prepare(model, page, List.of());
+        return "privacy-policy";
     }
 
     @GetMapping("/about")
