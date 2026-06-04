@@ -8,6 +8,7 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('자동차 유지비 계산기', ${pageDescription})}"></div>
+        <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
 
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form two-column-form" th:action="@{/car-maintenance-calculator}" th:object="${form}" method="post">

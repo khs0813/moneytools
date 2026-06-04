@@ -50,10 +50,10 @@ public final class SitePages {
             new PageInfo("guide-budget-items", "/guide/monthly-budget-items", "생활비 예산을 계산할 때 꼭 봐야 할 항목", "생활비 예산을 계산할 때 꼭 봐야 할 항목 | 고정비·변동비 체크리스트", "생활비 예산표를 만들 때 빠뜨리기 쉬운 고정비와 변동비 항목, 저축 목표 반영 방법을 정리합니다.", false, true, SEO_REFRESHED_AT),
             new PageInfo("guide-per-limit", "/guide/per-fair-value-limit", "PER 적정주가 계산의 한계", "PER 적정주가 계산의 한계 | 적정주가 계산기 해석법", "PER 방식 적정주가 계산이 왜 단순 참고용인지, 어떤 한계와 왜곡이 있는지 설명합니다.", false, true, SEO_REFRESHED_AT),
             new PageInfo("privacy", "/privacy-policy", "개인정보처리방침", "개인정보처리방침 | 머니계산기", "머니계산기의 개인정보 처리 기준과 광고·쿠키 사용 안내를 확인하세요.", true, true, SEO_REFRESHED_AT),
-            new PageInfo("about", "/about", "사이트 소개", "사이트 소개 | 머니계산기 운영 목적과 편집 원칙", "머니계산기가 어떤 기준으로 계산기와 가이드를 운영하는지, 업데이트 원칙과 편집 기준을 확인하세요.", false, true, SEO_REFRESHED_AT),
+            new PageInfo("about", "/about", "사이트 소개", "사이트 소개 | 머니계산기 운영 목적과 편집 원칙", "머니계산기가 어떤 기준으로 계산기와 가이드를 운영하는지, 업데이트 원칙과 편집 기준을 확인하세요.", false, false, SEO_REFRESHED_AT),
             new PageInfo("terms", "/terms", "이용약관", "이용약관 | 머니계산기 서비스 이용 조건", "머니계산기 계산기와 정보성 콘텐츠의 이용 조건, 책임 범위, 금지 행위를 확인하세요.", false, true, SEO_REFRESHED_AT),
             new PageInfo("disclaimer", "/disclaimer", "면책고지", "면책고지 | 머니계산기", "머니계산기에서 제공하는 계산 결과와 정보의 이용 범위, 한계, 책임 제한 기준을 확인하세요.", true, true, BASE_REFRESHED_AT),
-            new PageInfo("contact", "/contact", "문의하기", "문의하기 | 머니계산기", "머니계산기 오류 제보, 계산 기준 문의, 제휴 문의를 보낼 수 있습니다.", true, true, SEO_REFRESHED_AT)
+            new PageInfo("contact", "/contact", "문의하기", "문의하기 | 머니계산기", "머니계산기 오류 제보, 계산 기준 문의, 제휴 문의를 보낼 수 있습니다.", true, false, SEO_REFRESHED_AT)
     );
 
     public static Optional<PageInfo> findByKey(String key) {

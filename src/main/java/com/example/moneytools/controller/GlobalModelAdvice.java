@@ -46,6 +46,17 @@ public class GlobalModelAdvice {
     @ModelAttribute("adsenseClient")
     public String adsenseClient() { return appProperties.getAdsense().getClientId(); }
 
+    @ModelAttribute("adsAllowedOnPage")
+    public boolean adsAllowedOnPage(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        return uri != null
+                && !uri.equals("/privacy")
+                && !uri.equals("/privacy-policy")
+                && !uri.equals("/terms")
+                && !uri.equals("/disclaimer")
+                && !uri.equals("/contact");
+    }
+
     @ModelAttribute("staticAssetVersion")
     public String staticAssetVersion() {
         return SitePages.sitemap().stream()

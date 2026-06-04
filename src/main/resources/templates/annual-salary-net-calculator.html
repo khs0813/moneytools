@@ -8,6 +8,7 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('연봉 실수령액 계산기', ${pageDescription})}"></div>
+        <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
         <div class="notice-box salary-estimate-notice">
             <strong>간이 계산 안내</strong>
             <p>간이 계산 결과이며 실제 급여명세서와 차이가 있을 수 있음</p>

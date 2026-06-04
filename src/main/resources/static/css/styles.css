@@ -561,6 +561,16 @@ span.flatpickr-weekday {
 }
 .notice-box p { margin: 6px 0 0; color: #6f3b25; }
 .notice-box strong { color: #813b1d; }
+.calculation-basis-box ul {
+    margin: 10px 0 0;
+    padding-left: 20px;
+}
+.calculation-basis-box li + li {
+    margin-top: 8px;
+}
+.calculation-basis-box li {
+    color: #6f3b25;
+}
 .empty-result-state {
     background: linear-gradient(135deg, #fffdf5, #f8fbff);
     border-style: dashed;

@@ -12,6 +12,7 @@
             <h1>퇴직금 계산기</h1>
             <p th:text="${pageDescription}">설명</p>
         </section>
+        <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
 
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form" th:action="@{/severance-pay-calculator}" th:object="${form}" method="post">

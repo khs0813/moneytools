@@ -8,6 +8,7 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('주식 세금 계산기', ${pageDescription})}"></div>
+        <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
 
         <section class="content-card">
             <h2>국내·해외주식 매도세금 계산 허브</h2>

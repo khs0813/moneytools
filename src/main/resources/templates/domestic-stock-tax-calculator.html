@@ -8,6 +8,7 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('국내 주식 세금 계산기', ${pageDescription})}"></div>
+        <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
 
         <section class="calculator-layout" data-domestic-stock-tax-layout>
             <form class="calculator-form two-column-form" data-domestic-stock-tax-calculator>
