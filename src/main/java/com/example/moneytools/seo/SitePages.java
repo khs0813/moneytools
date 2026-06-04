@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 public final class SitePages {
-    private static final LocalDate BASE_REFRESHED_AT = LocalDate.of(2026, 6, 3);
-    private static final LocalDate SEO_REFRESHED_AT = LocalDate.of(2026, 6, 3);
+    private static final LocalDate BASE_REFRESHED_AT = LocalDate.of(2026, 6, 4);
+    private static final LocalDate SEO_REFRESHED_AT = LocalDate.of(2026, 6, 4);
 
     private SitePages() {}
 
