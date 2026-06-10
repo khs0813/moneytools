@@ -48,6 +48,10 @@ public class InputFieldValueFormatter {
         }
 
         HttpServletRequest request = servletRequestAttributes.getRequest();
+        if (!"POST".equalsIgnoreCase(request.getMethod())) {
+            return null;
+        }
+
         String[] values = request.getParameterValues(fieldName);
         if (values == null || values.length == 0) {
             return null;

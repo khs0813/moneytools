@@ -51,7 +51,7 @@
             <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
         </section>
 
-        <div th:replace="~{fragments/components :: disclaimer('본 계산기는 단순 참고용이며 특정 종목 매수·매도 추천이나 투자 자문이 아닙니다.')}"></div>
+        <div th:replace="~{fragments/components :: disclaimer('본 계산기는 사용자가 입력한 EPS, PER, 성장률, 할인율 가정에 따른 참고 계산이며 특정 종목의 매수·매도·보유 추천이나 투자 자문이 아닙니다.')}"></div>
         <div th:replace="~{fragments/longform :: calculatorContent(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>

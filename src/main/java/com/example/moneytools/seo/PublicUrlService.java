@@ -37,6 +37,9 @@ public class PublicUrlService {
             if (!isTrustedRequestBaseUrl(requestBaseUrl)) {
                 return CANONICAL_BASE_URL;
             }
+            if (isImplicitLocalhostRequest(requestBaseUrl)) {
+                return CANONICAL_BASE_URL;
+            }
             if (requestBaseUrl.endsWith("/")) {
                 return requestBaseUrl.substring(0, requestBaseUrl.length() - 1);
             }
@@ -60,6 +63,17 @@ public class PublicUrlService {
                     && TRUSTED_REQUEST_HOSTS.contains(host.toLowerCase());
         } catch (URISyntaxException ex) {
             return false;
+        }
+    }
+
+    private boolean isImplicitLocalhostRequest(String requestBaseUrl) {
+        try {
+            URI uri = new URI(requestBaseUrl);
+            String host = uri.getHost();
+            return ("localhost".equalsIgnoreCase(host) || "127.0.0.1".equals(host) || "::1".equals(host))
+                    && uri.getPort() == -1;
+        } catch (URISyntaxException ex) {
+            return true;
         }
     }
 }

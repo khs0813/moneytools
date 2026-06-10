@@ -15,7 +15,7 @@
     <artifactId>moneytools</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>moneytools</name>
-    <description>Spring Boot + Thymeleaf finance calculator website optimized for AdSense and technical SEO</description>
+    <description>Spring Boot와 Thymeleaf로 구현한 머니계산기 금융·생활비 계산기 웹사이트</description>
 
     <properties>
         <java.version>17</java.version>

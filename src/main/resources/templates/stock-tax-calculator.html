@@ -81,7 +81,7 @@
             </div>
         </section>
 
-        <div th:replace="~{fragments/components :: disclaimer('주식 세금은 계좌 유형, 투자자 지위, 종목, 손익통산, 신고 방식에 따라 달라집니다. 계산 결과는 참고용이며 실제 신고 전 최신 기준을 확인해야 합니다.')}" ></div>
+        <div th:replace="~{fragments/components :: disclaimer('주식 세금은 계좌 유형, 투자자 지위, 종목, 손익통산, 신고 방식에 따라 달라집니다. 계산 결과는 사용자가 입력한 가정에 따른 참고용이며 특정 종목의 매수·매도·보유 추천이 아닙니다. 실제 신고 전 최신 기준을 확인해야 합니다.')}" ></div>
         <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
         <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
