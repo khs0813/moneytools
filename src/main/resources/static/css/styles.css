@@ -639,6 +639,7 @@ details p { color: var(--muted); margin-bottom: 0; }
     background: #f8fbff;
     color: #344054;
     font-weight: 700;
+    text-align: center;
     margin-bottom: 14px;
 }
 .coupang-partners-banner {
