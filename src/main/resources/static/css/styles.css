@@ -628,6 +628,19 @@ details p { color: var(--muted); margin-bottom: 0; }
 .data-table td:first-child { text-align: center; }
 .data-table th { position: sticky; top: 0; background: #f4f7ff; color: #344054; }
 
+.kakao-ad-banner {
+    display: flex;
+    justify-content: center;
+    max-width: 100%;
+    margin: 0 0 24px;
+    overflow: hidden;
+}
+.kakao_ad_area { display: none; }
+
+@media (min-width: 701px) {
+    .kakao-ad-banner__slot--mobile { display: none !important; }
+}
+
 .footer {
     margin-top: 34px;
     padding: 28px 0 8px;
@@ -645,6 +658,8 @@ details p { color: var(--muted); margin-bottom: 0; }
 }
 
 @media (max-width: 700px) {
+    .kakao-ad-banner__slot--desktop { display: none !important; }
+
     .calculator-layout,
     .overseas-tax-layout {
         grid-template-columns: 1fr;

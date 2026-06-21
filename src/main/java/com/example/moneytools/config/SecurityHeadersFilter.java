@@ -27,12 +27,12 @@ public class SecurityHeadersFilter extends OncePerRequestFilter {
             "object-src 'none'",
             "frame-ancestors 'none'",
             "form-action 'self'",
-            "script-src 'self' 'nonce-%s' https://cdn.jsdelivr.net https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com",
+            "script-src 'self' 'nonce-%s' https://cdn.jsdelivr.net https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://t1.kakaocdn.net",
             "style-src 'self' https://cdn.jsdelivr.net",
             "img-src 'self' data: https:",
             "font-src 'self' data:",
-            "connect-src 'self'",
-            "frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com",
+            "connect-src 'self' https://display.ad.daum.net https://analytics.ad.daum.net",
+            "frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://display.ad.daum.net",
             "upgrade-insecure-requests");
 
     @Override

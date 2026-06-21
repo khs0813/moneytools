@@ -2,6 +2,16 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <body>
 <footer class="footer" th:fragment="footer">
+    <div class="kakao-ad-banner" th:if="${adsAllowedOnPage}">
+        <ins class="kakao_ad_area kakao-ad-banner__slot kakao-ad-banner__slot--desktop"
+             data-ad-unit="DAN-Hq6KgDgpxhxdwWwz"
+             data-ad-width="728"
+             data-ad-height="90"></ins>
+        <ins class="kakao_ad_area kakao-ad-banner__slot kakao-ad-banner__slot--mobile"
+             data-ad-unit="DAN-5OUQxl2bPbnB5mxW"
+             data-ad-width="320"
+             data-ad-height="100"></ins>
+    </div>
     <div>
         <strong th:text="${appName}">머니계산기</strong>
         <p>본 사이트의 계산 결과는 참고용이며 법률, 세무, 투자, 노무 자문을 대체하지 않습니다.</p>
@@ -16,6 +26,7 @@
         <a href="/sitemap.xml">사이트맵</a>
     </div>
     <p class="copyright">© <span th:text="${currentYear}">2026</span> <span th:text="${appName}">머니계산기</span>. All rights reserved.</p>
+    <script th:if="${adsAllowedOnPage}" type="text/javascript" src="https://t1.kakaocdn.net/kas/static/ba.min.js" async></script>
     <script th:src="@{/js/calculator.js(v=${staticAssetVersion})}" defer></script>
 </footer>
 </body>
