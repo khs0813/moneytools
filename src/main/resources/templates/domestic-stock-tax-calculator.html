@@ -8,9 +8,8 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('국내 주식 세금 계산기', ${pageDescription})}"></div>
-        <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
-
         <section class="calculator-layout" data-domestic-stock-tax-layout>
+            <div th:replace="~{fragments/coupang-partners :: dynamicBanner}"></div>
             <form class="calculator-form two-column-form" data-domestic-stock-tax-calculator>
                 <h2>입력값</h2>
                 <label>매수금액
@@ -34,7 +33,7 @@
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
-            <div th:replace="~{fragments/components :: resultEmptyState('값을 입력하면 결과가 표시됩니다. 국내주식 세금 예시는 아래 표와 설명에서 먼저 볼 수 있습니다.')}"></div>
+            <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
             <section class="result-panel" aria-live="polite" data-result-card data-domestic-stock-tax-result-panel hidden>
                 <h2>계산 결과</h2>
                 <div class="result-grid">

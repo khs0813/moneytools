@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section class="coupang-partners-box" th:fragment="dynamicBanner">
+    <p class="coupang-partners-disclosure">이 게시물은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+    <div class="coupang-partners-banner">
+        <script src="https://ads-partners.coupang.com/g.js"></script>
+        <script th:attr="nonce=${cspNonce}">
+            new PartnersCoupang.G({"id":999028,"template":"carousel","trackingCode":"AF4791224","width":"680","height":"140","tsource":""});
+        </script>
+    </div>
+</section>
+</body>
+</html>

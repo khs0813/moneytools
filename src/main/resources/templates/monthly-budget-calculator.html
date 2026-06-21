@@ -8,9 +8,8 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('월 생활비 계산기', ${pageDescription})}"></div>
-        <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
-
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
+            <div th:replace="~{fragments/coupang-partners :: dynamicBanner}"></div>
             <form class="calculator-form two-column-form" th:action="@{/monthly-budget-calculator}" th:object="${form}" method="post">
                 <h2>입력값</h2>
                 <label>월 소득
@@ -59,7 +58,7 @@
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
-            <div th:if="${result == null}" th:replace="~{fragments/components :: resultEmptyState('값을 입력하면 결과가 표시됩니다. 예시 계산과 해석은 아래 본문에서 먼저 확인할 수 있습니다.')}"></div>
+            <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
             <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="result-grid">

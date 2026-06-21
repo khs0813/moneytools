@@ -8,13 +8,13 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('연봉 실수령액 계산기', ${pageDescription})}"></div>
-        <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
         <div class="notice-box salary-estimate-notice">
             <strong>간이 계산 안내</strong>
             <p>간이 계산 결과이며 실제 급여명세서와 차이가 있을 수 있음</p>
         </div>
 
         <section class="calculator-layout" data-annual-salary-layout>
+            <div th:replace="~{fragments/coupang-partners :: dynamicBanner}"></div>
             <form class="calculator-form two-column-form" data-annual-salary-calculator>
                 <h2>입력값</h2>
                 <label>연봉
@@ -42,7 +42,7 @@
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
-            <div th:replace="~{fragments/components :: resultEmptyState('값을 입력하면 결과가 표시됩니다. 예시 연봉 구간 해설은 아래 본문과 표에서 확인할 수 있습니다.')}"></div>
+            <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
             <section class="result-panel" aria-live="polite" data-result-card data-annual-salary-result-panel hidden>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
