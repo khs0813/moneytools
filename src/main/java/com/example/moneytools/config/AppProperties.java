@@ -17,7 +17,6 @@ public class AppProperties {
     private String contactEmail = "moneyfinancecalculator@gmail.com";
     private String googleSiteVerification = "";
     private String naverSiteVerification = "";
-    private Adsense adsense = new Adsense();
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -39,9 +38,6 @@ public class AppProperties {
 
     public String getNaverSiteVerification() { return naverSiteVerification; }
     public void setNaverSiteVerification(String naverSiteVerification) { this.naverSiteVerification = naverSiteVerification; }
-
-    public Adsense getAdsense() { return adsense; }
-    public void setAdsense(Adsense adsense) { this.adsense = adsense; }
 
     public boolean hasConfiguredPublicBaseUrl() {
         String normalized = getBaseUrl();
@@ -116,14 +112,4 @@ public class AppProperties {
         return path.startsWith("/") ? path : "/" + path;
     }
 
-    public static class Adsense {
-        private boolean enabled = false;
-        private String clientId = "ca-pub-0000000000000000";
-
-        public boolean isEnabled() { return enabled; }
-        public void setEnabled(boolean enabled) { this.enabled = enabled; }
-
-        public String getClientId() { return clientId; }
-        public void setClientId(String clientId) { this.clientId = clientId; }
-    }
 }

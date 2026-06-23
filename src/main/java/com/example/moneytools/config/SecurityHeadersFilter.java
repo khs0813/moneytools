@@ -27,12 +27,12 @@ public class SecurityHeadersFilter extends OncePerRequestFilter {
             "object-src 'none'",
             "frame-ancestors 'none'",
             "form-action 'self'",
-            "script-src 'self' 'nonce-%s' https://cdn.jsdelivr.net https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://t1.kakaocdn.net https://ads-partners.coupang.com https://partners.coupangcdn.com",
+            "script-src 'self' 'nonce-%s' https://cdn.jsdelivr.net https://t1.kakaocdn.net https://ads-partners.coupang.com https://partners.coupangcdn.com",
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
             "img-src 'self' data: https:",
             "font-src 'self' data:",
-            "connect-src 'self' https://display.ad.daum.net https://analytics.ad.daum.net https://serv.ds.kakao.com https://aem-kakao-collector.onkakao.net https://ads-partners.coupang.com https://*.coupang.com https://*.coupangcdn.com https://coupa.ng",
-            "frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://display.ad.daum.net https://t1.kakaocdn.net https://t1.daumcdn.net https://ads-partners.coupang.com https://*.coupang.com https://coupa.ng",
+            "connect-src 'self' https://display.ad.daum.net https://analytics.ad.daum.net https://serv.ds.kakao.com https://kuid-provider.ds.kakao.com https://kaat.daum.net https://aem-kakao-collector.onkakao.net https://ads-partners.coupang.com https://logs-partners.coupang.com https://*.coupang.com https://*.coupangcdn.com https://coupa.ng",
+            "frame-src https://display.ad.daum.net https://t1.kakaocdn.net https://t1.daumcdn.net https://ads-partners.coupang.com https://*.coupang.com https://coupa.ng",
             "upgrade-insecure-requests");
 
     @Override

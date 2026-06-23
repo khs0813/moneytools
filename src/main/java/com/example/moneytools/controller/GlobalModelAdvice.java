@@ -40,12 +40,6 @@ public class GlobalModelAdvice {
     @ModelAttribute("currentYear")
     public int currentYear() { return Year.now().getValue(); }
 
-    @ModelAttribute("adsenseEnabled")
-    public boolean adsenseEnabled() { return appProperties.getAdsense().isEnabled(); }
-
-    @ModelAttribute("adsenseClient")
-    public String adsenseClient() { return appProperties.getAdsense().getClientId(); }
-
     @ModelAttribute("adsAllowedOnPage")
     public boolean adsAllowedOnPage(HttpServletRequest request) {
         String uri = request.getRequestURI();

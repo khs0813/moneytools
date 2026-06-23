@@ -26,6 +26,3 @@ app:
   contact-email: ${APP_CONTACT_EMAIL:moneyfinancecalculator@gmail.com}
   google-site-verification: ${GOOGLE_SITE_VERIFICATION:}
   naver-site-verification: ${NAVER_SITE_VERIFICATION:}
-  adsense:
-    enabled: ${ADSENSE_ENABLED:true}
-    client-id: ${ADSENSE_CLIENT_ID:ca-pub-7766989656523085}

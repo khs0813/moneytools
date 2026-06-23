@@ -35,15 +35,12 @@
 
     <meta th:if="${googleSiteVerification != null and !#strings.isEmpty(googleSiteVerification)}" name="google-site-verification" th:content="${googleSiteVerification}">
     <meta name="naver-site-verification" content="1ee183886e284f895a1709cd041bda149e20e662">
-    <meta th:if="${adsenseEnabled and adsAllowedOnPage}" name="google-adsense-account" content="ca-pub-7766989656523085">
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="manifest" href="/site.webmanifest">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
     <link rel="stylesheet" th:href="@{/css/styles.css(v=${staticAssetVersion})}">
 
-    <script th:if="${adsenseEnabled and adsAllowedOnPage}" async crossorigin="anonymous"
-            th:src="'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + ${adsenseClient}"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/ko.js" defer></script>
     <script type="application/ld+json" th:if="${structuredData != null}" th:nonce="${cspNonce}" th:utext="${structuredData}"></script>
