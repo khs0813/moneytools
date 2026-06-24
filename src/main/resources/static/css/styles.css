@@ -668,10 +668,6 @@ details p { color: var(--muted); margin-bottom: 0; }
     margin: 0 0 24px;
     overflow: hidden;
 }
-@media (min-width: 701px) {
-    .kakao-ad-banner__slot--mobile { display: none !important; }
-}
-
 .footer {
     margin-top: 34px;
     padding: 28px 0 8px;
@@ -689,8 +685,6 @@ details p { color: var(--muted); margin-bottom: 0; }
 }
 
 @media (max-width: 700px) {
-    .kakao-ad-banner__slot--desktop { display: none !important; }
-
     .calculator-layout,
     .overseas-tax-layout {
         grid-template-columns: 1fr;
