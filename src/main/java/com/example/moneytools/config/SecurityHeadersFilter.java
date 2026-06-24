@@ -27,7 +27,7 @@ public class SecurityHeadersFilter extends OncePerRequestFilter {
             "object-src 'none'",
             "frame-ancestors 'none'",
             "form-action 'self'",
-            "script-src 'self' 'nonce-%s' https://cdn.jsdelivr.net https://t1.kakaocdn.net https://ads-partners.coupang.com https://partners.coupangcdn.com",
+            "script-src 'self' 'nonce-%s' https://cdn.jsdelivr.net https://t1.kakaocdn.net https://t1.daumcdn.net https://ads-partners.coupang.com https://partners.coupangcdn.com",
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
             "img-src 'self' data: https:",
             "font-src 'self' data:",
