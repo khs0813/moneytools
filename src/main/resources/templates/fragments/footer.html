@@ -30,37 +30,7 @@
         <a href="/sitemap.xml">사이트맵</a>
     </div>
     <p class="copyright">© <span th:text="${currentYear}">2026</span> <span th:text="${appName}">머니계산기</span>. All rights reserved.</p>
-    <script th:if="${adsAllowedOnPage}" th:nonce="${cspNonce}">
-        (function () {
-            var adFitSrc = 'https://t1.kakaocdn.net/kas/static/ba.min.js';
-            var viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
-
-            document.querySelectorAll('.kakao_ad_area[data-adfit-min-width], .kakao_ad_area[data-adfit-max-width]').forEach(function (adArea) {
-                var minWidth = Number(adArea.dataset.adfitMinWidth || 0);
-                var maxWidth = Number(adArea.dataset.adfitMaxWidth || 0);
-                if ((minWidth && viewportWidth < minWidth) || (maxWidth && viewportWidth > maxWidth)) {
-                    adArea.remove();
-                }
-            });
-
-            if (!document.querySelector('.kakao_ad_area')) return;
-            if (window.__moneytoolsAdFitLoaded || document.querySelector('script[src="' + adFitSrc + '"]')) return;
-            window.__moneytoolsAdFitLoaded = true;
-
-            var script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = adFitSrc;
-            script.async = true;
-            script.dataset.moneytoolsAdfit = 'true';
-
-            var currentScript = document.currentScript;
-            if (currentScript && currentScript.parentNode) {
-                currentScript.parentNode.insertBefore(script, currentScript.nextSibling);
-                return;
-            }
-            document.head.appendChild(script);
-        })();
-    </script>
+    <script th:if="${adsAllowedOnPage}" type="text/javascript" src="//t1.kakaocdn.net/kas/static/ba.min.js" async></script>
     <script th:src="@{/js/calculator.js(v=${staticAssetVersion})}" defer></script>
 </footer>
 </body>
