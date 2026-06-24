@@ -662,11 +662,16 @@ details p { color: var(--muted); margin-bottom: 0; }
 .data-table th { position: sticky; top: 0; background: #f4f7ff; color: #344054; }
 
 .kakao-ad-banner {
-    display: flex;
+    display: block;
     justify-content: center;
+    width: 100%;
+    min-width: 320px;
+    min-height: 90px;
     max-width: 100%;
     margin: 0 0 24px;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
+    text-align: center;
 }
 .footer {
     margin-top: 34px;

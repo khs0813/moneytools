@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <body>
 <footer class="footer" th:fragment="footer">
-    <div class="kakao-ad-banner" th:if="${adsAllowedOnPage}">
+    <div class="kakao-ad-banner" th:if="${adsAllowedOnPage}" style="display:block;width:100%;min-width:320px;min-height:90px;text-align:center;">
         <ins class="kakao_ad_area" style="display:none;"
              data-ad-unit="DAN-nC204VYE90MKQxGJ"
              data-ad-width="728"
@@ -22,7 +22,39 @@
         <a href="/sitemap.xml">사이트맵</a>
     </div>
     <p class="copyright">© <span th:text="${currentYear}">2026</span> <span th:text="${appName}">머니계산기</span>. All rights reserved.</p>
-    <script th:if="${adsAllowedOnPage}" type="text/javascript" src="//t1.kakaocdn.net/kas/static/ba.min.js" async></script>
+    <script th:if="${adsAllowedOnPage}" th:nonce="${cspNonce}">
+        (function () {
+            var adUnit = 'DAN-nC204VYE90MKQxGJ';
+            var sdkSrc = '//t1.kakaocdn.net/kas/static/ba.min.js';
+            var maxAttempts = 20;
+            var attempt = 0;
+
+            function loadAdFitWhenReady() {
+                var adArea = document.querySelector('[data-ad-unit="' + adUnit + '"]');
+                var adWrapper = adArea ? adArea.closest('.kakao-ad-banner') : null;
+                var width = adWrapper ? adWrapper.getBoundingClientRect().width : 0;
+
+                if (width > 0) {
+                    if (document.querySelector('script[src="' + sdkSrc + '"], script[src="https://t1.kakaocdn.net/kas/static/ba.min.js"]')) {
+                        return;
+                    }
+                    var script = document.createElement('script');
+                    script.type = 'text/javascript';
+                    script.src = sdkSrc;
+                    script.async = true;
+                    document.body.appendChild(script);
+                    return;
+                }
+
+                attempt += 1;
+                if (attempt < maxAttempts) {
+                    window.requestAnimationFrame(loadAdFitWhenReady);
+                }
+            }
+
+            window.requestAnimationFrame(loadAdFitWhenReady);
+        })();
+    </script>
     <script th:src="@{/js/calculator.js(v=${staticAssetVersion})}" defer></script>
 </footer>
 </body>
