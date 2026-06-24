@@ -668,8 +668,6 @@ details p { color: var(--muted); margin-bottom: 0; }
     margin: 0 0 24px;
     overflow: hidden;
 }
-.kakao_ad_area { display: none; }
-
 @media (min-width: 701px) {
     .kakao-ad-banner__slot--mobile { display: none !important; }
 }
