@@ -645,10 +645,20 @@ details p { color: var(--muted); margin-bottom: 0; }
 .coupang-partners-banner {
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 140px;
     max-width: 100%;
     overflow: hidden;
+    text-decoration: none;
+}
+.coupang-partners-banner:hover {
+    transform: translateY(-1px);
+}
+.coupang-partners-banner img {
+    display: block;
+    width: min(100%, 360px);
+    height: auto;
+    border-radius: 16px;
+    border: 1px solid #dfe7ff;
+    box-shadow: 0 14px 30px rgba(71, 85, 105, 0.14);
 }
 
 .table-header { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }

@@ -3,12 +3,13 @@
 <body>
 <section class="coupang-partners-box" th:fragment="dynamicBanner">
     <p class="coupang-partners-disclosure">이 게시물은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
-    <div class="coupang-partners-banner">
-        <script src="https://ads-partners.coupang.com/g.js"></script>
-        <script th:attr="nonce=${cspNonce}">
-            new PartnersCoupang.G({"id":999028,"template":"carousel","trackingCode":"AF4791224","width":"680","height":"140","tsource":""});
-        </script>
-    </div>
+    <a class="coupang-partners-banner"
+       href="https://link.coupang.com/a/e3FKaFBdbE"
+       target="_blank"
+       rel="nofollow sponsored noopener"
+       aria-label="쿠팡 추천 상품 페이지 새 창으로 열기">
+        <img src="/img/coupang-partners-banner.png" alt="쿠팡 추천 상품 보기" loading="lazy">
+    </a>
 </section>
 </body>
 </html>
