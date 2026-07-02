@@ -105,6 +105,7 @@ button, input, select { font: inherit; }
 
 .main-content {
     width: min(1180px, 100%);
+    justify-self: center;
     padding: 32px;
 }
 
@@ -514,13 +515,18 @@ span.flatpickr-weekday {
     grid-area: result;
     background: linear-gradient(135deg, #fff, #f7fbff);
 }
-.calculator-side-note {
+.calculator-side-stack {
     grid-area: side;
+    display: grid;
+    gap: 22px;
+    align-content: start;
+}
+.calculator-side-note {
     padding: 28px;
     background: var(--yellow);
     color: #5b4a12;
 }
-.calculator-layout.has-result > .calculator-side-note {
+.calculator-layout.has-result > .calculator-side-stack {
     grid-area: note;
 }
 .calculator-side-note strong {
@@ -682,6 +688,17 @@ details p { color: var(--muted); margin-bottom: 0; }
     overflow-x: auto;
     overflow-y: hidden;
     text-align: center;
+}
+.kakao-adfit-card {
+    display: grid;
+    place-items: center;
+    min-height: 250px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    overflow-x: auto;
 }
 .footer {
     margin-top: 34px;
