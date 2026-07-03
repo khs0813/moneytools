@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <body>
-<section class="coupang-partners-box" th:fragment="dynamicBanner">
-    <p class="coupang-partners-disclosure">이 게시물은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
-    <a class="coupang-partners-banner"
-       href="https://link.coupang.com/a/e3FKaFBdbE"
-       target="_blank"
-       rel="nofollow sponsored noopener"
-       aria-label="쿠팡 추천 상품 페이지 새 창으로 열기">
-        <img src="/img/coupang-partners-banner.png" alt="쿠팡 추천 상품 보기" loading="lazy">
-    </a>
+<section class="kakao-adfit-card" th:fragment="dynamicBanner" th:if="${adsAllowedOnPage}">
+    <ins class="kakao_ad_area"
+         style="display:none;"
+         data-ad-unit="DAN-nC204VYE90MKQxGJ"
+         data-ad-width="728"
+         data-ad-height="90"></ins>
 </section>
 </body>
 </html>
