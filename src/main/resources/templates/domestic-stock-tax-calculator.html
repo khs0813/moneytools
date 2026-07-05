@@ -29,7 +29,7 @@
                     양도소득세 대상
                 </label>
                 <label>양도소득세율(%)
-                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="domesticCapitalGainsTaxRate" value="">
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" data-optional="true" data-min="0" data-max="100" data-decimals="4" min="0" max="100" step="0.0001" id="domesticCapitalGainsTaxRate" value="">
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>

@@ -13,43 +13,43 @@
             <form class="calculator-form two-column-form" th:action="@{/overseas-stock-tax-calculator}" th:object="${form}" method="post">
                 <h2>입력값</h2>
                 <label>매수금액(외화)
-                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="buyAmountForeign" name="buyAmountForeign" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'buyAmountForeign')}">
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" data-min="0" data-max="999999999999999" data-decimals="4" min="0" max="999999999999999" step="0.0001" id="buyAmountForeign" name="buyAmountForeign" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'buyAmountForeign')}">
                     <span class="field-error" th:if="${#fields.hasErrors('buyAmountForeign')}" th:errors="*{buyAmountForeign}"></span>
                 </label>
                 <label>매수일 환율
-                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="buyExchangeRate" name="buyExchangeRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'buyExchangeRate')}">
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" data-min="0" data-max="999999999999999" data-decimals="4" min="0" max="999999999999999" step="0.0001" id="buyExchangeRate" name="buyExchangeRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'buyExchangeRate')}">
                     <span class="field-error" th:if="${#fields.hasErrors('buyExchangeRate')}" th:errors="*{buyExchangeRate}"></span>
                 </label>
                 <label>매도금액(외화)
-                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="sellAmountForeign" name="sellAmountForeign" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'sellAmountForeign')}">
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" data-min="0" data-max="999999999999999" data-decimals="4" min="0" max="999999999999999" step="0.0001" id="sellAmountForeign" name="sellAmountForeign" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'sellAmountForeign')}">
                     <span class="field-error" th:if="${#fields.hasErrors('sellAmountForeign')}" th:errors="*{sellAmountForeign}"></span>
                 </label>
                 <label>매도일 환율
-                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="sellExchangeRate" name="sellExchangeRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'sellExchangeRate')}">
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" data-min="0" data-max="999999999999999" data-decimals="4" min="0" max="999999999999999" step="0.0001" id="sellExchangeRate" name="sellExchangeRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'sellExchangeRate')}">
                     <span class="field-error" th:if="${#fields.hasErrors('sellExchangeRate')}" th:errors="*{sellExchangeRate}"></span>
                 </label>
                 <label>배당금(외화)
-                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="dividendForeign" name="dividendForeign" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'dividendForeign')}">
+                    <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" data-min="0" data-max="999999999999999" data-decimals="4" min="0" max="999999999999999" step="0.0001" id="dividendForeign" name="dividendForeign" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'dividendForeign')}">
                     <span class="field-error" th:if="${#fields.hasErrors('dividendForeign')}" th:errors="*{dividendForeign}"></span>
                 </label>
                 <label>배당기준 환율
-                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="dividendExchangeRate" name="dividendExchangeRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'dividendExchangeRate')}">
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" data-min="0" data-max="999999999999999" data-decimals="4" min="0" max="999999999999999" step="0.0001" id="dividendExchangeRate" name="dividendExchangeRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'dividendExchangeRate')}">
                     <span class="field-error" th:if="${#fields.hasErrors('dividendExchangeRate')}" th:errors="*{dividendExchangeRate}"></span>
                 </label>
                 <label>매매 수수료 합계(원)
-                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="feeKrw" name="feeKrw" th:value="${@inputFieldValueFormatter.formatInteger(form, 'feeKrw')}">
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" data-min="0" data-max="999999999999999" data-decimals="0" min="0" max="999999999999999" step="1" id="feeKrw" name="feeKrw" th:value="${@inputFieldValueFormatter.formatInteger(form, 'feeKrw')}">
                     <span class="field-error" th:if="${#fields.hasErrors('feeKrw')}" th:errors="*{feeKrw}"></span>
                 </label>
                 <label>기본공제(원)
-                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="basicDeductionKrw" name="basicDeductionKrw" th:value="${@inputFieldValueFormatter.formatInteger(form, 'basicDeductionKrw')}">
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" data-min="0" data-max="999999999999999" data-decimals="0" min="0" max="999999999999999" step="1" id="basicDeductionKrw" name="basicDeductionKrw" th:value="${@inputFieldValueFormatter.formatInteger(form, 'basicDeductionKrw')}">
                     <span class="field-error" th:if="${#fields.hasErrors('basicDeductionKrw')}" th:errors="*{basicDeductionKrw}"></span>
                 </label>
                 <label>양도세율(% 기본 22)
-                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="capitalGainsTaxRate" name="capitalGainsTaxRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'capitalGainsTaxRate')}">
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" data-min="0" data-max="100" data-decimals="4" min="0" max="100" step="0.0001" id="capitalGainsTaxRate" name="capitalGainsTaxRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'capitalGainsTaxRate')}">
                     <span class="field-error" th:if="${#fields.hasErrors('capitalGainsTaxRate')}" th:errors="*{capitalGainsTaxRate}"></span>
                 </label>
                 <label>배당세율(% 기본 15.4)
-                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="dividendTaxRate" name="dividendTaxRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'dividendTaxRate')}">
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" data-min="0" data-max="100" data-decimals="4" min="0" max="100" step="0.0001" id="dividendTaxRate" name="dividendTaxRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'dividendTaxRate')}">
                     <span class="field-error" th:if="${#fields.hasErrors('dividendTaxRate')}" th:errors="*{dividendTaxRate}"></span>
                 </label>
                 <label class="checkbox-row"><input type="checkbox" th:field="*{applyBasicDeduction}"> 기본공제 적용</label>

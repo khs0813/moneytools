@@ -29,12 +29,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const tableId = button.getAttribute('data-download-table');
       const table = document.getElementById(tableId);
       if (!table) return;
+
+      const sanitizeCsvCell = (value) => {
+        const text = String(value ?? '').trim();
+        const escapeFormula = (cellText) => /^[=+\-@]/.test(cellText) ? `'${cellText}` : cellText;
+        const numericText = text.replaceAll(',', '');
+        if (/^-?\d+(\.\d+)?$/.test(numericText)) {
+          const number = Number(numericText);
+          return Number.isFinite(number) ? escapeFormula(String(Math.round(number))) : '';
+        }
+        return escapeFormula(text);
+      };
+
       const rows = Array.from(table.querySelectorAll('tr')).map((row) =>
         Array.from(row.querySelectorAll('th,td'))
-          .map((cell) => `"${cell.innerText.replaceAll('"', '""')}"`)
+          .map((cell) => `"${sanitizeCsvCell(cell.innerText).replaceAll('"', '""')}"`)
           .join(',')
       );
-      const blob = new Blob(['\ufeff' + rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const blob = new Blob(['\ufeff' + rows.join('\n')], { type: 'text/csv; charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -201,6 +213,18 @@ document.addEventListener('DOMContentLoaded', () => {
     allowSign: input.dataset.signed === 'true'
   });
 
+  const applyDefaultNumericConstraints = (input, options) => {
+    const defaultMin = options.allowSign ? '-999999999999999' : '0';
+    const defaultMax = '999999999999999';
+    const defaultDecimals = options.mode === 'integer' ? '0' : '4';
+    if (!input.hasAttribute('min')) input.setAttribute('min', defaultMin);
+    if (!input.hasAttribute('max')) input.setAttribute('max', defaultMax);
+    if (!input.hasAttribute('step')) input.setAttribute('step', options.mode === 'integer' ? '1' : '0.0001');
+    if (input.dataset.min === undefined) input.dataset.min = defaultMin;
+    if (input.dataset.max === undefined) input.dataset.max = defaultMax;
+    if (input.dataset.decimals === undefined) input.dataset.decimals = defaultDecimals;
+  };
+
   const getDisplayValue = (value, options) => {
     if (options.mode === 'integer') {
       return formatIntegerDisplay(value, options.allowSign);
@@ -242,6 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   numericInputs.forEach((input) => {
     const options = getNumberOptions(input);
+    applyDefaultNumericConstraints(input, options);
     input.addEventListener('focus', () => {
       const formatted = getDisplayValue(input.value, options);
       if (formatted !== input.value) {
@@ -297,7 +322,68 @@ document.addEventListener('DOMContentLoaded', () => {
     { limit: Number.POSITIVE_INFINITY, rate: 0.45, quickDeduction: 65_940_000 }
   ];
 
+  const decimalPlaces = (value) => {
+    const plain = normalizePlainNumber(value);
+    const fraction = plain.split('.')[1] ?? '';
+    return fraction.length;
+  };
+
+  const validateNumberInput = (input) => {
+    if (!input) return true;
+    if (input.disabled) {
+      input.setCustomValidity('');
+      return true;
+    }
+    const plain = normalizePlainNumber(input.value);
+    if (!plain && input.dataset.optional === 'true') {
+      input.setCustomValidity('');
+      return true;
+    }
+    if (!plain) {
+      input.setCustomValidity('숫자를 입력해주세요.');
+      return false;
+    }
+
+    const number = Number(plain);
+    const min = input.dataset.min === undefined ? Number.NEGATIVE_INFINITY : Number(input.dataset.min);
+    const max = input.dataset.max === undefined ? Number.POSITIVE_INFINITY : Number(input.dataset.max);
+    const maxDecimals = input.dataset.decimals === undefined ? null : Number(input.dataset.decimals);
+
+    if (!Number.isFinite(number)) {
+      input.setCustomValidity('유효한 숫자를 입력해주세요.');
+      return false;
+    }
+    if (number < min || number > max) {
+      input.setCustomValidity(`${min.toLocaleString('ko-KR')} 이상 ${max.toLocaleString('ko-KR')} 이하로 입력해주세요.`);
+      return false;
+    }
+    if (maxDecimals !== null && decimalPlaces(plain) > maxDecimals) {
+      input.setCustomValidity(`소수점은 ${maxDecimals}자리까지 입력해주세요.`);
+      return false;
+    }
+
+    input.setCustomValidity('');
+    return true;
+  };
+
+  const validateNumberInputsInForm = (form) => {
+    const inputs = Array.from(form.querySelectorAll('[data-number-input], [data-money-input]'));
+    const invalid = inputs.find((input) => !validateNumberInput(input));
+    if (invalid) {
+      invalid.reportValidity();
+      return false;
+    }
+    return true;
+  };
+
+  numericInputs.forEach((input) => {
+    input.addEventListener('input', () => validateNumberInput(input));
+    input.addEventListener('change', () => validateNumberInput(input));
+    validateNumberInput(input);
+  });
+
   const parseNumberInput = (input) => {
+    validateNumberInput(input);
     const plain = normalizePlainNumber(input?.value ?? '');
     const number = Number(plain);
     return Number.isFinite(number) ? number : 0;
@@ -373,6 +459,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     annualSalaryForm.addEventListener('submit', (event) => {
       event.preventDefault();
+      if (!validateNumberInputsInForm(annualSalaryForm)) return;
       renderAnnualSalaryResult();
     });
   }
@@ -435,6 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     domesticStockTaxForm.addEventListener('submit', (event) => {
       event.preventDefault();
+      if (!validateNumberInputsInForm(domesticStockTaxForm)) return;
       renderDomesticStockTaxResult();
     });
   }

@@ -34,13 +34,20 @@ public class CanonicalDomainRedirectFilter extends OncePerRequestFilter {
         if (!(APEX_HOST.equals(host) || CANONICAL_HOST.equals(host))) {
             return false;
         }
-        return APEX_HOST.equals(host) || !"https".equalsIgnoreCase(forwardedProto(request));
+        return APEX_HOST.equals(host)
+                || !"https".equalsIgnoreCase(forwardedProto(request))
+                || hasQueryString(request);
+    }
+
+    private boolean hasQueryString(HttpServletRequest request) {
+        String queryString = request.getQueryString();
+        return queryString != null && !queryString.isBlank();
     }
 
     private String canonicalLocation(HttpServletRequest request) {
         return UriComponentsBuilder.fromUriString(CANONICAL_ORIGIN)
                 .replacePath(request.getRequestURI())
-                .replaceQuery(request.getQueryString())
+                .replaceQuery(null)
                 .build()
                 .encode(StandardCharsets.UTF_8)
                 .toUriString();

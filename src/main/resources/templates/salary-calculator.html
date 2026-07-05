@@ -20,19 +20,19 @@
                     <span class="field-error" th:if="${#fields.hasErrors('incomeType')}" th:errors="*{incomeType}"></span>
                 </label>
                 <label>금액
-                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="amount" name="amount" th:value="${@inputFieldValueFormatter.formatInteger(form, 'amount')}">
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" data-min="0" data-max="999999999999999" data-decimals="0" min="0" max="999999999999999" step="1" id="amount" name="amount" th:value="${@inputFieldValueFormatter.formatInteger(form, 'amount')}">
                     <span class="field-error" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></span>
                 </label>
                 <label>월 비과세액
-                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="taxFreeAmount" name="taxFreeAmount" th:value="${@inputFieldValueFormatter.formatInteger(form, 'taxFreeAmount')}">
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" data-min="0" data-max="999999999999999" data-decimals="0" min="0" max="999999999999999" step="1" id="taxFreeAmount" name="taxFreeAmount" th:value="${@inputFieldValueFormatter.formatInteger(form, 'taxFreeAmount')}">
                     <span class="field-error" th:if="${#fields.hasErrors('taxFreeAmount')}" th:errors="*{taxFreeAmount}"></span>
                 </label>
                 <label>공제대상 가족 수(본인 포함)
-                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" id="dependents" name="dependents" th:value="${@inputFieldValueFormatter.formatInteger(form, 'dependents')}">
+                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" data-min="1" data-max="20" data-decimals="0" min="1" max="20" step="1" id="dependents" name="dependents" th:value="${@inputFieldValueFormatter.formatInteger(form, 'dependents')}">
                     <span class="field-error" th:if="${#fields.hasErrors('dependents')}" th:errors="*{dependents}"></span>
                 </label>
                 <label>8세 이상 20세 이하 자녀 수
-                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" id="children" name="children" th:value="${@inputFieldValueFormatter.formatInteger(form, 'children')}">
+                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" data-min="0" data-max="19" data-decimals="0" min="0" max="19" step="1" id="children" name="children" th:value="${@inputFieldValueFormatter.formatInteger(form, 'children')}">
                     <span class="field-error" th:if="${#fields.hasErrors('children')}" th:errors="*{children}"></span>
                 </label>
                 <label class="checkbox-row">

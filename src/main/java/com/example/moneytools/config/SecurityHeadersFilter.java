@@ -21,18 +21,17 @@ public class SecurityHeadersFilter extends OncePerRequestFilter {
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
     private static final Locale DEFAULT_SITE_LOCALE = Locale.KOREA;
 
-    private static final String CONTENT_SECURITY_POLICY_TEMPLATE = String.join("; ",
+    private static final String CONTENT_SECURITY_POLICY_REPORT_ONLY = String.join("; ",
             "default-src 'self'",
             "base-uri 'self'",
             "object-src 'none'",
             "frame-ancestors 'none'",
-            "form-action 'self'",
-            "script-src 'self' 'nonce-%s' https://cdn.jsdelivr.net https://t1.kakaocdn.net https://ads-partners.coupang.com https://partners.coupangcdn.com",
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
             "img-src 'self' data: https:",
             "font-src 'self' data:",
-            "connect-src 'self' https://display.ad.daum.net https://analytics.ad.daum.net https://serv.ds.kakao.com https://kuid-provider.ds.kakao.com https://kaat.daum.net https://aem-kakao-collector.onkakao.net https://ads-partners.coupang.com https://logs-partners.coupang.com https://*.coupang.com https://*.coupangcdn.com https://coupa.ng",
-            "frame-src https://display.ad.daum.net https://t1.kakaocdn.net https://t1.daumcdn.net https://ads-partners.coupang.com https://*.coupang.com https://coupa.ng",
+            "style-src 'self' 'unsafe-inline'",
+            "script-src 'self' 'unsafe-inline' https:",
+            "connect-src 'self' https:",
+            "frame-src https:",
             "upgrade-insecure-requests");
 
     @Override
@@ -42,12 +41,12 @@ public class SecurityHeadersFilter extends OncePerRequestFilter {
         request.setAttribute(CSP_NONCE_ATTRIBUTE, nonce);
         response.setLocale(DEFAULT_SITE_LOCALE);
         response.setHeader("Content-Language", "ko-KR");
-        response.setHeader("Content-Security-Policy", CONTENT_SECURITY_POLICY_TEMPLATE.formatted(nonce));
+        response.setHeader("Content-Security-Policy-Report-Only", CONTENT_SECURITY_POLICY_REPORT_ONLY);
         response.setHeader("X-Content-Type-Options", "nosniff");
         response.setHeader("X-Frame-Options", "DENY");
         response.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
         response.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
-        response.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()");
+        response.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=(), usb=()");
         response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
         response.setHeader("Cross-Origin-Resource-Policy", "same-origin");
         response.setHeader("Origin-Agent-Cluster", "?1");

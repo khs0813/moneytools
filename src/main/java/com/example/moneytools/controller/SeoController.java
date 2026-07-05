@@ -5,6 +5,7 @@ import com.example.moneytools.seo.PageInfo;
 import com.example.moneytools.seo.PublicUrlService;
 import com.example.moneytools.seo.SitePages;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -86,6 +87,17 @@ public class SeoController {
         xml.append("</channel>\n");
         xml.append("</rss>");
         return xml.toString();
+    }
+
+    @GetMapping(value = "/.well-known/security.txt", produces = "text/plain; charset=UTF-8")
+    public ResponseEntity<String> securityTxt() {
+        String body = "Contact: mailto:security@moneycalculator.co.kr\n"
+                + "Preferred-Languages: ko, en\n"
+                + "Canonical: " + publicUrlService.absoluteUrl("/.well-known/security.txt") + "\n"
+                + "Expires: 2027-07-05T00:00:00+09:00\n";
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("text/plain; charset=UTF-8"))
+                .body(body);
     }
 
     private String escapeXml(String value) {

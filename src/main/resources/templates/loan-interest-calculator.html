@@ -13,16 +13,16 @@
             <form class="calculator-form" th:action="@{/loan-interest-calculator}" th:object="${form}" method="post">
                 <h2>입력값</h2>
                 <label>대출원금
-                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" placeholder="예: 100,000,000" id="principal" name="principal" th:value="${@inputFieldValueFormatter.formatInteger(form, 'principal')}">
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" data-min="1" data-max="999999999999999" data-decimals="0" min="1" max="999999999999999" step="1" placeholder="예: 100,000,000" id="principal" name="principal" th:value="${@inputFieldValueFormatter.formatInteger(form, 'principal')}">
                     <small class="field-help">쉼표를 포함해도 되며, 최대 999,999,999,999,999원까지 입력할 수 있습니다.</small>
                     <span class="field-error" th:if="${#fields.hasErrors('principal')}" th:errors="*{principal}"></span>
                 </label>
                 <label>연이율(%)
-                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="annualRate" name="annualRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'annualRate')}">
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" data-min="0" data-max="100" data-decimals="4" min="0" max="100" step="0.0001" id="annualRate" name="annualRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'annualRate')}">
                     <span class="field-error" th:if="${#fields.hasErrors('annualRate')}" th:errors="*{annualRate}"></span>
                 </label>
                 <label>대출기간(년)
-                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" id="years" name="years" th:value="${@inputFieldValueFormatter.formatInteger(form, 'years')}">
+                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" data-min="1" data-max="50" data-decimals="0" min="1" max="50" step="1" id="years" name="years" th:value="${@inputFieldValueFormatter.formatInteger(form, 'years')}">
                     <span class="field-error" th:if="${#fields.hasErrors('years')}" th:errors="*{years}"></span>
                 </label>
                 <label>상환방식
