@@ -28,11 +28,10 @@ public class SecurityHeadersFilter extends OncePerRequestFilter {
             "frame-ancestors 'none'",
             "img-src 'self' data: https:",
             "font-src 'self' data:",
-            "style-src 'self' 'unsafe-inline'",
+            "style-src 'self' 'unsafe-inline' https:",
             "script-src 'self' 'unsafe-inline' https:",
             "connect-src 'self' https:",
-            "frame-src https:",
-            "upgrade-insecure-requests");
+            "frame-src https:");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
