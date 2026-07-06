@@ -683,6 +683,11 @@ details p { color: var(--muted); margin-bottom: 0; }
     box-shadow: var(--shadow-soft);
     overflow-x: auto;
 }
+.kakao-adfit-top-slot {
+    display: grid;
+    gap: 12px;
+    justify-items: center;
+}
 .kakao-mobile-rectangle-ad {
     display: none;
 }
