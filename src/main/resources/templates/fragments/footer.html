@@ -25,6 +25,8 @@
     <script th:if="${adsAllowedOnPage}" th:nonce="${cspNonce}">
         (function () {
             var sdkSrc = '//t1.kakaocdn.net/kas/static/ba.min.js';
+            var mobileMedia = window.matchMedia('(max-width: 820px)');
+            var desktopMedia = window.matchMedia('(min-width: 821px)');
             var maxAttempts = 20;
             var attempt = 0;
 
@@ -46,8 +48,24 @@
                 return adWrapper && adWrapper.getBoundingClientRect().width > 0;
             }
 
-            function mountCardAds() {
-                document.querySelectorAll('.kakao-adfit-card[data-ad-unit]').forEach(function (adWrapper) {
+            function mountDesktopBannerAds() {
+                if (!desktopMedia.matches) {
+                    return;
+                }
+
+                document.querySelectorAll('.kakao-desktop-ad-banner[data-ad-unit]').forEach(function (adWrapper) {
+                    if (isVisibleAdWrapper(adWrapper)) {
+                        appendAdArea(adWrapper);
+                    }
+                });
+            }
+
+            function mountMobileRectangleAds() {
+                if (!mobileMedia.matches) {
+                    return;
+                }
+
+                document.querySelectorAll('.kakao-mobile-rectangle-ad[data-ad-unit]').forEach(function (adWrapper) {
                     if (isVisibleAdWrapper(adWrapper)) {
                         appendAdArea(adWrapper);
                     }
@@ -59,7 +77,7 @@
                 if (!footerAd) {
                     return;
                 }
-                if (!window.matchMedia('(max-width: 820px)').matches) {
+                if (!mobileMedia.matches) {
                     return;
                 }
 
@@ -71,7 +89,7 @@
                 if (!railAd) {
                     return;
                 }
-                if (!window.matchMedia('(min-width: 821px)').matches) {
+                if (!desktopMedia.matches) {
                     return;
                 }
 
@@ -79,7 +97,8 @@
             }
 
             function loadAdFitWhenReady() {
-                mountCardAds();
+                mountDesktopBannerAds();
+                mountMobileRectangleAds();
                 mountMobileFooterAd();
                 mountRightRailAd();
                 var adAreas = document.querySelectorAll('.kakao_ad_area');

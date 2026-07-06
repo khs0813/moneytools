@@ -343,7 +343,7 @@ h3 { margin: 0 0 8px; font-size: 1.15rem; }
     display: grid;
     gap: 16px;
 }
-.calculator-layout > .kakao-adfit-card {
+.calculator-layout > .kakao-desktop-ad-banner {
     grid-area: affiliate;
     margin-top: 0;
 }
@@ -683,6 +683,9 @@ details p { color: var(--muted); margin-bottom: 0; }
     box-shadow: var(--shadow-soft);
     overflow-x: auto;
 }
+.kakao-mobile-rectangle-ad {
+    display: none;
+}
 .kakao-mobile-ad-banner {
     display: none;
     width: 100%;
@@ -756,9 +759,29 @@ details p { color: var(--muted); margin-bottom: 0; }
         bottom: auto;
         border-radius: 999px;
     }
-    .kakao-mobile-ad-banner { display: block; }
-    .kakao-adfit-card {
+    .kakao-mobile-ad-banner {
+        display: grid;
+        place-items: center;
+        width: 100vw !important;
+        max-width: 100vw;
+        min-width: 320px !important;
+        margin: 0 calc(50% - 50vw) 24px;
+        overflow: visible;
+    }
+    .kakao-desktop-ad-banner {
         display: none;
+    }
+    .kakao-mobile-rectangle-ad {
+        display: grid;
+        width: 300px;
+        max-width: 100%;
+        min-height: 250px;
+        padding: 0;
+        margin: 0 auto;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        overflow: visible;
     }
     .app-shell { display: block; }
     .sidebar {
@@ -788,7 +811,7 @@ details p { color: var(--muted); margin-bottom: 0; }
     }
     .main-content {
         width: 100%;
-        padding: 18px 18px calc(90px + env(safe-area-inset-bottom));
+        padding: 18px 10px calc(90px + env(safe-area-inset-bottom));
     }
     .breadcrumbs {
         overflow-x: auto;
@@ -867,7 +890,7 @@ details p { color: var(--muted); margin-bottom: 0; }
 
 @media (max-width: 380px) {
     .main-content {
-        padding: 16px 16px calc(90px + env(safe-area-inset-bottom));
+        padding: 16px 10px calc(90px + env(safe-area-inset-bottom));
     }
     .home-hero,
     .page-hero,
