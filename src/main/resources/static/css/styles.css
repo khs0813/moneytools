@@ -343,7 +343,7 @@ h3 { margin: 0 0 8px; font-size: 1.15rem; }
     display: grid;
     gap: 16px;
 }
-.calculator-layout > .kakao-desktop-ad-banner {
+.calculator-layout > .kakao-adfit-top-slot {
     grid-area: affiliate;
     margin-top: 0;
 }
@@ -688,12 +688,12 @@ details p { color: var(--muted); margin-bottom: 0; }
 }
 .kakao-mobile-ad-banner {
     display: none;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0 !important;
+    width: 320px;
+    max-width: 320px;
+    min-width: 320px;
     min-height: 50px;
-    margin: 0 0 24px;
-    overflow-x: auto;
+    margin: 0 auto;
+    overflow-x: visible;
     overflow-y: hidden;
     text-align: center;
 }
@@ -762,10 +762,10 @@ details p { color: var(--muted); margin-bottom: 0; }
     .kakao-mobile-ad-banner {
         display: grid;
         place-items: center;
-        width: 100vw !important;
-        max-width: 100vw;
-        min-width: 320px !important;
-        margin: 0 calc(50% - 50vw) 24px;
+        width: 320px;
+        max-width: 320px;
+        min-width: 320px;
+        margin: 0 auto;
         overflow: visible;
     }
     .kakao-desktop-ad-banner {

@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <body>
-<section class="kakao-adfit-card kakao-desktop-ad-banner"
-         th:fragment="dynamicBanner"
-         th:if="${adsAllowedOnPage}"
-         data-ad-unit="DAN-nC204VYE90MKQxGJ"
-         data-ad-width="728"
-         data-ad-height="90"></section>
+<div class="kakao-adfit-top-slot"
+     th:fragment="dynamicBanner"
+     th:if="${adsAllowedOnPage}">
+    <section class="kakao-adfit-card kakao-desktop-ad-banner"
+             data-ad-unit="DAN-nC204VYE90MKQxGJ"
+             data-ad-width="728"
+             data-ad-height="90"></section>
+    <section class="kakao-mobile-ad-banner"
+             data-ad-unit="DAN-xCcp5jWABTT3AHyB"
+             data-ad-width="320"
+             data-ad-height="50"></section>
+</div>
 </body>
 </html>
