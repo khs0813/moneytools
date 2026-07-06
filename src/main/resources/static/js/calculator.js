@@ -5,7 +5,45 @@ document.addEventListener('DOMContentLoaded', () => {
   const sidebar = document.getElementById('sidebar');
   const toggle = document.querySelector('[data-menu-toggle]');
   if (toggle && sidebar) {
-    toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+    const setMenuOpen = (open) => {
+      sidebar.classList.toggle('open', open);
+      document.body.classList.toggle('menu-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴 열기');
+      toggle.textContent = open ? '×' : '☰';
+    };
+
+    toggle.setAttribute('aria-controls', sidebar.id);
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.addEventListener('click', () => setMenuOpen(!sidebar.classList.contains('open')));
+
+    sidebar.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => setMenuOpen(false));
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!sidebar.classList.contains('open')) return;
+      if (sidebar.contains(event.target) || toggle.contains(event.target)) return;
+      setMenuOpen(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        setMenuOpen(false);
+      }
+    });
+
+    const desktopMedia = window.matchMedia('(min-width: 821px)');
+    const closeOnDesktop = (event) => {
+      if (event.matches) {
+        setMenuOpen(false);
+      }
+    };
+    if (typeof desktopMedia.addEventListener === 'function') {
+      desktopMedia.addEventListener('change', closeOnDesktop);
+    } else if (typeof desktopMedia.addListener === 'function') {
+      desktopMedia.addListener(closeOnDesktop);
+    }
   }
 
   document.querySelectorAll('[data-copy-result]').forEach((button) => {
