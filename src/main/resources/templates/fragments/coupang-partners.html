@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <body>
-<section class="kakao-adfit-card" th:fragment="dynamicBanner" th:if="${adsAllowedOnPage}">
-    <ins class="kakao_ad_area"
-         style="display:none;"
+<section class="kakao-adfit-card"
+         th:fragment="dynamicBanner"
+         th:if="${adsAllowedOnPage}"
          data-ad-unit="DAN-nC204VYE90MKQxGJ"
          data-ad-width="728"
-         data-ad-height="90"></ins>
-</section>
+         data-ad-height="90"></section>
 </body>
 </html>

@@ -28,49 +28,64 @@
             var maxAttempts = 20;
             var attempt = 0;
 
+            function appendAdArea(adWrapper) {
+                if (!adWrapper || adWrapper.querySelector('.kakao_ad_area')) {
+                    return;
+                }
+
+                var adArea = document.createElement('ins');
+                adArea.className = 'kakao_ad_area';
+                adArea.style.display = 'none';
+                adArea.setAttribute('data-ad-unit', adWrapper.dataset.adUnit);
+                adArea.setAttribute('data-ad-width', adWrapper.dataset.adWidth);
+                adArea.setAttribute('data-ad-height', adWrapper.dataset.adHeight);
+                adWrapper.appendChild(adArea);
+            }
+
+            function isVisibleAdWrapper(adWrapper) {
+                return adWrapper && adWrapper.getBoundingClientRect().width > 0;
+            }
+
+            function mountCardAds() {
+                document.querySelectorAll('.kakao-adfit-card[data-ad-unit]').forEach(function (adWrapper) {
+                    if (isVisibleAdWrapper(adWrapper)) {
+                        appendAdArea(adWrapper);
+                    }
+                });
+            }
+
             function mountMobileFooterAd() {
                 var footerAd = document.querySelector('.kakao-mobile-ad-banner[data-ad-unit]');
-                if (!footerAd || footerAd.querySelector('.kakao_ad_area')) {
+                if (!footerAd) {
                     return;
                 }
                 if (!window.matchMedia('(max-width: 820px)').matches) {
                     return;
                 }
 
-                var adArea = document.createElement('ins');
-                adArea.className = 'kakao_ad_area';
-                adArea.style.display = 'none';
-                adArea.setAttribute('data-ad-unit', footerAd.dataset.adUnit);
-                adArea.setAttribute('data-ad-width', footerAd.dataset.adWidth);
-                adArea.setAttribute('data-ad-height', footerAd.dataset.adHeight);
-                footerAd.appendChild(adArea);
+                appendAdArea(footerAd);
             }
 
             function mountRightRailAd() {
                 var railAd = document.querySelector('.kakao-right-rail-ad[data-ad-unit]');
-                if (!railAd || railAd.querySelector('.kakao_ad_area')) {
+                if (!railAd) {
                     return;
                 }
                 if (!window.matchMedia('(min-width: 821px)').matches) {
                     return;
                 }
 
-                var adArea = document.createElement('ins');
-                adArea.className = 'kakao_ad_area';
-                adArea.style.display = 'none';
-                adArea.setAttribute('data-ad-unit', railAd.dataset.adUnit);
-                adArea.setAttribute('data-ad-width', railAd.dataset.adWidth);
-                adArea.setAttribute('data-ad-height', railAd.dataset.adHeight);
-                railAd.appendChild(adArea);
+                appendAdArea(railAd);
             }
 
             function loadAdFitWhenReady() {
+                mountCardAds();
                 mountMobileFooterAd();
                 mountRightRailAd();
                 var adAreas = document.querySelectorAll('.kakao_ad_area');
                 var isReady = Array.prototype.some.call(adAreas, function (adArea) {
                     var adWrapper = adArea.closest('.kakao-adfit-card, .kakao-mobile-ad-banner, .kakao-right-rail-ad');
-                    return adWrapper && adWrapper.getBoundingClientRect().width > 0;
+                    return isVisibleAdWrapper(adWrapper);
                 });
 
                 if (isReady) {
