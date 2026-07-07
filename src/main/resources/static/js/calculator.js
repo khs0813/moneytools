@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.classList.toggle('menu-open', open);
       toggle.setAttribute('aria-expanded', String(open));
       toggle.setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴 열기');
-      toggle.textContent = open ? '×' : '☰';
     };
 
     toggle.setAttribute('aria-controls', sidebar.id);
