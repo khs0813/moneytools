@@ -476,10 +476,20 @@
         <p>입력하신 데이터는 저장되지 않습니다.</p>
     </section>
     <section class="kakao-right-rail-ad"
-             th:if="${adsAllowedOnPage}"
-             data-ad-unit="DAN-j893qNopyrNj6LHv"
+             th:if="${adsAllowedOnPage and adfit.hasPcSideUnit()}"
+             th:attr="data-ad-unit=${adfit.pcSideUnit()}"
              data-ad-width="160"
              data-ad-height="600"></section>
+    <section class="kakao-adfit-card kakao-secondary-pc-ad"
+             th:if="${adsAllowedOnPage and adfit.v2Enabled() and adfit.hasSecondaryPcUnit()}"
+             th:attr="data-ad-unit=${adfit.secondaryPcUnit()}"
+             data-ad-width="728"
+             data-ad-height="90"></section>
+    <section class="kakao-adfit-card kakao-secondary-mobile-ad"
+             th:if="${adsAllowedOnPage and adfit.v2Enabled() and adfit.hasSecondaryMobileUnit()}"
+             th:attr="data-ad-unit=${adfit.secondaryMobileUnit()}"
+             data-ad-width="300"
+             data-ad-height="250"></section>
 </div>
 </body>
 </html>

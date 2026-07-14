@@ -28,6 +28,9 @@
                 if (!adWrapper || adWrapper.querySelector('.kakao_ad_area')) {
                     return;
                 }
+                if (!adWrapper.dataset.adUnit || !adWrapper.dataset.adUnit.trim()) {
+                    return;
+                }
 
                 var adArea = document.createElement('ins');
                 adArea.className = 'kakao_ad_area';
@@ -90,11 +93,20 @@
                 appendAdArea(railAd);
             }
 
+            function mountResultAds() {
+                document.querySelectorAll('.kakao-result-pc-ad[data-ad-unit], .kakao-result-mobile-ad[data-ad-unit], .kakao-secondary-pc-ad[data-ad-unit], .kakao-secondary-mobile-ad[data-ad-unit]').forEach(function (adWrapper) {
+                    if (isVisibleAdWrapper(adWrapper)) {
+                        appendAdArea(adWrapper);
+                    }
+                });
+            }
+
             function loadAdFitWhenReady() {
                 mountDesktopBannerAds();
                 mountMobileRectangleAds();
                 mountMobileBannerAd();
                 mountRightRailAd();
+                mountResultAds();
                 var adAreas = document.querySelectorAll('.kakao_ad_area');
                 var isReady = Array.prototype.some.call(adAreas, function (adArea) {
                     var adWrapper = adArea.closest('.kakao-adfit-card, .kakao-mobile-ad-banner, .kakao-right-rail-ad');
@@ -119,6 +131,11 @@
                 }
             }
 
+            window.MoneytoolsAdFit = window.MoneytoolsAdFit || {};
+            window.MoneytoolsAdFit.refresh = function () {
+                attempt = 0;
+                window.requestAnimationFrame(loadAdFitWhenReady);
+            };
             window.requestAnimationFrame(loadAdFitWhenReady);
         })();
     </script>

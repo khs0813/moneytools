@@ -696,6 +696,23 @@ details p { color: var(--muted); margin-bottom: 0; }
     gap: 12px;
     justify-items: center;
 }
+.kakao-adfit-result-slot {
+    grid-area: affiliate;
+    display: grid;
+    gap: 12px;
+    justify-items: center;
+}
+.calculator-layout.has-result > .kakao-adfit-result-slot {
+    grid-area: note;
+}
+.kakao-result-mobile-ad,
+.kakao-secondary-mobile-ad {
+    display: none;
+}
+.kakao-result-pc-ad,
+.kakao-secondary-pc-ad {
+    min-height: 90px;
+}
 .kakao-mobile-rectangle-ad {
     display: none;
 }
@@ -780,6 +797,23 @@ details p { color: var(--muted); margin-bottom: 0; }
         display: none;
     }
     .kakao-mobile-rectangle-ad {
+        display: grid;
+        width: 300px;
+        max-width: 100%;
+        min-height: 250px;
+        padding: 0;
+        margin: 0 auto;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        overflow: visible;
+    }
+    .kakao-result-pc-ad,
+    .kakao-secondary-pc-ad {
+        display: none;
+    }
+    .kakao-result-mobile-ad,
+    .kakao-secondary-mobile-ad {
         display: grid;
         width: 300px;
         max-width: 100%;
@@ -937,7 +971,7 @@ details p { color: var(--muted); margin-bottom: 0; }
         align-items: start;
     }
     .calculator-side-stack > .calculator-side-note,
-    .calculator-side-stack > .kakao-adfit-card {
+    .calculator-side-stack > .kakao-adfit-card:not(.kakao-right-rail-ad) {
         grid-column: 1;
     }
     .kakao-right-rail-ad {

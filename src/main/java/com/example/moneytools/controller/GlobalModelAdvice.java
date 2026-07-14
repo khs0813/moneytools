@@ -1,5 +1,10 @@
 package com.example.moneytools.controller;
 
+import com.example.moneytools.adfit.AdFitProperties;
+import com.example.moneytools.adfit.AdFitViewModel;
+import com.example.moneytools.adfit.AdPlacement;
+import com.example.moneytools.adfit.CalculatorCatalog;
+import com.example.moneytools.adfit.CalculatorMeta;
 import com.example.moneytools.config.AppProperties;
 import com.example.moneytools.config.SecurityHeadersFilter;
 import com.example.moneytools.seo.PublicUrlService;
@@ -15,10 +20,12 @@ import java.time.format.DateTimeFormatter;
 @ControllerAdvice
 public class GlobalModelAdvice {
     private final AppProperties appProperties;
+    private final AdFitProperties adFitProperties;
     private final PublicUrlService publicUrlService;
 
-    public GlobalModelAdvice(AppProperties appProperties, PublicUrlService publicUrlService) {
+    public GlobalModelAdvice(AppProperties appProperties, AdFitProperties adFitProperties, PublicUrlService publicUrlService) {
         this.appProperties = appProperties;
+        this.adFitProperties = adFitProperties;
         this.publicUrlService = publicUrlService;
     }
 
@@ -49,6 +56,35 @@ public class GlobalModelAdvice {
                 && !uri.equals("/terms")
                 && !uri.equals("/disclaimer")
                 && !uri.equals("/contact");
+    }
+
+    @ModelAttribute("calculatorMeta")
+    public CalculatorMeta calculatorMeta(HttpServletRequest request) {
+        return SitePages.ALL.stream()
+                .filter(page -> page.path().equals(request.getRequestURI()))
+                .map(page -> CalculatorCatalog.find(page.key()).orElse(null))
+                .filter(meta -> meta != null)
+                .findFirst()
+                .orElse(null);
+    }
+
+    @ModelAttribute("adfit")
+    public AdFitViewModel adfit(HttpServletRequest request) {
+        CalculatorMeta meta = calculatorMeta(request);
+        if (meta == null) {
+            return new AdFitViewModel(adFitProperties.isV2Enabled(), adFitProperties.isPcSideEnabled(),
+                    adFitProperties.isSecondaryEnabled(), "", "", "", "", "");
+        }
+        return new AdFitViewModel(
+                adFitProperties.isV2Enabled(),
+                adFitProperties.isPcSideEnabled(),
+                adFitProperties.isSecondaryEnabled(),
+                adFitProperties.unitFor(meta.group(), AdPlacement.RESULT_MOBILE),
+                adFitProperties.unitFor(meta.group(), AdPlacement.RESULT_PC),
+                adFitProperties.unitFor(meta.group(), AdPlacement.PC_SIDE),
+                adFitProperties.unitFor(meta.group(), AdPlacement.SECONDARY_MOBILE),
+                adFitProperties.unitFor(meta.group(), AdPlacement.SECONDARY_PC)
+        );
     }
 
     @ModelAttribute("staticAssetVersion")

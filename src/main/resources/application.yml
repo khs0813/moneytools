@@ -26,3 +26,17 @@ app:
   contact-email: ${APP_CONTACT_EMAIL:moneyfinancecalculator@gmail.com}
   google-site-verification: ${GOOGLE_SITE_VERIFICATION:}
   naver-site-verification: ${NAVER_SITE_VERIFICATION:}
+  adfit:
+    v2-enabled: ${ADFIT_V2_ENABLED:false}
+    pc-side-enabled: ${ADFIT_PC_SIDE_ENABLED:false}
+    secondary-enabled: ${ADFIT_SECONDARY_ENABLED:false}
+    money:
+      finance-result-mobile: ${NEXT_PUBLIC_ADFIT_MONEY_FINANCE_RESULT_MOBILE:}
+      finance-result-pc: ${NEXT_PUBLIC_ADFIT_MONEY_FINANCE_RESULT_PC:}
+      income-result-mobile: ${NEXT_PUBLIC_ADFIT_MONEY_INCOME_RESULT_MOBILE:}
+      income-result-pc: ${NEXT_PUBLIC_ADFIT_MONEY_INCOME_RESULT_PC:}
+      living-result-mobile: ${NEXT_PUBLIC_ADFIT_MONEY_LIVING_RESULT_MOBILE:}
+      living-result-pc: ${NEXT_PUBLIC_ADFIT_MONEY_LIVING_RESULT_PC:}
+      pc-side: ${NEXT_PUBLIC_ADFIT_MONEY_PC_SIDE:}
+      secondary-mobile: ${NEXT_PUBLIC_ADFIT_MONEY_SECONDARY_MOBILE:}
+      secondary-pc: ${NEXT_PUBLIC_ADFIT_MONEY_SECONDARY_PC:}

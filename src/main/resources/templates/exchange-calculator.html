@@ -48,6 +48,7 @@
                 </div>
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
             </section>
+            <div th:if="${result != null}" th:replace="~{fragments/coupang-partners :: resultAd}"></div>
             <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
         </section>
 
