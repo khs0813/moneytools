@@ -688,11 +688,6 @@ details p { color: var(--muted); margin-bottom: 0; }
     max-width: 100%;
     overflow: visible;
 }
-.adfit-slot-label {
-    color: var(--muted);
-    font-size: 0.78rem;
-    font-weight: 700;
-}
 .adfit-slot-frame {
     display: grid;
     place-items: center;

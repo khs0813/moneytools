@@ -20,7 +20,9 @@
         (function () {
             var sdkSrc = 'https://t1.kakaocdn.net/kas/static/ba.min.js';
             var mobileMedia = window.matchMedia('(max-width: 820px)');
-            var state = window.MoneytoolsAdFit = window.MoneytoolsAdFit || { initialized: {} };
+            var state = window.MoneytoolsAdFit = window.MoneytoolsAdFit || {};
+            state.initializedPlacements = state.initializedPlacements || {};
+            state.initializedUnits = state.initializedUnits || {};
 
             function selectedUnit(slot) {
                 var prefix = mobileMedia.matches ? 'mobile' : 'desktop';
@@ -41,14 +43,15 @@
                 if (!slot || slot.dataset.adfitMounted === 'true') {
                     return false;
                 }
-                var placement = slot.dataset.adfitPlacement;
-                var key = window.location.pathname + '::' + placement;
-                if (state.initialized[key]) {
+                var placement = slot.dataset.adfitPlacement || '';
+                var unit = selectedUnit(slot);
+                if (!unit) {
                     slot.remove();
                     return false;
                 }
-                var unit = selectedUnit(slot);
-                if (!unit) {
+                var placementKey = window.location.pathname + '::placement::' + placement;
+                var unitKey = window.location.pathname + '::unit::' + unit.unit;
+                if (state.initializedPlacements[placementKey] || state.initializedUnits[unitKey]) {
                     slot.remove();
                     return false;
                 }
@@ -70,7 +73,8 @@
                 adArea.setAttribute('data-ad-height', unit.height);
                 frame.appendChild(adArea);
 
-                state.initialized[key] = true;
+                state.initializedPlacements[placementKey] = true;
+                state.initializedUnits[unitKey] = true;
                 slot.dataset.adfitMounted = 'true';
                 return true;
             }
