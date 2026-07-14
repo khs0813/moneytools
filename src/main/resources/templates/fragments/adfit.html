@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="slot(placement)"
+     th:with="slot=${adfit.slot(placement)}"
+     th:if="${slot.renderable()}"
+     class="adfit-slot"
+     th:attr="data-adfit-placement=${slot.placement()},
+              data-adfit-desktop-unit=${slot.desktopUnit()},
+              data-adfit-desktop-width=${slot.desktopWidth()},
+              data-adfit-desktop-height=${slot.desktopHeight()},
+              data-adfit-mobile-unit=${slot.mobileUnit()},
+              data-adfit-mobile-width=${slot.mobileWidth()},
+              data-adfit-mobile-height=${slot.mobileHeight()}">
+    <span class="adfit-slot-label">광고</span>
+    <div class="adfit-slot-frame" aria-hidden="true"></div>
+</div>
+</body>
+</html>

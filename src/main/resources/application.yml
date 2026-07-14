@@ -27,16 +27,19 @@ app:
   google-site-verification: ${GOOGLE_SITE_VERIFICATION:}
   naver-site-verification: ${NAVER_SITE_VERIFICATION:}
   adfit:
-    v2-enabled: ${ADFIT_V2_ENABLED:false}
-    pc-side-enabled: ${ADFIT_PC_SIDE_ENABLED:false}
-    secondary-enabled: ${ADFIT_SECONDARY_ENABLED:false}
-    money:
-      finance-result-mobile: ${NEXT_PUBLIC_ADFIT_MONEY_FINANCE_RESULT_MOBILE:}
-      finance-result-pc: ${NEXT_PUBLIC_ADFIT_MONEY_FINANCE_RESULT_PC:}
-      income-result-mobile: ${NEXT_PUBLIC_ADFIT_MONEY_INCOME_RESULT_MOBILE:}
-      income-result-pc: ${NEXT_PUBLIC_ADFIT_MONEY_INCOME_RESULT_PC:}
-      living-result-mobile: ${NEXT_PUBLIC_ADFIT_MONEY_LIVING_RESULT_MOBILE:}
-      living-result-pc: ${NEXT_PUBLIC_ADFIT_MONEY_LIVING_RESULT_PC:}
-      pc-side: ${NEXT_PUBLIC_ADFIT_MONEY_PC_SIDE:}
-      secondary-mobile: ${NEXT_PUBLIC_ADFIT_MONEY_SECONDARY_MOBILE:}
-      secondary-pc: ${NEXT_PUBLIC_ADFIT_MONEY_SECONDARY_PC:}
+    enabled: ${PUBLIC_ADFIT_ENABLED:false}
+    allowed-hosts: ${PUBLIC_ADFIT_ALLOWED_HOSTS:www.moneycalculator.co.kr}
+    experiment: ${PUBLIC_ADFIT_EXPERIMENT:off}
+    calc-pre-faq-routes: ${PUBLIC_ADFIT_CALC_PRE_FAQ_ROUTES:}
+    units:
+      calc-post-tool-desktop: ${PUBLIC_ADFIT_CALC_POST_TOOL_DESKTOP:}
+      calc-post-tool-mobile: ${PUBLIC_ADFIT_CALC_POST_TOOL_MOBILE:}
+      calc-article-desktop: ${PUBLIC_ADFIT_CALC_ARTICLE_DESKTOP:}
+      calc-article-mobile: ${PUBLIC_ADFIT_CALC_ARTICLE_MOBILE:}
+      guide-desktop: ${PUBLIC_ADFIT_GUIDE_DESKTOP:}
+      guide-mobile: ${PUBLIC_ADFIT_GUIDE_MOBILE:}
+      home-desktop: ${PUBLIC_ADFIT_HOME_DESKTOP:}
+      home-mobile: ${PUBLIC_ADFIT_HOME_MOBILE:}
+      calc-post-tool-mobile-alt: ${PUBLIC_ADFIT_CALC_POST_TOOL_MOBILE_ALT:}
+      calc-pre-faq-desktop: ${PUBLIC_ADFIT_CALC_PRE_FAQ_DESKTOP:}
+      calc-pre-faq-mobile: ${PUBLIC_ADFIT_CALC_PRE_FAQ_MOBILE:}

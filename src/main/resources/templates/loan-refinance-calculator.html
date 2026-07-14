@@ -9,7 +9,6 @@
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('대출 갈아타기 계산기', ${pageDescription})}"></div>
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
-            <div th:replace="~{fragments/coupang-partners :: dynamicBanner}"></div>
             <form class="calculator-form two-column-form" th:action="@{/loan-refinance-calculator}" th:object="${form}" method="post">
                 <h2>입력값</h2>
                 <label>현재 대출 잔액
@@ -74,9 +73,10 @@
                 </div>
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
             </section>
-            <div th:if="${result != null}" th:replace="~{fragments/coupang-partners :: resultAd}"></div>
             <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
         </section>
+
+        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
 
         <section class="content-card">
             <h2>입력값과 결과 해석</h2>

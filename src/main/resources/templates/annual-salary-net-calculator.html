@@ -14,7 +14,6 @@
         </div>
 
         <section class="calculator-layout" data-annual-salary-layout>
-            <div th:replace="~{fragments/coupang-partners :: dynamicBanner}"></div>
             <form class="calculator-form two-column-form" data-annual-salary-calculator>
                 <h2>입력값</h2>
                 <label>연봉
@@ -59,9 +58,10 @@
                 </div>
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
             </section>
-            <div th:replace="~{fragments/coupang-partners :: clientResultAd}"></div>
             <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
         </section>
+
+        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
 
         <div th:replace="~{fragments/longform :: calculatorContent(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>

@@ -28,8 +28,8 @@ public class SecurityHeadersFilter extends OncePerRequestFilter {
             "frame-ancestors 'none'",
             "img-src 'self' data: https:",
             "font-src 'self' data:",
-            "style-src 'self' 'unsafe-inline' https:",
-            "script-src 'self' 'unsafe-inline' https:",
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://t1.kakaocdn.net",
             "connect-src 'self' https:",
             "frame-src https:");
 

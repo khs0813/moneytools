@@ -2,7 +2,6 @@ package com.example.moneytools.controller;
 
 import com.example.moneytools.adfit.AdFitProperties;
 import com.example.moneytools.adfit.AdFitViewModel;
-import com.example.moneytools.adfit.AdPlacement;
 import com.example.moneytools.adfit.CalculatorCatalog;
 import com.example.moneytools.adfit.CalculatorMeta;
 import com.example.moneytools.config.AppProperties;
@@ -15,10 +14,26 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
+import java.util.Set;
 
 
 @ControllerAdvice
 public class GlobalModelAdvice {
+    private static final Set<String> LONG_GUIDE_PATHS = Set.of(
+            "/guide/aircon-8hours-cost",
+            "/guide/car-monthly-cost",
+            "/guide/dividend-100man",
+            "/guide/dividend-tax",
+            "/guide/electricity-tier",
+            "/guide/loan-100m-interest",
+            "/guide/monthly-budget-items",
+            "/guide/overseas-stock-tax-deduction",
+            "/guide/overseas-stock-tax",
+            "/guide/repayment-method-difference",
+            "/guide/salary-5000-net",
+            "/guide/severance-average-wage",
+            "/guide/stock-tax"
+    );
     private final AppProperties appProperties;
     private final AdFitProperties adFitProperties;
     private final PublicUrlService publicUrlService;
@@ -70,21 +85,42 @@ public class GlobalModelAdvice {
 
     @ModelAttribute("adfit")
     public AdFitViewModel adfit(HttpServletRequest request) {
-        CalculatorMeta meta = calculatorMeta(request);
-        if (meta == null) {
-            return new AdFitViewModel(adFitProperties.isV2Enabled(), adFitProperties.isPcSideEnabled(),
-                    adFitProperties.isSecondaryEnabled(), "", "", "", "", "");
+        String path = request.getRequestURI();
+        return new AdFitViewModel(adFitProperties, path, request.getServerName(), adFitPageKind(path));
+    }
+
+    private AdFitViewModel.PageKind adFitPageKind(String path) {
+        if (path == null
+                || path.equals("/about")
+                || path.equals("/privacy")
+                || path.equals("/privacy-policy")
+                || path.equals("/terms")
+                || path.equals("/disclaimer")
+                || path.equals("/contact")
+                || path.startsWith("/error")
+                || path.endsWith(".xml")
+                || path.endsWith(".json")
+                || path.endsWith(".rss")) {
+            return AdFitViewModel.PageKind.BLOCKED;
         }
-        return new AdFitViewModel(
-                adFitProperties.isV2Enabled(),
-                adFitProperties.isPcSideEnabled(),
-                adFitProperties.isSecondaryEnabled(),
-                adFitProperties.unitFor(meta.group(), AdPlacement.RESULT_MOBILE),
-                adFitProperties.unitFor(meta.group(), AdPlacement.RESULT_PC),
-                adFitProperties.unitFor(meta.group(), AdPlacement.PC_SIDE),
-                adFitProperties.unitFor(meta.group(), AdPlacement.SECONDARY_MOBILE),
-                adFitProperties.unitFor(meta.group(), AdPlacement.SECONDARY_PC)
-        );
+        if (path.equals("/")) {
+            return AdFitViewModel.PageKind.HOME;
+        }
+        if (path.equals("/guide")) {
+            return AdFitViewModel.PageKind.GUIDE_INDEX;
+        }
+        if (path.startsWith("/guide/")) {
+            return LONG_GUIDE_PATHS.contains(path)
+                    ? AdFitViewModel.PageKind.GUIDE_ARTICLE_LONG
+                    : AdFitViewModel.PageKind.GUIDE_ARTICLE_SHORT;
+        }
+        return SitePages.ALL.stream()
+                .filter(page -> page.path().equals(path))
+                .map(page -> CalculatorCatalog.calculatorKeys().contains(page.key())
+                        ? AdFitViewModel.PageKind.CALCULATOR
+                        : AdFitViewModel.PageKind.BLOCKED)
+                .findFirst()
+                .orElse(AdFitViewModel.PageKind.BLOCKED);
     }
 
     @ModelAttribute("staticAssetVersion")

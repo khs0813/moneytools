@@ -16,127 +16,88 @@
         <a href="/sitemap.xml">사이트맵</a>
     </div>
     <p class="copyright">© <span th:text="${currentYear}">2026</span> <span th:text="${appName}">머니계산기</span>. All rights reserved.</p>
-    <script th:if="${adsAllowedOnPage}" th:nonce="${cspNonce}">
+    <script th:if="${adfit.hasRenderablePageSlot()}" th:nonce="${cspNonce}">
         (function () {
-            var sdkSrc = '//t1.kakaocdn.net/kas/static/ba.min.js';
+            var sdkSrc = 'https://t1.kakaocdn.net/kas/static/ba.min.js';
             var mobileMedia = window.matchMedia('(max-width: 820px)');
-            var desktopMedia = window.matchMedia('(min-width: 821px)');
-            var maxAttempts = 20;
-            var attempt = 0;
+            var state = window.MoneytoolsAdFit = window.MoneytoolsAdFit || { initialized: {} };
 
-            function appendAdArea(adWrapper) {
-                if (!adWrapper || adWrapper.querySelector('.kakao_ad_area')) {
-                    return;
+            function selectedUnit(slot) {
+                var prefix = mobileMedia.matches ? 'mobile' : 'desktop';
+                var unit = slot.dataset['adfit' + capitalize(prefix) + 'Unit'];
+                var width = slot.dataset['adfit' + capitalize(prefix) + 'Width'];
+                var height = slot.dataset['adfit' + capitalize(prefix) + 'Height'];
+                if (!unit || !unit.trim() || !width || !height) {
+                    return null;
                 }
-                if (!adWrapper.dataset.adUnit || !adWrapper.dataset.adUnit.trim()) {
-                    return;
+                return { unit: unit.trim(), width: width, height: height };
+            }
+
+            function capitalize(value) {
+                return value.charAt(0).toUpperCase() + value.slice(1);
+            }
+
+            function mountSlot(slot) {
+                if (!slot || slot.dataset.adfitMounted === 'true') {
+                    return false;
                 }
+                var placement = slot.dataset.adfitPlacement;
+                var key = window.location.pathname + '::' + placement;
+                if (state.initialized[key]) {
+                    slot.remove();
+                    return false;
+                }
+                var unit = selectedUnit(slot);
+                if (!unit) {
+                    slot.remove();
+                    return false;
+                }
+
+                var frame = slot.querySelector('.adfit-slot-frame');
+                if (!frame) {
+                    slot.remove();
+                    return false;
+                }
+                frame.style.width = unit.width + 'px';
+                frame.style.height = unit.height + 'px';
 
                 var adArea = document.createElement('ins');
                 adArea.className = 'kakao_ad_area';
                 adArea.style.display = 'none';
-                adArea.setAttribute('data-ad-unit', adWrapper.dataset.adUnit);
-                adArea.setAttribute('data-ad-width', adWrapper.dataset.adWidth);
-                adArea.setAttribute('data-ad-height', adWrapper.dataset.adHeight);
-                adWrapper.appendChild(adArea);
+                adArea.style.width = '100%';
+                adArea.setAttribute('data-ad-unit', unit.unit);
+                adArea.setAttribute('data-ad-width', unit.width);
+                adArea.setAttribute('data-ad-height', unit.height);
+                frame.appendChild(adArea);
+
+                state.initialized[key] = true;
+                slot.dataset.adfitMounted = 'true';
+                return true;
             }
 
-            function isVisibleAdWrapper(adWrapper) {
-                return adWrapper && adWrapper.getBoundingClientRect().width > 0;
-            }
-
-            function mountDesktopBannerAds() {
-                if (!desktopMedia.matches) {
+            function loadSdkOnce() {
+                if (document.querySelector('script[src="' + sdkSrc + '"]')) {
                     return;
                 }
+                var script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.charset = 'utf-8';
+                script.src = sdkSrc;
+                script.async = true;
+                document.body.appendChild(script);
+            }
 
-                document.querySelectorAll('.kakao-desktop-ad-banner[data-ad-unit]').forEach(function (adWrapper) {
-                    if (isVisibleAdWrapper(adWrapper)) {
-                        appendAdArea(adWrapper);
-                    }
+            function initAdFitSlots() {
+                var mounted = false;
+                document.querySelectorAll('.adfit-slot[data-adfit-placement]').forEach(function (slot) {
+                    mounted = mountSlot(slot) || mounted;
                 });
-            }
-
-            function mountMobileRectangleAds() {
-                if (!mobileMedia.matches) {
-                    return;
-                }
-
-                document.querySelectorAll('.kakao-mobile-rectangle-ad[data-ad-unit]').forEach(function (adWrapper) {
-                    if (isVisibleAdWrapper(adWrapper)) {
-                        appendAdArea(adWrapper);
-                    }
-                });
-            }
-
-            function mountMobileBannerAd() {
-                var bannerAd = document.querySelector('.kakao-mobile-ad-banner[data-ad-unit]');
-                if (!bannerAd) {
-                    return;
-                }
-                if (!mobileMedia.matches) {
-                    return;
-                }
-
-                appendAdArea(bannerAd);
-            }
-
-            function mountRightRailAd() {
-                var railAd = document.querySelector('.kakao-right-rail-ad[data-ad-unit]');
-                if (!railAd) {
-                    return;
-                }
-                if (!desktopMedia.matches) {
-                    return;
-                }
-
-                appendAdArea(railAd);
-            }
-
-            function mountResultAds() {
-                document.querySelectorAll('.kakao-result-pc-ad[data-ad-unit], .kakao-result-mobile-ad[data-ad-unit], .kakao-secondary-pc-ad[data-ad-unit], .kakao-secondary-mobile-ad[data-ad-unit]').forEach(function (adWrapper) {
-                    if (isVisibleAdWrapper(adWrapper)) {
-                        appendAdArea(adWrapper);
-                    }
-                });
-            }
-
-            function loadAdFitWhenReady() {
-                mountDesktopBannerAds();
-                mountMobileRectangleAds();
-                mountMobileBannerAd();
-                mountRightRailAd();
-                mountResultAds();
-                var adAreas = document.querySelectorAll('.kakao_ad_area');
-                var isReady = Array.prototype.some.call(adAreas, function (adArea) {
-                    var adWrapper = adArea.closest('.kakao-adfit-card, .kakao-mobile-ad-banner, .kakao-right-rail-ad');
-                    return isVisibleAdWrapper(adWrapper);
-                });
-
-                if (isReady) {
-                    if (document.querySelector('script[src="' + sdkSrc + '"], script[src="https://t1.kakaocdn.net/kas/static/ba.min.js"]')) {
-                        return;
-                    }
-                    var script = document.createElement('script');
-                    script.type = 'text/javascript';
-                    script.src = sdkSrc;
-                    script.async = true;
-                    document.body.appendChild(script);
-                    return;
-                }
-
-                attempt += 1;
-                if (attempt < maxAttempts) {
-                    window.requestAnimationFrame(loadAdFitWhenReady);
+                if (mounted) {
+                    loadSdkOnce();
                 }
             }
 
-            window.MoneytoolsAdFit = window.MoneytoolsAdFit || {};
-            window.MoneytoolsAdFit.refresh = function () {
-                attempt = 0;
-                window.requestAnimationFrame(loadAdFitWhenReady);
-            };
-            window.requestAnimationFrame(loadAdFitWhenReady);
+            window.requestAnimationFrame(initAdFitSlots);
         })();
     </script>
     <script th:src="@{/js/calculator.js(v=${staticAssetVersion})}" defer></script>

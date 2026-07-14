@@ -9,7 +9,6 @@
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('대출이자 계산기', ${pageDescription})}"></div>
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
-            <div th:replace="~{fragments/coupang-partners :: dynamicBanner}"></div>
             <form class="calculator-form" th:action="@{/loan-interest-calculator}" th:object="${form}" method="post">
                 <h2>입력값</h2>
                 <label>대출원금
@@ -46,7 +45,6 @@
                 </div>
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
             </section>
-            <div th:if="${result != null}" th:replace="~{fragments/coupang-partners :: resultAd}"></div>
             <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
         </section>
 
@@ -75,6 +73,8 @@
                 </table>
             </div>
         </section>
+
+        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
 
         <section class="content-card">
             <h2>상환방식 안내</h2>

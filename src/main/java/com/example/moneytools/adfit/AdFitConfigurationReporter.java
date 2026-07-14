@@ -24,52 +24,31 @@ public class AdFitConfigurationReporter implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        if (!properties.isV2Enabled() || productionProfileActive()) {
+        if (!properties.isEnabled() || productionProfileActive()) {
             return;
         }
 
-        List<String> missing = Arrays.stream(MoneyCalculatorGroup.values())
-                .flatMap(group -> List.of(
-                        missingKey(group, AdPlacement.RESULT_MOBILE),
-                        missingKey(group, AdPlacement.RESULT_PC)
-                ).stream())
-                .filter(value -> !value.isBlank())
-                .toList();
+        List<String> missing = List.of(
+                missingKey(AdPlacement.CALCULATOR_POST_TOOL, "PUBLIC_ADFIT_CALC_POST_TOOL_DESKTOP", "PUBLIC_ADFIT_CALC_POST_TOOL_MOBILE"),
+                missingKey(AdPlacement.CALCULATOR_ARTICLE_MID, "PUBLIC_ADFIT_CALC_ARTICLE_DESKTOP", "PUBLIC_ADFIT_CALC_ARTICLE_MOBILE"),
+                missingKey(AdPlacement.GUIDE_ARTICLE_MID, "PUBLIC_ADFIT_GUIDE_DESKTOP", "PUBLIC_ADFIT_GUIDE_MOBILE"),
+                missingKey(AdPlacement.HOME_MID, "PUBLIC_ADFIT_HOME_DESKTOP", "PUBLIC_ADFIT_HOME_MOBILE")
+        ).stream().flatMap(List::stream).toList();
 
         if (!missing.isEmpty()) {
-            log.warn("AdFit v2 is enabled but these result ad units are missing: {}", String.join(", ", missing));
+            log.warn("AdFit is enabled but these initial ad unit variables are missing: {}", String.join(", ", missing));
         }
-        if (properties.isPcSideEnabled() && properties.unitFor(MoneyCalculatorGroup.FINANCE, AdPlacement.PC_SIDE).isBlank()) {
-            log.warn("AdFit PC side slot is enabled but NEXT_PUBLIC_ADFIT_MONEY_PC_SIDE is missing.");
-        }
-        if (properties.isSecondaryEnabled()) {
-            if (properties.unitFor(MoneyCalculatorGroup.FINANCE, AdPlacement.SECONDARY_MOBILE).isBlank()) {
-                log.warn("AdFit secondary mobile slot is enabled but NEXT_PUBLIC_ADFIT_MONEY_SECONDARY_MOBILE is missing.");
-            }
-            if (properties.unitFor(MoneyCalculatorGroup.FINANCE, AdPlacement.SECONDARY_PC).isBlank()) {
-                log.warn("AdFit secondary PC slot is enabled but NEXT_PUBLIC_ADFIT_MONEY_SECONDARY_PC is missing.");
-            }
-        }
+    }
+
+    private List<String> missingKey(AdPlacement placement, String desktopKey, String mobileKey) {
+        AdFitSlotViewModel slot = properties.slotFor(placement);
+        return List.of(
+                slot.desktopUnit().isBlank() ? desktopKey : "",
+                slot.mobileUnit().isBlank() ? mobileKey : ""
+        ).stream().filter(value -> !value.isBlank()).toList();
     }
 
     private boolean productionProfileActive() {
         return Arrays.stream(environment.getActiveProfiles()).anyMatch("prod"::equalsIgnoreCase);
-    }
-
-    private String missingKey(MoneyCalculatorGroup group, AdPlacement placement) {
-        if (!properties.unitFor(group, placement).isBlank()) {
-            return "";
-        }
-        return switch (group) {
-            case FINANCE -> placement == AdPlacement.RESULT_MOBILE
-                    ? "NEXT_PUBLIC_ADFIT_MONEY_FINANCE_RESULT_MOBILE"
-                    : "NEXT_PUBLIC_ADFIT_MONEY_FINANCE_RESULT_PC";
-            case INCOME -> placement == AdPlacement.RESULT_MOBILE
-                    ? "NEXT_PUBLIC_ADFIT_MONEY_INCOME_RESULT_MOBILE"
-                    : "NEXT_PUBLIC_ADFIT_MONEY_INCOME_RESULT_PC";
-            case LIVING -> placement == AdPlacement.RESULT_MOBILE
-                    ? "NEXT_PUBLIC_ADFIT_MONEY_LIVING_RESULT_MOBILE"
-                    : "NEXT_PUBLIC_ADFIT_MONEY_LIVING_RESULT_PC";
-        };
     }
 }

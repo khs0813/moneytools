@@ -680,55 +680,24 @@ details p { color: var(--muted); margin-bottom: 0; }
 .data-table td:first-child { text-align: center; }
 .data-table th { position: sticky; top: 0; background: #f4f7ff; color: #344054; }
 
-.kakao-adfit-card {
+.adfit-slot {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    margin: 56px auto;
+    max-width: 100%;
+    overflow: visible;
+}
+.adfit-slot-label {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+.adfit-slot-frame {
     display: grid;
     place-items: center;
-    min-height: 250px;
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.88);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-soft);
-    overflow-x: auto;
-}
-.kakao-adfit-top-slot {
-    display: grid;
-    gap: 12px;
-    justify-items: center;
-}
-.kakao-adfit-result-slot {
-    grid-area: affiliate;
-    display: grid;
-    gap: 12px;
-    justify-items: center;
-}
-.calculator-layout.has-result > .kakao-adfit-result-slot {
-    grid-area: note;
-}
-.kakao-result-mobile-ad,
-.kakao-secondary-mobile-ad {
-    display: none;
-}
-.kakao-result-pc-ad,
-.kakao-secondary-pc-ad {
-    min-height: 90px;
-}
-.kakao-mobile-rectangle-ad {
-    display: none;
-}
-.kakao-mobile-ad-banner {
-    display: none;
-    width: 320px;
-    max-width: 320px;
-    min-width: 320px;
-    min-height: 50px;
-    margin: 0 auto;
-    overflow-x: visible;
-    overflow-y: hidden;
-    text-align: center;
-}
-.kakao-right-rail-ad {
-    display: none;
+    max-width: 100%;
+    overflow: visible;
 }
 .footer {
     margin-top: 34px;
@@ -783,47 +752,6 @@ details p { color: var(--muted); margin-bottom: 0; }
         justify-content: center;
         right: calc(16px + env(safe-area-inset-right));
         top: calc(16px + env(safe-area-inset-top));
-    }
-    .kakao-mobile-ad-banner {
-        display: grid;
-        place-items: center;
-        width: 320px;
-        max-width: 320px;
-        min-width: 320px;
-        margin: 0 auto;
-        overflow: visible;
-    }
-    .kakao-desktop-ad-banner {
-        display: none;
-    }
-    .kakao-mobile-rectangle-ad {
-        display: grid;
-        width: 300px;
-        max-width: 100%;
-        min-height: 250px;
-        padding: 0;
-        margin: 0 auto;
-        border: 0;
-        background: transparent;
-        box-shadow: none;
-        overflow: visible;
-    }
-    .kakao-result-pc-ad,
-    .kakao-secondary-pc-ad {
-        display: none;
-    }
-    .kakao-result-mobile-ad,
-    .kakao-secondary-mobile-ad {
-        display: grid;
-        width: 300px;
-        max-width: 100%;
-        min-height: 250px;
-        padding: 0;
-        margin: 0 auto;
-        border: 0;
-        background: transparent;
-        box-shadow: none;
-        overflow: visible;
     }
     .app-shell { display: block; }
     .sidebar {
@@ -902,6 +830,12 @@ details p { color: var(--muted); margin-bottom: 0; }
         font-size: clamp(1.08rem, 5vw, 1.25rem);
         overflow-wrap: anywhere;
     }
+    .adfit-slot {
+        width: 100vw;
+        max-width: 100vw;
+        margin-left: calc(50% - 50vw);
+        margin-right: calc(50% - 50vw);
+    }
     .risk-summary {
         align-items: flex-start;
         flex-direction: column;
@@ -970,22 +904,13 @@ details p { color: var(--muted); margin-bottom: 0; }
         grid-template-columns: minmax(260px, 1fr) 160px;
         align-items: start;
     }
-    .calculator-side-stack > .calculator-side-note,
-    .calculator-side-stack > .kakao-adfit-card:not(.kakao-right-rail-ad) {
+    .calculator-side-stack > .calculator-side-note {
         grid-column: 1;
-    }
-    .kakao-right-rail-ad {
-        display: grid;
-        grid-column: 2;
-        grid-row: 1 / span 2;
-        place-items: center;
-        width: 160px;
-        min-height: 600px;
     }
 }
 
 @media print {
-    .sidebar, .mobile-menu-button, .footer, .primary-button, .ghost-button, .kakao-right-rail-ad { display: none !important; }
+    .sidebar, .mobile-menu-button, .footer, .primary-button, .ghost-button, .adfit-slot { display: none !important; }
     .app-shell { display: block; }
     .main-content { padding: 0; width: 100%; }
     .content-card, .calculator-form, .result-panel { box-shadow: none; border: 1px solid #ddd; }

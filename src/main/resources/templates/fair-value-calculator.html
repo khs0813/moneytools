@@ -9,7 +9,6 @@
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('적정주가 계산기', ${pageDescription})}"></div>
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
-            <div th:replace="~{fragments/coupang-partners :: dynamicBanner}"></div>
             <form class="calculator-form" th:action="@{/fair-value-calculator}" th:object="${form}" method="post">
                 <h2>입력값</h2>
                 <label>EPS
@@ -47,9 +46,10 @@
                 </div>
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
             </section>
-            <div th:if="${result != null}" th:replace="~{fragments/coupang-partners :: resultAd}"></div>
             <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
         </section>
+
+        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
 
         <div th:replace="~{fragments/components :: disclaimer('본 계산기는 단순 참고용이며 특정 종목 매수·매도 추천이나 투자 자문이 아닙니다.')}"></div>
         <div th:replace="~{fragments/longform :: calculatorContent(${activeMenu})}"></div>

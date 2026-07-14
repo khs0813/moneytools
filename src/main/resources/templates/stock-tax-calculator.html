@@ -53,6 +53,8 @@
             </div>
         </section>
 
+        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
+
         <section class="content-card">
             <h2>주식 매도 세금 계산기 사용법</h2>
             <p>먼저 국내주식인지 해외주식인지 구분한 뒤 매도금액, 매수금액, 수수료, 환율, 배당 여부를 확인합니다. 국내 상장주식은 매도금액 기준 증권거래세를 빠르게 확인하고, 해외주식은 양도차익에서 기본공제 250만원을 차감한 과세표준을 계산하는 흐름이 핵심입니다.</p>
@@ -80,6 +82,8 @@
                 <a href="/dividend-calculator">배당 계산기로 세전·세후 배당금 계산하기</a>
             </div>
         </section>
+
+        <div th:replace="~{fragments/adfit :: slot('calculator_article_mid')}"></div>
 
         <div th:replace="~{fragments/components :: disclaimer('주식 세금은 계좌 유형, 투자자 지위, 종목, 손익통산, 신고 방식에 따라 달라집니다. 계산 결과는 참고용이며 실제 신고 전 최신 기준을 확인해야 합니다.')}" ></div>
         <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>

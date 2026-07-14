@@ -48,6 +48,8 @@
             <p>예를 들어 매수 원화환산 1,000만원, 매도 원화환산 1,300만원, 양도차익 300만원, 기본공제 250만원, 예상 세금 11만원은 표 셀별로 분리됩니다.</p>
         </section>
 
+        <div th:replace="~{fragments/adfit :: slot('guide_article_mid')}"></div>
+
         <section class="content-card">
             <h2>과세표준과 예상세금 계산 흐름</h2>
             <p>계산 흐름은 원화 환산, 필요경비 차감, 기본공제 차감, 과세표준 산정, 세율 적용 순서입니다. 환율과 수수료를 빠뜨리면 실제 손익과 차이가 커질 수 있으므로 거래내역서 기준으로 입력하는 것이 좋습니다.</p>
@@ -55,6 +57,7 @@
         </section>
 
         <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
+        <div th:replace="~{fragments/adfit :: slot('guide_pre_faq')}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
 
         <section class="content-card">

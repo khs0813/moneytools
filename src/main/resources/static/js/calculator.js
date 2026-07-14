@@ -468,11 +468,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const annualSalaryForm = document.querySelector('[data-annual-salary-calculator]');
-  const revealClientResultAd = (layout) => {
-    layout?.querySelector('[data-result-ad-slot]')?.removeAttribute('hidden');
-    window.MoneytoolsAdFit?.refresh?.();
-  };
-
   if (annualSalaryForm) {
     const annualSalaryLayout = document.querySelector('[data-annual-salary-layout]');
     const annualSalaryResultPanel = document.querySelector('[data-annual-salary-result-panel]');
@@ -497,7 +492,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       annualSalaryResultPanel?.removeAttribute('hidden');
       annualSalaryLayout?.classList.add('has-result');
-      revealClientResultAd(annualSalaryLayout);
     };
 
     annualSalaryForm.addEventListener('submit', (event) => {
@@ -561,7 +555,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       resultPanel?.removeAttribute('hidden');
       layout?.classList.add('has-result');
-      revealClientResultAd(layout);
     };
 
     domesticStockTaxForm.addEventListener('submit', (event) => {

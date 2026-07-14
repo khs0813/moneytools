@@ -48,6 +48,8 @@
             <p>월배당과 분기배당 예시는 배당 주기, 보유 주식 수, 주당 배당금, 1회 세전·세후 배당금, 연 세후 배당금을 표 셀별로 구분합니다.</p>
         </section>
 
+        <div th:replace="~{fragments/adfit :: slot('guide_article_mid')}"></div>
+
         <section class="content-card">
             <h2>세후 배당금 계산 흐름</h2>
             <p>먼저 1회 세전 배당금을 계산하고, 원천징수세율을 곱해 배당소득세를 구합니다. 그다음 세전 배당금에서 배당소득세를 빼면 1회 세후 배당금이 됩니다. 월배당은 12회, 분기배당은 4회, 반기배당은 2회, 연배당은 1회 기준으로 연 환산액을 계산합니다.</p>
@@ -55,6 +57,7 @@
         </section>
 
         <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
+        <div th:replace="~{fragments/adfit :: slot('guide_pre_faq')}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
 
         <section class="content-card">
