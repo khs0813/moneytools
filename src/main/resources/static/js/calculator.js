@@ -1,6 +1,58 @@
 document.addEventListener('DOMContentLoaded', () => {
   const MAX_NUMERIC_TEXT_LENGTH = 128;
   const MAX_SCIENTIFIC_EXPONENT_ABS = 128;
+  const resultScrollRequestKey = `moneytools:result-scroll:${window.location.pathname}`;
+  const mobileResultScrollMedia = window.matchMedia('(max-width: 820px)');
+
+  const shouldScrollToResult = () => mobileResultScrollMedia.matches;
+
+  const rememberResultScrollRequest = () => {
+    if (!shouldScrollToResult()) return;
+    try {
+      window.sessionStorage.setItem(resultScrollRequestKey, 'true');
+    } catch (error) {
+      // Storage can be unavailable in private or restricted browsing modes.
+    }
+  };
+
+  const consumeResultScrollRequest = () => {
+    try {
+      const requested = window.sessionStorage.getItem(resultScrollRequestKey) === 'true';
+      if (requested) {
+        window.sessionStorage.removeItem(resultScrollRequestKey);
+      }
+      return requested;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const getVisibleResultCard = (container = document) =>
+    Array.from(container.querySelectorAll('[data-result-card]'))
+      .find((card) => !card.hidden && card.offsetParent !== null) ?? null;
+
+  const getScrollMarginTop = (element) => {
+    const scrollMarginTop = Number.parseFloat(window.getComputedStyle(element).scrollMarginTop);
+    return Number.isFinite(scrollMarginTop) ? scrollMarginTop : 0;
+  };
+
+  const scrollToResultCard = (resultCard) => {
+    if (!shouldScrollToResult()) return;
+    if (!resultCard) return;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const scroll = (behavior) => {
+      const targetTop = Math.max(0, resultCard.getBoundingClientRect().top + window.scrollY - getScrollMarginTop(resultCard));
+      window.scrollTo({
+        top: targetTop,
+        behavior
+      });
+    };
+
+    window.requestAnimationFrame(() => {
+      scroll(prefersReducedMotion ? 'auto' : 'smooth');
+      window.setTimeout(() => scroll('auto'), 120);
+    });
+  };
 
   const sidebar = document.getElementById('sidebar');
   const toggle = document.querySelector('[data-menu-toggle]');
@@ -60,6 +112,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  if (consumeResultScrollRequest()) {
+    scrollToResultCard(getVisibleResultCard());
+  }
 
   document.querySelectorAll('[data-download-table]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -413,6 +469,13 @@ document.addEventListener('DOMContentLoaded', () => {
     return true;
   };
 
+  document.querySelectorAll('form.calculator-form[method]').forEach((form) => {
+    if ((form.getAttribute('method') ?? '').toLowerCase() !== 'post') return;
+    form.addEventListener('submit', () => {
+      rememberResultScrollRequest();
+    });
+  });
+
   numericInputs.forEach((input) => {
     input.addEventListener('input', () => validateNumberInput(input));
     input.addEventListener('change', () => validateNumberInput(input));
@@ -498,6 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault();
       if (!validateNumberInputsInForm(annualSalaryForm)) return;
       renderAnnualSalaryResult();
+      scrollToResultCard(annualSalaryResultPanel);
     });
   }
 
@@ -561,6 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault();
       if (!validateNumberInputsInForm(domesticStockTaxForm)) return;
       renderDomesticStockTaxResult();
+      scrollToResultCard(resultPanel);
     });
   }
 
