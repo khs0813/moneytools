@@ -839,6 +839,27 @@ details p { color: var(--muted); margin-bottom: 0; }
     .result-panel {
         scroll-margin-top: calc(84px + env(safe-area-inset-top));
     }
+    .calculation-basis-box {
+        margin-top: 10px;
+        padding: 10px 12px;
+        border-radius: 14px;
+    }
+    .calculation-basis-box strong {
+        display: block;
+        font-size: 0.86rem;
+        line-height: 1.25;
+    }
+    .calculation-basis-box ul {
+        margin-top: 5px;
+        padding-left: 16px;
+    }
+    .calculation-basis-box li {
+        font-size: 0.78rem;
+        line-height: 1.35;
+    }
+    .calculation-basis-box li + li {
+        margin-top: 3px;
+    }
     .breadcrumbs {
         overflow-x: auto;
         white-space: nowrap;
