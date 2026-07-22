@@ -9,7 +9,6 @@
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('국내 주식 세금 계산기', ${pageDescription})}"></div>
         <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
-        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
 
         <section class="calculator-layout" data-domestic-stock-tax-layout>
             <form class="calculator-form two-column-form" data-domestic-stock-tax-calculator>
@@ -47,6 +46,7 @@
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
             </section>
             <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
+            <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
         </section>
 
         <div th:replace="~{fragments/components :: disclaimer('국내 상장주식 세금은 시장, 종목, 대주주 여부, 비상장주식 여부, 세법 개정에 따라 달라질 수 있습니다. 이 계산기는 매도금액 기준 증권거래세와 선택 입력한 양도소득세를 단순 추정하는 참고용 도구입니다.')}" ></div>

@@ -9,7 +9,6 @@
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('배당 계산기', ${pageDescription})}"></div>
         <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
-        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
 
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form" th:action="@{/dividend-calculator}" th:object="${form}" method="post">
@@ -51,6 +50,7 @@
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
             </section>
             <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
+            <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
         </section>
 
         <div th:replace="~{fragments/longform :: calculatorContent(${activeMenu})}"></div>

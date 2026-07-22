@@ -9,7 +9,6 @@
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('전기요금 계산기', ${pageDescription})}"></div>
         <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
-        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
 
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form" th:action="@{/electricity-bill-calculator}" th:object="${form}" method="post">
@@ -43,6 +42,7 @@
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
             </section>
             <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
+            <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
         </section>
 
         <div th:replace="~{fragments/components :: disclaimer('가정용 누진요금 구조를 단순화한 참고 계산입니다. 실제 전기요금은 계약 종류, 검침일, 할인 제도, 정책 변경에 따라 달라질 수 있습니다. 공식 청구 전에는 반드시 한전 또는 계약 사업자의 고지서를 확인하시기 바랍니다.')}"></div>
