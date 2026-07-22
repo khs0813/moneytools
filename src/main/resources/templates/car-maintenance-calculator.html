@@ -8,6 +8,9 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('자동차 유지비 계산기', ${pageDescription})}"></div>
+        <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
+        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
+
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form two-column-form" th:action="@{/car-maintenance-calculator}" th:object="${form}" method="post">
                 <h2>입력값</h2>
@@ -49,7 +52,6 @@
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
-            <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
             <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
@@ -64,8 +66,6 @@
             </section>
             <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
         </section>
-
-        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
 
         <div th:replace="~{fragments/components :: disclaimer('현금 유출 중심의 월평균 유지비 계산입니다. 감가상각, 사고 위험, 예기치 못한 수리비는 충분히 반영되지 않으므로 차량 보유 결정 전에는 실제 지출 기록을 함께 보시기 바랍니다.')}"></div>
         <div th:replace="~{fragments/longform :: calculatorContent(${activeMenu})}"></div>

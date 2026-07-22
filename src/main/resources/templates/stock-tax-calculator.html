@@ -9,6 +9,7 @@
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('주식 세금 계산기', ${pageDescription})}"></div>
         <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
+        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
 
         <section class="content-card">
             <h2>국내·해외주식 매도세금 계산 허브</h2>
@@ -52,8 +53,6 @@
                 </table>
             </div>
         </section>
-
-        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
 
         <section class="content-card">
             <h2>주식 매도 세금 계산기 사용법</h2>

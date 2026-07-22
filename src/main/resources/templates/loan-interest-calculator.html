@@ -8,6 +8,9 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('대출이자 계산기', ${pageDescription})}"></div>
+        <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
+        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
+
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form" th:action="@{/loan-interest-calculator}" th:object="${form}" method="post">
                 <h2>입력값</h2>
@@ -34,7 +37,6 @@
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
-            <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
             <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
@@ -73,8 +75,6 @@
                 </table>
             </div>
         </section>
-
-        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
 
         <section class="content-card">
             <h2>상환방식 안내</h2>

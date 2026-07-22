@@ -8,6 +8,9 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('에어컨 전기세 계산기', ${pageDescription})}"></div>
+        <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
+        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
+
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form" th:action="@{/air-conditioner-electricity-calculator}" th:object="${form}" method="post">
                 <h2>입력값</h2>
@@ -33,7 +36,6 @@
                 </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
-            <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
             <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
@@ -48,8 +50,6 @@
             </section>
             <div th:replace="~{fragments/components :: calculatorSideNote}"></div>
         </section>
-
-        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
 
         <div th:replace="~{fragments/components :: disclaimer('정격 소비전력 기준의 참고 계산입니다. 인버터 동작, 실내외 온도, 단열 상태, 누진구간 진입 여부에 따라 실제 청구 전기요금은 달라질 수 있습니다.')}"></div>
         <div th:replace="~{fragments/longform :: calculatorContent(${activeMenu})}"></div>
