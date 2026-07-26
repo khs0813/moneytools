@@ -1,6 +1,7 @@
 package com.example.moneytools.service;
 
 import com.example.moneytools.dto.DividendRequest;
+import com.example.moneytools.dto.AirConditionerCostRequest;
 import com.example.moneytools.dto.LoanRequest;
 import com.example.moneytools.dto.SalaryRequest;
 import com.example.moneytools.dto.StockAverageRequest;
@@ -36,6 +37,7 @@ class CalculatorServiceTests {
 
         assertThat(result.totalMonths()).isEqualTo(12);
         assertThat(result.schedule()).hasSize(12);
+        assertThat(result.lastMonthlyPayment()).isGreaterThan(0.0);
         assertThat(result.totalPayment()).isGreaterThan(request.getPrincipal().doubleValue());
     }
 
@@ -93,5 +95,23 @@ class CalculatorServiceTests {
 
         assertThat(baseResult.incomeTax() - childCreditResult.incomeTax()).isEqualTo(29_160.0);
         assertThat(baseResult.localIncomeTax()).isGreaterThan(childCreditResult.localIncomeTax());
+    }
+
+    @Test
+    void airConditionerCalculatorSeparatesStandaloneAndHouseholdIncrement() {
+        AirConditionerCostRequest request = new AirConditionerCostRequest();
+        request.setPowerWatts(1800.0);
+        request.setHoursPerDay(8.0);
+        request.setDaysPerMonth(30.0);
+        request.setElectricityRatePerKwh(160.0);
+        request.setStandbyWatts(5.0);
+        request.setHouseholdUsageKwh(250.0);
+        request.setSeason("SUMMER");
+
+        var result = new AirConditionerCostCalculatorService(new ElectricityBillCalculatorService()).calculate(request);
+
+        assertThat(result.estimatedCost()).isGreaterThan(0.0);
+        assertThat(result.householdTotalUsageKwh()).isGreaterThan(result.householdBaseUsageKwh());
+        assertThat(result.householdIncrementalCost()).isGreaterThan(0.0);
     }
 }

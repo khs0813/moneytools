@@ -1,5 +1,6 @@
 package com.example.moneytools.controller;
 
+import com.example.moneytools.config.AppProperties;
 import com.example.moneytools.seo.FaqItem;
 import com.example.moneytools.seo.PageInfo;
 import com.example.moneytools.seo.PublicUrlService;
@@ -9,16 +10,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @Controller
 public class PageController {
+    private static final ZoneId KOREA_ZONE = ZoneId.of("Asia/Seoul");
+
     private final SeoService seoService;
     private final PublicUrlService publicUrlService;
+    private final AppProperties appProperties;
 
-    public PageController(SeoService seoService, PublicUrlService publicUrlService) {
+    public PageController(SeoService seoService, PublicUrlService publicUrlService, AppProperties appProperties) {
         this.seoService = seoService;
         this.publicUrlService = publicUrlService;
+        this.appProperties = appProperties;
     }
 
     @GetMapping("/")
@@ -35,6 +42,13 @@ public class PageController {
                 .filter(p -> !List.of("home", "guide", "privacy", "contact").contains(p.key()))
                 .toList());
         model.addAttribute("guidePages", SitePages.guides());
+        boolean electricityFeatureActive = appProperties.getHome().isActive("electricity", LocalDate.now(KOREA_ZONE));
+        model.addAttribute("electricityFeatureActive", electricityFeatureActive);
+        model.addAttribute("homeHeroHref", electricityFeatureActive ? "/electricity-bill-calculator" : "/mortgage-monthly-payment-calculator");
+        model.addAttribute("homeHeroLabel", electricityFeatureActive ? "전기요금 계산기" : "주담대 월납입 계산기");
+        model.addAttribute("homeHeroDescription", electricityFeatureActive
+                ? "월 사용량과 계절 구분으로 가정용 누진요금을 먼저 확인하세요."
+                : "LTV와 소득 대비 월 상환 부담률을 함께 확인해보세요.");
         return "index";
     }
 

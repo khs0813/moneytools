@@ -26,6 +26,10 @@ app:
   contact-email: ${APP_CONTACT_EMAIL:moneyfinancecalculator@gmail.com}
   google-site-verification: ${GOOGLE_SITE_VERIFICATION:}
   naver-site-verification: ${NAVER_SITE_VERIFICATION:}
+  home:
+    featured-cluster: ${HOME_FEATURED_CLUSTER:electricity}
+    active-from: ${HOME_FEATURED_ACTIVE_FROM:2026-06-01}
+    active-until: ${HOME_FEATURED_ACTIVE_UNTIL:2026-09-30}
   adfit:
     enabled: ${PUBLIC_ADFIT_ENABLED:false}
     allowed-hosts: ${PUBLIC_ADFIT_ALLOWED_HOSTS:www.moneycalculator.co.kr}

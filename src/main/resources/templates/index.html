@@ -20,10 +20,10 @@
                     <a class="ghost-button" href="/guide">계산 기준과 가이드 보기</a>
                 </div>
             </div>
-            <a class="hero-card" href="/mortgage-monthly-payment-calculator" aria-label="주담대 월납입 계산기로 이동">
+            <a class="hero-card" th:href="${homeHeroHref}" th:attr="aria-label=${homeHeroLabel + '로 이동'}">
                 <span>오늘의 추천</span>
-                <strong>주담대 월납입 계산기</strong>
-                <p>LTV와 소득 대비 월 상환 부담률을 함께 확인해보세요.</p>
+                <strong th:text="${homeHeroLabel}">주담대 월납입 계산기</strong>
+                <p th:text="${homeHeroDescription}">LTV와 소득 대비 월 상환 부담률을 함께 확인해보세요.</p>
             </a>
         </section>
 
@@ -37,12 +37,17 @@
         <section class="section-block content-card">
             <h2>많이 찾는 금융 계산기</h2>
             <div class="related-links">
+                <th:block th:if="${electricityFeatureActive}">
+                    <a href="/electricity-bill-calculator">전기요금 계산기로 가정용 누진요금 계산하기</a>
+                    <a href="/air-conditioner-electricity-calculator">에어컨 전기세 계산기로 하루 사용 비용 확인하기</a>
+                    <a href="/guide/electricity-tier">전기요금 누진구간 가이드 읽기</a>
+                </th:block>
                 <a href="/stock-tax-calculator">주식 세금 계산기로 국내·해외주식 매도세금 비교하기</a>
                 <a href="/overseas-stock-tax-calculator">해외주식 세금 계산기로 양도세 250만원 공제 확인하기</a>
                 <a href="/domestic-stock-tax-calculator">국내 주식 세금 계산기로 증권거래세 계산하기</a>
                 <a href="/dividend-calculator">배당 계산기로 세전·세후 배당금 계산하기</a>
                 <a href="/annual-salary-net-calculator">2026 실수령액 계산기로 세후 월급 확인하기</a>
-                <a href="/electricity-bill-calculator">전기요금 계산기로 누진요금 참고하기</a>
+                <a th:unless="${electricityFeatureActive}" href="/electricity-bill-calculator">전기요금 계산기로 누진요금 참고하기</a>
                 <a href="/monthly-budget-calculator">월 생활비 계산기로 예산 점검하기</a>
             </div>
         </section>

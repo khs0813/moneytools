@@ -8,7 +8,6 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('전기요금 계산기', ${pageDescription})}"></div>
-        <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
 
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form" th:action="@{/electricity-bill-calculator}" th:object="${form}" method="post">
@@ -16,6 +15,20 @@
                 <label>월 사용량(kWh)
                     <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="usageKwh" name="usageKwh" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'usageKwh')}">
                     <span class="field-error" th:if="${#fields.hasErrors('usageKwh')}" th:errors="*{usageKwh}"></span>
+                </label>
+                <div class="quick-preset-group" aria-label="빠른 사용량 선택">
+                    <span>빠른 사용량</span>
+                    <div class="preset-buttons">
+                        <button type="button" data-quick-preset="electricity_100kwh" data-preset-target="usageKwh" data-preset-value="100">100kWh</button>
+                        <button type="button" data-quick-preset="electricity_200kwh" data-preset-target="usageKwh" data-preset-value="200">200kWh</button>
+                        <button type="button" data-quick-preset="electricity_300kwh" data-preset-target="usageKwh" data-preset-value="300">300kWh</button>
+                        <button type="button" data-quick-preset="electricity_400kwh" data-preset-target="usageKwh" data-preset-value="400">400kWh</button>
+                        <button type="button" data-quick-preset="electricity_500kwh" data-preset-target="usageKwh" data-preset-value="500">500kWh</button>
+                    </div>
+                </div>
+                <label>지난달 사용량(kWh)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="previousUsageKwh" name="previousUsageKwh" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'previousUsageKwh')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('previousUsageKwh')}" th:errors="*{previousUsageKwh}"></span>
                 </label>
                 <label>계절 구분
                     <select th:field="*{season}">
@@ -38,6 +51,7 @@
                     <div><span>전력산업기반기금</span><strong th:text="${#numbers.formatDecimal(result.industryFund, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                     <div><span>예상 총 전기요금</span><strong th:text="${#numbers.formatDecimal(result.totalBill, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                     <div><span>평균 단가</span><strong th:text="${#numbers.formatDecimal(result.averageUnitPrice, 0, 'COMMA', 1, 'POINT')} + '원/kWh'">0원/kWh</strong></div>
+                    <div><span>지난달 대비 사용량</span><strong th:text="${(result.usageDeltaKwh >= 0 ? '+' : '') + #numbers.formatDecimal(result.usageDeltaKwh, 0, 'COMMA', 1, 'POINT') + 'kWh'}">+0kWh</strong></div>
                 </div>
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
             </section>
@@ -45,11 +59,38 @@
             <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
         </section>
 
+        <section class="content-card">
+            <h2>사용량별 예상 금액 비교</h2>
+            <p>아래 표는 현재 계산기에 적용한 가정용 전기요금 구조로 100·200·300·400·500kWh를 비교한 참고값입니다.</p>
+            <div class="table-scroll overflow-x-auto">
+                <table class="data-table" id="electricity-usage-comparison" data-analytics-table="electricity_usage_comparison">
+                    <caption>가정용 전기요금 사용량별 예상 금액 비교</caption>
+                    <thead>
+                    <tr>
+                        <th scope="col">사용량</th>
+                        <th scope="col">기타 계절 예상액</th>
+                        <th scope="col">여름철 예상액</th>
+                        <th scope="col">여름철 차이</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="row : ${electricityUsageExamples}">
+                        <td th:text="${row.usageKwh}">100kWh</td>
+                        <td th:text="${#numbers.formatDecimal(row.normalBill, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
+                        <td th:text="${#numbers.formatDecimal(row.summerBill, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
+                        <td th:text="${(row.summerDifference >= 0 ? '+' : '') + #numbers.formatDecimal(row.summerDifference, 0, 'COMMA', 0, 'POINT') + '원'}">0원</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
         <div th:replace="~{fragments/components :: disclaimer('가정용 누진요금 구조를 단순화한 참고 계산입니다. 실제 전기요금은 계약 종류, 검침일, 할인 제도, 정책 변경에 따라 달라질 수 있습니다. 공식 청구 전에는 반드시 한전 또는 계약 사업자의 고지서를 확인하시기 바랍니다.')}"></div>
         <div th:replace="~{fragments/longform :: calculatorContent(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
+        <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
-        <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
+        <div th:replace="~{fragments/components :: relatedNextActions(${activeMenu})}"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>
     </main>
 </div>

@@ -8,7 +8,6 @@
     <main class="main-content">
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('대출이자 계산기', ${pageDescription})}"></div>
-        <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
 
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form" th:action="@{/loan-interest-calculator}" th:object="${form}" method="post">
@@ -18,14 +17,37 @@
                     <small class="field-help">쉼표를 포함해도 되며, 최대 999,999,999,999,999원까지 입력할 수 있습니다.</small>
                     <span class="field-error" th:if="${#fields.hasErrors('principal')}" th:errors="*{principal}"></span>
                 </label>
+                <div class="quick-preset-group" aria-label="빠른 대출금액 선택">
+                    <span>대출금액</span>
+                    <div class="preset-buttons">
+                        <button type="button" data-quick-preset="loan_principal_100m" data-preset-target="principal" data-preset-value="100000000">1억원</button>
+                        <button type="button" data-quick-preset="loan_principal_300m" data-preset-target="principal" data-preset-value="300000000">3억원</button>
+                    </div>
+                </div>
                 <label>연이율(%)
                     <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" data-min="0" data-max="100" data-decimals="4" min="0" max="100" step="0.0001" id="annualRate" name="annualRate" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'annualRate')}">
                     <span class="field-error" th:if="${#fields.hasErrors('annualRate')}" th:errors="*{annualRate}"></span>
                 </label>
+                <div class="quick-preset-group" aria-label="빠른 금리 선택">
+                    <span>금리</span>
+                    <div class="preset-buttons">
+                        <button type="button" data-quick-preset="loan_rate_3" data-preset-target="annualRate" data-preset-value="3">3%</button>
+                        <button type="button" data-quick-preset="loan_rate_4" data-preset-target="annualRate" data-preset-value="4">4%</button>
+                        <button type="button" data-quick-preset="loan_rate_5" data-preset-target="annualRate" data-preset-value="5">5%</button>
+                    </div>
+                </div>
                 <label>대출기간(년)
                     <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" data-min="1" data-max="50" data-decimals="0" min="1" max="50" step="1" id="years" name="years" th:value="${@inputFieldValueFormatter.formatInteger(form, 'years')}">
                     <span class="field-error" th:if="${#fields.hasErrors('years')}" th:errors="*{years}"></span>
                 </label>
+                <div class="quick-preset-group" aria-label="빠른 대출기간 선택">
+                    <span>기간</span>
+                    <div class="preset-buttons">
+                        <button type="button" data-quick-preset="loan_years_10" data-preset-target="years" data-preset-value="10">10년</button>
+                        <button type="button" data-quick-preset="loan_years_20" data-preset-target="years" data-preset-value="20">20년</button>
+                        <button type="button" data-quick-preset="loan_years_30" data-preset-target="years" data-preset-value="30">30년</button>
+                    </div>
+                </div>
                 <label>상환방식
                     <select th:field="*{repaymentType}">
                         <option value="EQUAL_PAYMENT">원리금균등</option>
@@ -41,6 +63,7 @@
                 <div class="result-grid">
                     <div><span>첫 달 상환금</span><strong th:text="${#numbers.formatDecimal(result.firstMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                     <div><span>평균 월 상환금</span><strong th:text="${#numbers.formatDecimal(result.averageMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>마지막 달 상환금</span><strong th:text="${#numbers.formatDecimal(result.lastMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                     <div><span>총 이자</span><strong th:text="${#numbers.formatDecimal(result.totalInterest, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                     <div><span>총 상환액</span><strong th:text="${#numbers.formatDecimal(result.totalPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                 </div>
@@ -76,14 +99,50 @@
             </div>
         </section>
 
+        <section class="content-card" th:if="${loanComparisonRows != null and !#lists.isEmpty(loanComparisonRows)}">
+            <h2>상환 방식별 차이</h2>
+            <div class="table-scroll overflow-x-auto">
+                <table class="data-table" id="loan-repayment-comparison" data-analytics-table="loan_repayment_comparison">
+                    <caption>원리금균등 원금균등 만기일시상환 비교</caption>
+                    <thead>
+                    <tr>
+                        <th scope="col">상환방식</th>
+                        <th scope="col">첫 달 납입액</th>
+                        <th scope="col">평균 월 납입액</th>
+                        <th scope="col">마지막 달 납입액</th>
+                        <th scope="col">총 이자</th>
+                        <th scope="col">총 상환금액</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="row : ${loanComparisonRows}">
+                        <td th:text="${row.repaymentType}">원리금균등</td>
+                        <td th:text="${#numbers.formatDecimal(row.firstMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
+                        <td th:text="${#numbers.formatDecimal(row.averageMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
+                        <td th:text="${#numbers.formatDecimal(row.lastMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
+                        <td th:text="${#numbers.formatDecimal(row.totalInterest, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
+                        <td th:text="${#numbers.formatDecimal(row.totalPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
         <section class="content-card">
+            <h2>원리금균등 계산기</h2>
+            <p>원리금균등은 매월 원금과 이자의 합계가 거의 일정해 월 예산을 세우기 쉽습니다.</p>
+            <h2>원금균등 계산기</h2>
+            <p>원금균등은 매월 같은 원금을 갚기 때문에 첫 달 부담은 크지만 시간이 지날수록 납입액이 줄어듭니다.</p>
+            <h2>만기일시상환 계산기</h2>
+            <p>만기일시상환은 매월 이자만 내고 마지막 달에 원금을 갚으므로 만기 원금 계획을 반드시 함께 확인해야 합니다.</p>
             <h2>상환방식 안내</h2>
             <p>원리금균등은 매월 납부액을 일정하게 맞추는 방식입니다. 원금균등은 매월 같은 원금을 갚아 시간이 갈수록 월 납부액이 줄어듭니다. 만기일시상환은 매월 이자만 내고 마지막 달에 원금을 갚습니다.</p>
         </section>
         <div th:replace="~{fragments/longform :: calculatorContent(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
+        <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
-        <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
+        <div th:replace="~{fragments/components :: relatedNextActions(${activeMenu})}"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>
     </main>
 </div>

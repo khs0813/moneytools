@@ -5,6 +5,7 @@ import org.springframework.util.StringUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.regex.Pattern;
 
 @ConfigurationProperties(prefix = "app")
@@ -17,6 +18,7 @@ public class AppProperties {
     private String contactEmail = "moneyfinancecalculator@gmail.com";
     private String googleSiteVerification = "";
     private String naverSiteVerification = "";
+    private final Home home = new Home();
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -38,6 +40,8 @@ public class AppProperties {
 
     public String getNaverSiteVerification() { return naverSiteVerification; }
     public void setNaverSiteVerification(String naverSiteVerification) { this.naverSiteVerification = naverSiteVerification; }
+
+    public Home getHome() { return home; }
 
     public boolean hasConfiguredPublicBaseUrl() {
         String normalized = getBaseUrl();
@@ -112,4 +116,30 @@ public class AppProperties {
         return path.startsWith("/") ? path : "/" + path;
     }
 
+    public static class Home {
+        private String featuredCluster = "";
+        private LocalDate activeFrom;
+        private LocalDate activeUntil;
+
+        public String getFeaturedCluster() { return featuredCluster; }
+        public void setFeaturedCluster(String featuredCluster) { this.featuredCluster = featuredCluster; }
+
+        public LocalDate getActiveFrom() { return activeFrom; }
+        public void setActiveFrom(LocalDate activeFrom) { this.activeFrom = activeFrom; }
+
+        public LocalDate getActiveUntil() { return activeUntil; }
+        public void setActiveUntil(LocalDate activeUntil) { this.activeUntil = activeUntil; }
+
+        public boolean isActive(String cluster, LocalDate today) {
+            if (!StringUtils.hasText(cluster) || !cluster.equalsIgnoreCase(featuredCluster)) {
+                return false;
+            }
+            if (today == null) {
+                return false;
+            }
+            boolean starts = activeFrom == null || !today.isBefore(activeFrom);
+            boolean ends = activeUntil == null || !today.isAfter(activeUntil);
+            return starts && ends;
+        }
+    }
 }

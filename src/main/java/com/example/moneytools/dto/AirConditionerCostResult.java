@@ -6,6 +6,11 @@ public record AirConditionerCostResult(
         double totalUsageKwh,
         double estimatedCost,
         double dailyCost,
-        double hourlyCost
+        double hourlyCost,
+        double householdBaseUsageKwh,
+        double householdTotalUsageKwh,
+        double householdBaseBill,
+        double householdTotalBill,
+        double householdIncrementalCost
 ) {
 }

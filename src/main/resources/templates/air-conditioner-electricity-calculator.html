@@ -17,10 +17,28 @@
                     <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="powerWatts" name="powerWatts" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'powerWatts')}">
                     <span class="field-error" th:if="${#fields.hasErrors('powerWatts')}" th:errors="*{powerWatts}"></span>
                 </label>
+                <div class="quick-preset-group" aria-label="에어컨 기기 대표 예시">
+                    <span>기기 대표 예시</span>
+                    <div class="preset-buttons">
+                        <button type="button" data-quick-preset="aircon_wall_900w" data-preset-target="powerWatts" data-preset-value="900">벽걸이형 900W</button>
+                        <button type="button" data-quick-preset="aircon_stand_1800w" data-preset-target="powerWatts" data-preset-value="1800">스탠드형 1,800W</button>
+                        <button type="button" data-quick-preset="aircon_system_2500w" data-preset-target="powerWatts" data-preset-value="2500">시스템 2,500W</button>
+                        <button type="button" data-quick-preset="aircon_custom_power" data-preset-focus="powerWatts">직접 입력</button>
+                    </div>
+                    <small class="field-help">제품 라벨의 정격 소비전력을 확인해 바꾸는 것이 가장 정확합니다.</small>
+                </div>
                 <label>하루 사용 시간
                     <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="hoursPerDay" name="hoursPerDay" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'hoursPerDay')}">
                     <span class="field-error" th:if="${#fields.hasErrors('hoursPerDay')}" th:errors="*{hoursPerDay}"></span>
                 </label>
+                <div class="quick-preset-group" aria-label="빠른 사용 시간 선택">
+                    <span>사용 시간</span>
+                    <div class="preset-buttons">
+                        <button type="button" data-quick-preset="aircon_hours_4" data-preset-target="hoursPerDay" data-preset-value="4">하루 4시간</button>
+                        <button type="button" data-quick-preset="aircon_hours_8" data-preset-target="hoursPerDay" data-preset-value="8">하루 8시간</button>
+                        <button type="button" data-quick-preset="aircon_hours_12" data-preset-target="hoursPerDay" data-preset-value="12">하루 12시간</button>
+                    </div>
+                </div>
                 <label>월 사용 일수
                     <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="daysPerMonth" name="daysPerMonth" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'daysPerMonth')}">
                     <span class="field-error" th:if="${#fields.hasErrors('daysPerMonth')}" th:errors="*{daysPerMonth}"></span>
@@ -33,6 +51,18 @@
                     <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="standbyWatts" name="standbyWatts" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'standbyWatts')}">
                     <span class="field-error" th:if="${#fields.hasErrors('standbyWatts')}" th:errors="*{standbyWatts}"></span>
                 </label>
+                <label>에어컨 제외 가정 사용량(kWh)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="householdUsageKwh" name="householdUsageKwh" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'householdUsageKwh')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('householdUsageKwh')}" th:errors="*{householdUsageKwh}"></span>
+                </label>
+                <label>계절 구분
+                    <select th:field="*{season}">
+                        <option value="NORMAL">일반</option>
+                        <option value="SUMMER">여름</option>
+                        <option value="WINTER">겨울</option>
+                    </select>
+                    <span class="field-error" th:if="${#fields.hasErrors('season')}" th:errors="*{season}"></span>
+                </label>
                 <button class="primary-button" type="submit">계산하기</button>
             </form>
             <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
@@ -41,9 +71,12 @@
                     <div><span>냉방 사용 전력량</span><strong th:text="${#numbers.formatDecimal(result.activeUsageKwh, 0, 'COMMA', 1, 'POINT')} + 'kWh'">0kWh</strong></div>
                     <div><span>대기전력 사용량</span><strong th:text="${#numbers.formatDecimal(result.standbyUsageKwh, 0, 'COMMA', 1, 'POINT')} + 'kWh'">0kWh</strong></div>
                     <div><span>월 총 사용 전력량</span><strong th:text="${#numbers.formatDecimal(result.totalUsageKwh, 0, 'COMMA', 1, 'POINT')} + 'kWh'">0kWh</strong></div>
-                    <div><span>예상 월 전기요금</span><strong th:text="${#numbers.formatDecimal(result.estimatedCost, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>에어컨 단독 예상 비용</span><strong th:text="${#numbers.formatDecimal(result.estimatedCost, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                     <div><span>하루 평균 비용</span><strong th:text="${#numbers.formatDecimal(result.dailyCost, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                     <div><span>시간당 평균 비용</span><strong th:text="${#numbers.formatDecimal(result.hourlyCost, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>가정 전체 사용량</span><strong th:text="${#numbers.formatDecimal(result.householdTotalUsageKwh, 0, 'COMMA', 1, 'POINT')} + 'kWh'">0kWh</strong></div>
+                    <div><span>누진 반영 증가액</span><strong th:text="${#numbers.formatDecimal(result.householdIncrementalCost, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>에어컨 포함 예상 청구액</span><strong th:text="${#numbers.formatDecimal(result.householdTotalBill, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                 </div>
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
             </section>
@@ -51,11 +84,41 @@
             <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
         </section>
 
+        <section class="content-card">
+            <h2>사용시간·기기별 비교</h2>
+            <p>에어컨 단독 비용은 kWh당 단가를 곱한 값이고, 누진 반영 증가액은 에어컨 제외 가정 사용량 250kWh에 더해 계산한 참고값입니다.</p>
+            <div class="table-scroll overflow-x-auto">
+                <table class="data-table" id="air-conditioner-comparison" data-analytics-table="air_conditioner_comparison">
+                    <caption>에어컨 기기와 사용시간별 월 예상액 비교</caption>
+                    <thead>
+                    <tr>
+                        <th scope="col">조건</th>
+                        <th scope="col">소비전력</th>
+                        <th scope="col">하루 사용</th>
+                        <th scope="col">월 사용량</th>
+                        <th scope="col">단독 예상 비용</th>
+                        <th scope="col">누진 반영 증가액</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="row : ${airConditionerExamples}">
+                        <td th:text="${row.label}">벽걸이형 인버터 예시</td>
+                        <td th:text="${#numbers.formatDecimal(row.powerWatts, 0, 'COMMA', 0, 'POINT')} + 'W'">900W</td>
+                        <td th:text="${#numbers.formatDecimal(row.hoursPerDay, 0, 'COMMA', 1, 'POINT')} + '시간'">8시간</td>
+                        <td th:text="${#numbers.formatDecimal(row.usageKwh, 0, 'COMMA', 1, 'POINT')} + 'kWh'">0kWh</td>
+                        <td th:text="${#numbers.formatDecimal(row.standaloneCost, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
+                        <td th:text="${#numbers.formatDecimal(row.householdIncrementalCost, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
         <div th:replace="~{fragments/components :: disclaimer('정격 소비전력 기준의 참고 계산입니다. 인버터 동작, 실내외 온도, 단열 상태, 누진구간 진입 여부에 따라 실제 청구 전기요금은 달라질 수 있습니다.')}"></div>
         <div th:replace="~{fragments/longform :: calculatorContent(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
-        <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
+        <div th:replace="~{fragments/components :: relatedNextActions(${activeMenu})}"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>
     </main>
 </div>

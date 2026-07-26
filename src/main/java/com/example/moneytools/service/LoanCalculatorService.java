@@ -22,8 +22,9 @@ public class LoanCalculatorService {
         double totalPayment = schedule.stream().mapToDouble(LoanPaymentRow::payment).sum();
         double totalInterest = schedule.stream().mapToDouble(LoanPaymentRow::interestPayment).sum();
         double firstPayment = schedule.isEmpty() ? 0.0 : schedule.get(0).payment();
+        double lastPayment = schedule.isEmpty() ? 0.0 : schedule.get(schedule.size() - 1).payment();
         double averagePayment = months == 0 ? 0.0 : totalPayment / months;
-        return new LoanResult(firstPayment, averagePayment, totalInterest, totalPayment, months, schedule);
+        return new LoanResult(firstPayment, averagePayment, lastPayment, totalInterest, totalPayment, months, schedule);
     }
 
     private List<LoanPaymentRow> equalPayment(double principal, double monthlyRate, int months) {

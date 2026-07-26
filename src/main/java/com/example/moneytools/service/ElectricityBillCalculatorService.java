@@ -26,7 +26,9 @@ public class ElectricityBillCalculatorService {
         double total = subtotal + vat + fund;
         double avgUnitPrice = usage > 0 ? total / usage : 0.0;
 
-        return new ElectricityBillResult(usage, baseFee, energyCharge, climateCharge, fuelAdjustment, subtotal, vat, fund, total, avgUnitPrice);
+        double previousUsage = request.getPreviousUsageKwh() == null ? 0.0 : request.getPreviousUsageKwh();
+        double usageDelta = usage - previousUsage;
+        return new ElectricityBillResult(usage, baseFee, energyCharge, climateCharge, fuelAdjustment, subtotal, vat, fund, total, avgUnitPrice, previousUsage, usageDelta);
     }
 
     private TierPolicy policy(String season) {

@@ -24,4 +24,18 @@ class GlobalModelAdviceTests {
     void allowsAdsOnCalculatorPages() {
         assertThat(advice.adsAllowedOnPage(new MockHttpServletRequest("GET", "/salary-calculator"))).isTrue();
     }
+
+    @Test
+    void usesPageSpecificOgImageForNaverSeoTargets() {
+        assertThat(advice.ogImageUrl(new MockHttpServletRequest("GET", "/loan-interest-calculator")))
+                .endsWith("/og/loan-interest-calculator.png");
+        assertThat(advice.ogImageAlt(new MockHttpServletRequest("GET", "/loan-interest-calculator")))
+                .contains("월상환액");
+    }
+
+    @Test
+    void fallsBackToDefaultOgImage() {
+        assertThat(advice.ogImageUrl(new MockHttpServletRequest("GET", "/about")))
+                .endsWith("/og-image.png");
+    }
 }

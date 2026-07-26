@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+  <title id="title">주식 물타기 계산기 대표 이미지</title>
+  <desc id="desc">기존 보유 수량과 추가 매수 단가를 기준으로 평균단가와 목표단가를 계산하는 주식 물타기 계산기</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#eaf7ef"/>
+      <stop offset="50%" stop-color="#fff4e7"/>
+      <stop offset="100%" stop-color="#edf1ff"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(0 285)">
+  <rect width="1200" height="630" rx="36" fill="url(#bg)"/>
+  <g transform="translate(90 82)">
+    <rect width="132" height="132" rx="30" fill="#fff" opacity="0.9"/>
+    <rect x="34" y="72" width="16" height="34" rx="8" fill="#168a65"/>
+    <rect x="58" y="48" width="16" height="58" rx="8" fill="#168a65"/>
+    <rect x="82" y="60" width="16" height="46" rx="8" fill="#168a65"/>
+    <path d="M31 38h72" stroke="#168a65" stroke-width="12" stroke-linecap="round"/>
+  </g>
+  <text x="90" y="292" font-family="Apple SD Gothic Neo, Noto Sans KR, Segoe UI, sans-serif" font-size="76" font-weight="800" fill="#203047">주식 물타기 계산기</text>
+  <text x="90" y="370" font-family="Apple SD Gothic Neo, Noto Sans KR, Segoe UI, sans-serif" font-size="34" font-weight="650" fill="#526070">평균단가 · 추가매수 · 목표단가</text>
+  <g transform="translate(90 445)">
+    <rect width="252" height="64" rx="18" fill="#ffffff" opacity="0.9"/>
+    <text x="32" y="42" font-family="Apple SD Gothic Neo, Noto Sans KR, Segoe UI, sans-serif" font-size="28" font-weight="750" fill="#1f6a51">평단가 빠른 계산</text>
+  </g>
+  </g>
+</svg>

@@ -409,6 +409,34 @@ h3 { margin: 0 0 8px; font-size: 1.15rem; }
     color: var(--text);
     outline: none;
 }
+.quick-preset-group {
+    display: grid;
+    gap: 8px;
+}
+.quick-preset-group > span {
+    color: #344054;
+    font-size: 0.9rem;
+    font-weight: 900;
+}
+.preset-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.preset-buttons button {
+    min-height: 38px;
+    border: 1px solid #d7ddeb;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #344054;
+    cursor: pointer;
+    font-weight: 800;
+    padding: 8px 11px;
+}
+.preset-buttons button:hover {
+    border-color: var(--primary);
+    color: var(--primary-dark);
+}
 .date-picker-field {
     position: relative;
     display: block;
@@ -691,6 +719,24 @@ details p { color: var(--muted); margin-bottom: 0; }
     font-weight: 800;
     border: 1px solid #dfe7ff;
     overflow-wrap: anywhere;
+}
+.next-action-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.next-action-list a {
+    border-radius: 14px;
+    padding: 14px;
+}
+.next-action-list strong,
+.next-action-list span {
+    display: block;
+}
+.next-action-list span {
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 6px;
 }
 
 .table-header { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }

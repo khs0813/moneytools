@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+  <title id="title">전기요금 계산기 대표 이미지</title>
+  <desc id="desc">kWh 사용량, 누진구간, 기본요금, 부가세와 전력산업기반기금을 함께 보는 전기요금 계산기</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#e8f7f1"/>
+      <stop offset="48%" stop-color="#f7f3df"/>
+      <stop offset="100%" stop-color="#e8efff"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(0 285)">
+  <rect width="1200" height="630" rx="36" fill="url(#bg)"/>
+  <g transform="translate(90 82)">
+    <rect width="132" height="132" rx="30" fill="#fff" opacity="0.9"/>
+    <path d="M70 22 34 78h35l-12 36 43-58H65z" fill="#17a673"/>
+  </g>
+  <text x="90" y="292" font-family="Apple SD Gothic Neo, Noto Sans KR, Segoe UI, sans-serif" font-size="76" font-weight="800" fill="#203047">전기요금 계산기</text>
+  <text x="90" y="370" font-family="Apple SD Gothic Neo, Noto Sans KR, Segoe UI, sans-serif" font-size="34" font-weight="650" fill="#526070">kWh · 누진구간 · 기본요금 · 부가세·기금</text>
+  <g transform="translate(90 445)">
+    <rect width="250" height="64" rx="18" fill="#ffffff" opacity="0.9"/>
+    <text x="32" y="42" font-family="Apple SD Gothic Neo, Noto Sans KR, Segoe UI, sans-serif" font-size="28" font-weight="750" fill="#21624e">가정용 요금 추정</text>
+  </g>
+  </g>
+</svg>

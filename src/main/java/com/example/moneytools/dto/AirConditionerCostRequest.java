@@ -3,6 +3,7 @@ package com.example.moneytools.dto;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 public class AirConditionerCostRequest {
     @NotNull
@@ -29,6 +30,15 @@ public class AirConditionerCostRequest {
     @DecimalMin("0.0")
     @DecimalMax("1000.0")
     private Double standbyWatts = 5.0;
+
+    @NotNull
+    @DecimalMin("0.0")
+    @DecimalMax("100000.0")
+    private Double householdUsageKwh = 250.0;
+
+    @NotNull
+    @Pattern(regexp = "NORMAL|SUMMER|WINTER", message = "계절 구분을 선택해주세요.")
+    private String season = "SUMMER";
 
     public Double getPowerWatts() {
         return powerWatts;
@@ -68,5 +78,21 @@ public class AirConditionerCostRequest {
 
     public void setStandbyWatts(Double standbyWatts) {
         this.standbyWatts = standbyWatts;
+    }
+
+    public Double getHouseholdUsageKwh() {
+        return householdUsageKwh;
+    }
+
+    public void setHouseholdUsageKwh(Double householdUsageKwh) {
+        this.householdUsageKwh = householdUsageKwh;
+    }
+
+    public String getSeason() {
+        return season;
+    }
+
+    public void setSeason(String season) {
+        this.season = season;
     }
 }

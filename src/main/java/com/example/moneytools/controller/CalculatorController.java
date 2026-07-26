@@ -118,14 +118,19 @@ public class CalculatorController {
     @GetMapping("/loan-interest-calculator")
     public String loan(Model model) {
         prepare(model, "loan", loanFaqs());
-        model.addAttribute("form", new LoanRequest());
+        LoanRequest form = new LoanRequest();
+        model.addAttribute("form", form);
+        model.addAttribute("loanComparisonRows", loanRepaymentComparisonRows(form));
         return "loan-interest-calculator";
     }
 
     @PostMapping("/loan-interest-calculator")
     public String calculateLoan(@Valid @ModelAttribute("form") LoanRequest form, BindingResult bindingResult, Model model) {
         prepare(model, "loan", loanFaqs());
-        if (!bindingResult.hasErrors()) model.addAttribute("result", loanService.calculate(form));
+        if (!bindingResult.hasErrors()) {
+            model.addAttribute("result", loanService.calculate(form));
+            model.addAttribute("loanComparisonRows", loanRepaymentComparisonRows(form));
+        }
         return "loan-interest-calculator";
     }
 
@@ -319,6 +324,8 @@ public class CalculatorController {
         model.addAttribute("annualSalaryExamples", annualSalaryExamples());
         model.addAttribute("monthlySalaryExamples", monthlySalaryExamples());
         model.addAttribute("loanExamples", loanExamples());
+        model.addAttribute("electricityUsageExamples", electricityUsageExamples());
+        model.addAttribute("airConditionerExamples", airConditionerExamples());
         model.addAttribute("mortgageExamples", mortgageExamples());
         model.addAttribute("overseasTaxExamples", overseasTaxExamples());
         model.addAttribute("dividendExamples", dividendExamples());
@@ -326,11 +333,19 @@ public class CalculatorController {
     }
 
     private List<SalaryExampleRow> annualSalaryExamples() {
-        return List.of(30_000_000L, 40_000_000L, 50_000_000L, 60_000_000L, 70_000_000L, 100_000_000L).stream()
+        return List.of(30_000_000L, 40_000_000L, 50_000_000L, 60_000_000L, 70_000_000L, 80_000_000L, 100_000_000L).stream()
                 .map(annualSalary -> {
                     SalaryRequest request = salaryRequest("ANNUAL", annualSalary);
                     SalaryResult result = salaryService.calculate(request);
-                    return new SalaryExampleRow(labelWon(annualSalary), result.grossMonthly(), result.netMonthly(), "2026년, 1인·비과세 20만원 기준");
+                    return new SalaryExampleRow(
+                            labelWon(annualSalary),
+                            result.grossMonthly(),
+                            result.nationalPension() + result.healthInsurance() + result.longTermCareInsurance() + result.employmentInsurance(),
+                            result.incomeTax() + result.localIncomeTax(),
+                            result.netMonthly(),
+                            result.netAnnual(),
+                            "2026년, 1인·비과세 20만원 기준"
+                    );
                 })
                 .toList();
     }
@@ -372,6 +387,77 @@ public class CalculatorController {
         request.setRepaymentType("EQUAL_PAYMENT");
         LoanResult result = loanService.calculate(request);
         return new LoanExampleRow(labelWon(principal), rate + "%", years + "년", "원리금균등", result.averageMonthlyPayment(), result.totalInterest());
+    }
+
+    private List<LoanComparisonRow> loanRepaymentComparisonRows(LoanRequest source) {
+        if (source.getPrincipal() == null || source.getAnnualRate() == null || source.getYears() == null) {
+            return List.of();
+        }
+        return List.of(
+                loanComparison(source, "EQUAL_PAYMENT", "원리금균등"),
+                loanComparison(source, "EQUAL_PRINCIPAL", "원금균등"),
+                loanComparison(source, "BULLET", "만기일시상환")
+        );
+    }
+
+    private LoanComparisonRow loanComparison(LoanRequest source, String repaymentType, String label) {
+        LoanRequest request = new LoanRequest();
+        request.setPrincipal(source.getPrincipal());
+        request.setAnnualRate(source.getAnnualRate());
+        request.setYears(source.getYears());
+        request.setRepaymentType(repaymentType);
+        LoanResult result = loanService.calculate(request);
+        return new LoanComparisonRow(
+                label,
+                result.firstMonthlyPayment(),
+                result.averageMonthlyPayment(),
+                result.lastMonthlyPayment(),
+                result.totalInterest(),
+                result.totalPayment()
+        );
+    }
+
+    private List<ElectricityUsageExampleRow> electricityUsageExamples() {
+        return List.of(100.0, 200.0, 300.0, 400.0, 500.0).stream()
+                .map(this::electricityUsageExample)
+                .toList();
+    }
+
+    private ElectricityUsageExampleRow electricityUsageExample(double usageKwh) {
+        double normalBill = electricityBill(usageKwh, "NORMAL");
+        double summerBill = electricityBill(usageKwh, "SUMMER");
+        return new ElectricityUsageExampleRow(labelKwh(usageKwh), normalBill, summerBill, summerBill - normalBill);
+    }
+
+    private double electricityBill(double usageKwh, String season) {
+        ElectricityBillRequest request = new ElectricityBillRequest();
+        request.setUsageKwh(usageKwh);
+        request.setPreviousUsageKwh(0.0);
+        request.setSeason(season);
+        return electricityBillService.calculate(request).totalBill();
+    }
+
+    private List<AirConditionerExampleRow> airConditionerExamples() {
+        return List.of(
+                airConditionerExample("벽걸이형 인버터 예시", 900.0, 8.0),
+                airConditionerExample("스탠드형 정속형 예시", 1800.0, 8.0),
+                airConditionerExample("시스템 에어컨 예시", 2500.0, 8.0),
+                airConditionerExample("스탠드형 하루 4시간", 1800.0, 4.0),
+                airConditionerExample("스탠드형 하루 12시간", 1800.0, 12.0)
+        );
+    }
+
+    private AirConditionerExampleRow airConditionerExample(String label, double powerWatts, double hoursPerDay) {
+        AirConditionerCostRequest request = new AirConditionerCostRequest();
+        request.setPowerWatts(powerWatts);
+        request.setHoursPerDay(hoursPerDay);
+        request.setDaysPerMonth(30.0);
+        request.setElectricityRatePerKwh(160.0);
+        request.setStandbyWatts(5.0);
+        request.setHouseholdUsageKwh(250.0);
+        request.setSeason("SUMMER");
+        AirConditionerCostResult result = airConditionerCostService.calculate(request);
+        return new AirConditionerExampleRow(label, powerWatts, hoursPerDay, result.totalUsageKwh(), result.estimatedCost(), result.householdIncrementalCost());
     }
 
     private List<MortgageExampleRow> mortgageExamples() {
@@ -485,9 +571,19 @@ public class CalculatorController {
         return String.format("%,.1f만원", manwon);
     }
 
-    public record SalaryExampleRow(String annualSalary, double grossMonthly, double netMonthly, String basis) {}
+    private String labelKwh(double value) {
+        if (Math.abs(value - Math.rint(value)) < 0.0001) {
+            return String.format("%,.0fkWh", value);
+        }
+        return String.format("%,.1fkWh", value);
+    }
+
+    public record SalaryExampleRow(String annualSalary, double grossMonthly, double insuranceDeduction, double taxDeduction, double netMonthly, double netAnnual, String basis) {}
     public record MonthlySalaryExampleRow(String monthlySalary, double netMonthly, String deductions, String basis) {}
     public record LoanExampleRow(String principal, String rate, String years, String repaymentType, double monthlyPayment, double totalInterest) {}
+    public record LoanComparisonRow(String repaymentType, double firstMonthlyPayment, double averageMonthlyPayment, double lastMonthlyPayment, double totalInterest, double totalPayment) {}
+    public record ElectricityUsageExampleRow(String usageKwh, double normalBill, double summerBill, double summerDifference) {}
+    public record AirConditionerExampleRow(String label, double powerWatts, double hoursPerDay, double usageKwh, double standaloneCost, double householdIncrementalCost) {}
     public record MortgageExampleRow(String housePrice, String loanAmount, String rate, String years, double monthlyPayment, double ltv) {}
     public record OverseasTaxExampleRow(String buyAmount, String sellAmount, String capitalGain, String deduction, String taxableGain, String tax) {}
     public record DividendExampleRow(String shares, String dividendPerShare, String period, double grossDividend, double netDividend) {}

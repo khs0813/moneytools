@@ -204,8 +204,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   trackVisibleResult(getVisibleResultCard());
 
+  const setPresetInputValue = (targetId, value) => {
+    if (!targetId || value === undefined) return;
+    const input = document.getElementById(targetId);
+    if (!input) return;
+    input.value = value;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  };
+
   document.querySelectorAll('[data-quick-preset]').forEach((button) => {
     button.addEventListener('click', () => {
+      setPresetInputValue(button.dataset.presetTarget, button.dataset.presetValue);
+      if (button.dataset.presetFocus) {
+        document.getElementById(button.dataset.presetFocus)?.focus({ preventScroll: true });
+      }
       trackEvent('quick_preset_click', {
         preset_key: button.dataset.quickPreset || 'unknown'
       });
@@ -523,23 +536,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const ANNUAL_SALARY_RATE_CONFIG = {
-    nationalPensionEmployeeRate: 0.045,
-    healthInsuranceEmployeeRate: 0.03545,
-    longTermCareInsuranceRate: 0.1295,
+    nationalPensionEmployeeRate: 0.0475,
+    nationalPensionLowerBound: 410_000,
+    nationalPensionUpperBound: 6_590_000,
+    healthInsuranceEmployeeRate: 0.03595,
+    longTermCareInsuranceRateOfHealth: 0.009448 / 0.0719,
     employmentInsuranceEmployeeRate: 0.009,
-    localIncomeTaxRate: 0.1
+    localIncomeTaxRate: 0.1,
+    basicPersonalDeductionPerPerson: 1_500_000,
+    childTaxCreditOne: 12_500,
+    childTaxCreditTwo: 29_160,
+    childTaxCreditAdditional: 25_000
   };
-
-  const SIMPLE_INCOME_TAX_BRACKETS = [
-    { limit: 14_000_000, rate: 0.06, quickDeduction: 0 },
-    { limit: 50_000_000, rate: 0.15, quickDeduction: 1_260_000 },
-    { limit: 88_000_000, rate: 0.24, quickDeduction: 5_760_000 },
-    { limit: 150_000_000, rate: 0.35, quickDeduction: 15_440_000 },
-    { limit: 300_000_000, rate: 0.38, quickDeduction: 19_940_000 },
-    { limit: 500_000_000, rate: 0.40, quickDeduction: 25_940_000 },
-    { limit: 1_000_000_000, rate: 0.42, quickDeduction: 35_940_000 },
-    { limit: Number.POSITIVE_INFINITY, rate: 0.45, quickDeduction: 65_940_000 }
-  ];
 
   const decimalPlaces = (value) => {
     const plain = normalizePlainNumber(value);
@@ -618,14 +626,89 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const formatWon = (value) => `${Math.round(Math.max(0, value)).toLocaleString('ko-KR')}원`;
 
-  const estimateMonthlyIncomeTax = (monthlyTaxableIncome, dependents, childrenUnder20) => {
-    const annualTaxableIncome = monthlyTaxableIncome * 12;
-    const simplifiedDeduction = Math.max(1, dependents) * 1_500_000 + Math.max(0, childrenUnder20) * 1_000_000;
-    const taxableBase = Math.max(0, annualTaxableIncome - simplifiedDeduction);
-    const bracket = SIMPLE_INCOME_TAX_BRACKETS.find((item) => taxableBase <= item.limit)
-      ?? SIMPLE_INCOME_TAX_BRACKETS[SIMPLE_INCOME_TAX_BRACKETS.length - 1];
-    const annualIncomeTax = Math.max(0, taxableBase * bracket.rate - bracket.quickDeduction);
-    return annualIncomeTax / 12;
+  const roundWon = (value) => Math.round(value);
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  const calculateNationalPension = (taxableMonthlyIncome) => {
+    if (taxableMonthlyIncome <= 0) return 0;
+    const pensionBase = clamp(
+      taxableMonthlyIncome,
+      ANNUAL_SALARY_RATE_CONFIG.nationalPensionLowerBound,
+      ANNUAL_SALARY_RATE_CONFIG.nationalPensionUpperBound
+    );
+    return roundWon(pensionBase * ANNUAL_SALARY_RATE_CONFIG.nationalPensionEmployeeRate);
+  };
+  const earnedIncomeDeduction = (annualGross) => {
+    if (annualGross <= 5_000_000) return annualGross * 0.70;
+    if (annualGross <= 15_000_000) return 3_500_000 + (annualGross - 5_000_000) * 0.40;
+    if (annualGross <= 45_000_000) return 7_500_000 + (annualGross - 15_000_000) * 0.15;
+    if (annualGross <= 100_000_000) return 12_000_000 + (annualGross - 45_000_000) * 0.05;
+    return Math.min(20_000_000, 14_750_000 + (annualGross - 100_000_000) * 0.02);
+  };
+  const proxySpecialDeduction = (annualGross, familyCount) => {
+    const familyBucket = Math.min(familyCount, 3);
+    if (annualGross <= 30_000_000) {
+      if (familyBucket === 1) return 3_100_000 + annualGross * 0.04;
+      if (familyBucket === 2) return 3_600_000 + annualGross * 0.04;
+      return 5_000_000 + annualGross * 0.07 + Math.max(0, annualGross - 40_000_000) * 0.04;
+    }
+    if (annualGross <= 45_000_000) {
+      if (familyBucket === 1) return 3_100_000 + annualGross * 0.04 - (annualGross - 30_000_000) * 0.05;
+      if (familyBucket === 2) return 3_600_000 + annualGross * 0.04 - (annualGross - 30_000_000) * 0.05;
+      return 5_000_000 + annualGross * 0.07 - (annualGross - 30_000_000) * 0.05;
+    }
+    if (annualGross <= 70_000_000) {
+      if (familyBucket === 1) return 3_100_000 + annualGross * 0.015;
+      if (familyBucket === 2) return 3_600_000 + annualGross * 0.02;
+      return 5_000_000 + annualGross * 0.05;
+    }
+    if (familyBucket === 1) return 3_100_000 + annualGross * 0.005;
+    if (familyBucket === 2) return 3_600_000 + annualGross * 0.01;
+    return 5_000_000 + annualGross * 0.03;
+  };
+  const progressiveIncomeTax = (taxBase) => {
+    if (taxBase <= 14_000_000) return taxBase * 0.06;
+    if (taxBase <= 50_000_000) return 840_000 + (taxBase - 14_000_000) * 0.15;
+    if (taxBase <= 88_000_000) return 6_240_000 + (taxBase - 50_000_000) * 0.24;
+    if (taxBase <= 150_000_000) return 15_360_000 + (taxBase - 88_000_000) * 0.35;
+    if (taxBase <= 300_000_000) return 37_060_000 + (taxBase - 150_000_000) * 0.38;
+    if (taxBase <= 500_000_000) return 94_060_000 + (taxBase - 300_000_000) * 0.40;
+    if (taxBase <= 1_000_000_000) return 174_060_000 + (taxBase - 500_000_000) * 0.42;
+    return 384_060_000 + (taxBase - 1_000_000_000) * 0.45;
+  };
+  const earnedIncomeTaxCredit = (calculatedTax, annualTaxableGross) => {
+    const credit = calculatedTax <= 1_300_000
+      ? calculatedTax * 0.55
+      : 715_000 + (calculatedTax - 1_300_000) * 0.30;
+    let cap;
+    if (annualTaxableGross <= 33_000_000) {
+      cap = 740_000;
+    } else if (annualTaxableGross <= 70_000_000) {
+      cap = Math.max(660_000, 740_000 - (annualTaxableGross - 33_000_000) * 0.008);
+    } else if (annualTaxableGross <= 120_000_000) {
+      cap = Math.max(500_000, 660_000 - (annualTaxableGross - 70_000_000) / 2.0);
+    } else {
+      cap = Math.max(200_000, 500_000 - (annualTaxableGross - 120_000_000) / 2.0);
+    }
+    return Math.min(credit, cap);
+  };
+  const estimateAnnualIncomeTax = (annualTaxableGross, dependentsIncludingSelf, annualEmployeePension) => {
+    if (annualTaxableGross <= 0) return 0;
+    const familyCount = Math.max(1, dependentsIncludingSelf);
+    const taxBase = Math.max(0,
+      annualTaxableGross
+        - earnedIncomeDeduction(annualTaxableGross)
+        - familyCount * ANNUAL_SALARY_RATE_CONFIG.basicPersonalDeductionPerPerson
+        - proxySpecialDeduction(annualTaxableGross, familyCount)
+        - annualEmployeePension
+    );
+    const calculatedTax = progressiveIncomeTax(taxBase);
+    return Math.max(0, calculatedTax - earnedIncomeTaxCredit(calculatedTax, annualTaxableGross));
+  };
+  const withholdingChildTaxCredit = (eligibleChildren) => {
+    if (eligibleChildren <= 0) return 0;
+    if (eligibleChildren === 1) return ANNUAL_SALARY_RATE_CONFIG.childTaxCreditOne;
+    return ANNUAL_SALARY_RATE_CONFIG.childTaxCreditTwo
+      + Math.max(0, eligibleChildren - 2) * ANNUAL_SALARY_RATE_CONFIG.childTaxCreditAdditional;
   };
 
   const calculateAnnualSalaryNetPay = (values) => {
@@ -634,12 +717,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const grossMonthly = baseMonthlySalary + monthlyBonus;
     const taxableMonthlyIncome = Math.max(0, grossMonthly - values.monthlyTaxFreeMeal);
 
-    const nationalPension = taxableMonthlyIncome * ANNUAL_SALARY_RATE_CONFIG.nationalPensionEmployeeRate;
-    const healthInsurance = taxableMonthlyIncome * ANNUAL_SALARY_RATE_CONFIG.healthInsuranceEmployeeRate;
-    const longTermCareInsurance = healthInsurance * ANNUAL_SALARY_RATE_CONFIG.longTermCareInsuranceRate;
-    const employmentInsurance = taxableMonthlyIncome * ANNUAL_SALARY_RATE_CONFIG.employmentInsuranceEmployeeRate;
-    const incomeTax = estimateMonthlyIncomeTax(taxableMonthlyIncome, values.dependents, values.childrenUnder20);
-    const localIncomeTax = incomeTax * ANNUAL_SALARY_RATE_CONFIG.localIncomeTaxRate;
+    const nationalPension = calculateNationalPension(taxableMonthlyIncome);
+    const healthInsurance = roundWon(taxableMonthlyIncome * ANNUAL_SALARY_RATE_CONFIG.healthInsuranceEmployeeRate);
+    const longTermCareInsurance = roundWon(healthInsurance * ANNUAL_SALARY_RATE_CONFIG.longTermCareInsuranceRateOfHealth);
+    const employmentInsurance = roundWon(taxableMonthlyIncome * ANNUAL_SALARY_RATE_CONFIG.employmentInsuranceEmployeeRate);
+    const familyCount = Math.max(1, values.dependents);
+    const eligibleChildren = Math.min(Math.max(0, values.childrenUnder20), Math.max(0, familyCount - 1));
+    const annualIncomeTax = estimateAnnualIncomeTax(taxableMonthlyIncome * 12, familyCount, nationalPension * 12);
+    const incomeTax = Math.max(0, roundWon(annualIncomeTax / 12) - withholdingChildTaxCredit(eligibleChildren));
+    const localIncomeTax = roundWon(incomeTax * ANNUAL_SALARY_RATE_CONFIG.localIncomeTaxRate);
     const totalDeduction = nationalPension + healthInsurance + longTermCareInsurance + employmentInsurance + incomeTax + localIncomeTax;
     const netMonthly = Math.max(0, grossMonthly - totalDeduction);
 

@@ -10,6 +10,8 @@ public record ElectricityBillResult(
         double vat,
         double industryFund,
         double totalBill,
-        double averageUnitPrice
+        double averageUnitPrice,
+        double previousUsageKwh,
+        double usageDeltaKwh
 ) {
 }

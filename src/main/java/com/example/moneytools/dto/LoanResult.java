@@ -5,6 +5,7 @@ import java.util.List;
 public record LoanResult(
         double firstMonthlyPayment,
         double averageMonthlyPayment,
+        double lastMonthlyPayment,
         double totalInterest,
         double totalPayment,
         int totalMonths,

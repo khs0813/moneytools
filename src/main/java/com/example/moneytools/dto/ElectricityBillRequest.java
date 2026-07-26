@@ -15,6 +15,10 @@ public class ElectricityBillRequest {
     @Pattern(regexp = "NORMAL|SUMMER|WINTER", message = "계절 구분을 선택해주세요.")
     private String season = "NORMAL";
 
+    @DecimalMin("0.0")
+    @DecimalMax("100000.0")
+    private Double previousUsageKwh = 300.0;
+
     public Double getUsageKwh() {
         return usageKwh;
     }
@@ -29,5 +33,13 @@ public class ElectricityBillRequest {
 
     public void setSeason(String season) {
         this.season = season;
+    }
+
+    public Double getPreviousUsageKwh() {
+        return previousUsageKwh;
+    }
+
+    public void setPreviousUsageKwh(Double previousUsageKwh) {
+        this.previousUsageKwh = previousUsageKwh;
     }
 }

@@ -69,6 +69,82 @@
     </section>
 </div>
 
+<div th:fragment="relatedNextActions(currentKey)">
+    <section class="related-box related-next-actions">
+        <h2>다음에 확인할 계산기</h2>
+        <div class="related-links next-action-list" th:if="${currentKey == 'electricity-bill'}">
+            <a href="/air-conditioner-electricity-calculator" data-event-key="electricity_to_aircon">
+                <strong>에어컨 전기세 따로 계산하기</strong>
+                <span>냉방 사용량만 분리해 월 예상 비용을 확인합니다.</span>
+            </a>
+            <a href="/guide/electricity-tier" data-event-key="electricity_to_tier_guide">
+                <strong>전기 누진구간 확인하기</strong>
+                <span>사용량이 어느 구간을 넘을 때 요금이 커지는지 봅니다.</span>
+            </a>
+            <a href="/monthly-budget-calculator" data-event-key="electricity_to_budget">
+                <strong>월 생활비에 전기요금 반영하기</strong>
+                <span>예상 전기요금을 고정비 예산에 넣어 봅니다.</span>
+            </a>
+        </div>
+        <div class="related-links next-action-list" th:if="${currentKey == 'loan'}">
+            <a href="/loan-refinance-calculator" data-event-key="loan_to_refinance">
+                <strong>대출 갈아타기 손익 비교</strong>
+                <span>낮은 금리로 바꿀 때 비용 회수 기간을 봅니다.</span>
+            </a>
+            <a href="/mortgage-monthly-payment-calculator" data-event-key="loan_to_mortgage">
+                <strong>주담대 월납입액 계산</strong>
+                <span>주택 가격과 소득 대비 상환 부담률까지 확인합니다.</span>
+            </a>
+            <a href="/guide/repayment-method-difference" data-event-key="loan_to_repayment_guide">
+                <strong>상환 방식 차이 확인</strong>
+                <span>원리금균등·원금균등·만기일시상환 구조를 비교합니다.</span>
+            </a>
+        </div>
+        <div class="related-links next-action-list" th:if="${currentKey == 'annual-salary-net'}">
+            <a href="/salary-calculator" data-event-key="annual_salary_to_monthly_salary">
+                <strong>월급 기준 실수령액 계산</strong>
+                <span>세전 월급을 기준으로 공제액과 세후 급여를 확인합니다.</span>
+            </a>
+            <a href="/severance-pay-calculator" data-event-key="annual_salary_to_severance">
+                <strong>퇴직금 계산</strong>
+                <span>입사일·퇴사일과 최근 임금으로 예상 퇴직금을 봅니다.</span>
+            </a>
+            <a href="/monthly-budget-calculator" data-event-key="annual_salary_to_budget">
+                <strong>월 생활비와 비교</strong>
+                <span>실수령액에서 고정비와 변동비를 빼 예산을 점검합니다.</span>
+            </a>
+        </div>
+        <div class="related-links next-action-list" th:if="${currentKey == 'air-conditioner-cost'}">
+            <a href="/electricity-bill-calculator" data-event-key="aircon_to_electricity">
+                <strong>가정 전체 전기요금 계산</strong>
+                <span>전체 사용량 기준의 누진 전기요금을 다시 확인합니다.</span>
+            </a>
+            <a href="/guide/electricity-tier" data-event-key="aircon_to_tier_guide">
+                <strong>전기요금 누진구간 확인</strong>
+                <span>여름철과 기타 계절의 구간 차이를 읽습니다.</span>
+            </a>
+            <a href="/guide/aircon-8hours-cost" data-event-key="aircon_to_8hours_guide">
+                <strong>에어컨 하루 8시간 사례 읽기</strong>
+                <span>대표 소비전력과 사용시간으로 계산 흐름을 봅니다.</span>
+            </a>
+        </div>
+        <div class="related-links next-action-list" th:if="${currentKey == 'domestic-stock-tax'}">
+            <a href="/overseas-stock-tax-calculator" data-event-key="domestic_stock_to_overseas_tax">
+                <strong>해외주식 세금 계산</strong>
+                <span>양도차익과 기본공제 250만원을 함께 확인합니다.</span>
+            </a>
+            <a href="/stock-average-calculator" data-event-key="domestic_stock_to_average">
+                <strong>추가매수 후 평단 계산</strong>
+                <span>보유 수량과 추가 매수 조건으로 평균단가를 계산합니다.</span>
+            </a>
+            <a href="/dividend-calculator" data-event-key="domestic_stock_to_dividend">
+                <strong>배당금 계산</strong>
+                <span>세전·세후 배당금과 월·연 현금흐름을 봅니다.</span>
+            </a>
+        </div>
+    </section>
+</div>
+
 <div class="notice-box" th:fragment="disclaimer(text)">
     <strong>안내</strong>
     <p th:text="${text}">계산 결과는 참고용입니다.</p>
@@ -162,13 +238,15 @@
         <div class="table-scroll overflow-x-auto">
             <table class="data-table">
                 <caption>연봉별 예상 월 실수령액 표</caption>
-                <thead><tr><th scope="col">연봉</th><th scope="col">월 세전 급여</th><th scope="col">예상 월 실수령액</th><th scope="col">계산 기준</th></tr></thead>
+                <thead><tr><th scope="col">연봉</th><th scope="col">월 세전 급여</th><th scope="col">예상 4대보험</th><th scope="col">예상 세금</th><th scope="col">월 실수령액</th><th scope="col">연 실수령액</th></tr></thead>
                 <tbody>
                 <tr th:each="row : ${annualSalaryExamples}">
                     <td th:text="${row.annualSalary}">3,000만원</td>
-                    <td th:text="|약 ${#numbers.formatDecimal(row.grossMonthly, 0, 'COMMA', 0, 'POINT')}원|">약 2,500,000원</td>
+                    <td th:text="${#numbers.formatDecimal(row.grossMonthly, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
+                    <td th:text="${#numbers.formatDecimal(row.insuranceDeduction, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
+                    <td th:text="${#numbers.formatDecimal(row.taxDeduction, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
                     <td th:text="${#numbers.formatDecimal(row.netMonthly, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
-                    <td th:text="${row.basis}">2026년, 1인 기준</td>
+                    <td th:text="${#numbers.formatDecimal(row.netAnnual, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
                 </tr>
                 </tbody>
             </table>

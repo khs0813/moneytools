@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -33,6 +34,14 @@ public class GlobalModelAdvice {
             "/guide/salary-5000-net",
             "/guide/severance-average-wage",
             "/guide/stock-tax"
+    );
+    private static final Map<String, OgImage> PAGE_OG_IMAGES = Map.of(
+            "/electricity-bill-calculator", new OgImage("/og/electricity-bill-calculator.png", "가정용 전기요금과 누진구간 계산 안내"),
+            "/loan-interest-calculator", new OgImage("/og/loan-interest-calculator.png", "원리금균등 원금균등 월상환액 비교 안내"),
+            "/annual-salary-net-calculator", new OgImage("/og/annual-salary-net-calculator.png", "2026 연봉 실수령액과 공제액 계산 안내"),
+            "/air-conditioner-electricity-calculator", new OgImage("/og/air-conditioner-electricity-calculator.png", "하루 8시간 에어컨 예상 전기세 계산 안내"),
+            "/domestic-stock-tax-calculator", new OgImage("/og/domestic-stock-tax-calculator.png", "국내주식 매도세금과 증권거래세 계산 안내"),
+            "/stock-average-calculator", new OgImage("/og/stock-average-calculator.png", "추가매수 후 주식 평균단가 계산 안내")
     );
     private final AppProperties appProperties;
     private final AdFitProperties adFitProperties;
@@ -135,6 +144,18 @@ public class GlobalModelAdvice {
     @ModelAttribute("defaultImageUrl")
     public String defaultImageUrl() { return publicUrlService.absoluteUrl("/og-image.png"); }
 
+    @ModelAttribute("ogImageUrl")
+    public String ogImageUrl(HttpServletRequest request) {
+        OgImage image = PAGE_OG_IMAGES.get(request.getRequestURI());
+        return publicUrlService.absoluteUrl(image == null ? "/og-image.png" : image.path());
+    }
+
+    @ModelAttribute("ogImageAlt")
+    public String ogImageAlt(HttpServletRequest request) {
+        OgImage image = PAGE_OG_IMAGES.get(request.getRequestURI());
+        return image == null ? "머니계산기 금융 계산기 모음" : image.alt();
+    }
+
     @ModelAttribute("googleSiteVerification")
     public String googleSiteVerification() { return appProperties.getGoogleSiteVerification(); }
 
@@ -146,4 +167,6 @@ public class GlobalModelAdvice {
         Object nonce = request.getAttribute(SecurityHeadersFilter.CSP_NONCE_ATTRIBUTE);
         return nonce instanceof String value ? value : "";
     }
+
+    private record OgImage(String path, String alt) {}
 }
