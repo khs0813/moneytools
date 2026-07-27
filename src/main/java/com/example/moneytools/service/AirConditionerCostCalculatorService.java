@@ -14,12 +14,17 @@ public class AirConditionerCostCalculatorService {
     }
 
     public AirConditionerCostResult calculate(AirConditionerCostRequest request) {
-        double activeUsageKwh = request.getPowerWatts() / 1000.0 * request.getHoursPerDay() * request.getDaysPerMonth();
-        double standbyUsageKwh = request.getStandbyWatts() / 1000.0 * 24.0 * request.getDaysPerMonth();
+        double activeHours = clamp(request.getHoursPerDay(), 0.0, 24.0);
+        double standbyHours = 24.0 - activeHours;
+        double days = Math.max(0.0, request.getDaysPerMonth());
+        double loadFactor = clamp(request.getLoadFactor(), 0.0, 1.0);
+        double activeUsageKwh = request.getPowerWatts() / 1000.0 * activeHours * days * loadFactor;
+        double standbyUsageKwh = request.getStandbyWatts() / 1000.0 * standbyHours * days;
         double totalUsageKwh = activeUsageKwh + standbyUsageKwh;
         double estimatedCost = totalUsageKwh * request.getElectricityRatePerKwh();
-        double dailyCost = estimatedCost / request.getDaysPerMonth();
-        double hourlyCost = estimatedCost / (request.getHoursPerDay() * request.getDaysPerMonth());
+        double dailyCost = days > 0.0 ? estimatedCost / days : 0.0;
+        double activeHourCount = activeHours * days;
+        double hourlyCost = activeHourCount > 0.0 ? estimatedCost / activeHourCount : 0.0;
         double householdBaseUsage = request.getHouseholdUsageKwh();
         double householdTotalUsage = householdBaseUsage + totalUsageKwh;
         double householdBaseBill = calculateHouseholdBill(householdBaseUsage, request.getSeason());
@@ -46,5 +51,9 @@ public class AirConditionerCostCalculatorService {
         request.setPreviousUsageKwh(0.0);
         request.setSeason(season);
         return electricityBillCalculatorService.calculate(request).totalBill();
+    }
+
+    private double clamp(double value, double min, double max) {
+        return Math.max(min, Math.min(max, value));
     }
 }

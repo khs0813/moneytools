@@ -12,9 +12,14 @@ public class AirConditionerCostRequest {
     private Double powerWatts = 1800.0;
 
     @NotNull
-    @DecimalMin("0.1")
+    @DecimalMin("0.0")
     @DecimalMax("24.0")
     private Double hoursPerDay = 8.0;
+
+    @NotNull
+    @DecimalMin("0.0")
+    @DecimalMax("1.0")
+    private Double loadFactor = 1.0;
 
     @NotNull
     @DecimalMin("1.0")
@@ -29,7 +34,7 @@ public class AirConditionerCostRequest {
     @NotNull
     @DecimalMin("0.0")
     @DecimalMax("1000.0")
-    private Double standbyWatts = 5.0;
+    private Double standbyWatts = 7.5;
 
     @NotNull
     @DecimalMin("0.0")
@@ -54,6 +59,14 @@ public class AirConditionerCostRequest {
 
     public void setHoursPerDay(Double hoursPerDay) {
         this.hoursPerDay = hoursPerDay;
+    }
+
+    public Double getLoadFactor() {
+        return loadFactor;
+    }
+
+    public void setLoadFactor(Double loadFactor) {
+        this.loadFactor = loadFactor;
     }
 
     public Double getDaysPerMonth() {

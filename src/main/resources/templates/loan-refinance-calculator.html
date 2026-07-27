@@ -71,6 +71,7 @@
                     <div><span>기타 비용 포함 총 비용</span><strong th:text="${#numbers.formatDecimal(result.totalSwitchingCost, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                     <div><span>실제 절감액</span><strong th:text="${#numbers.formatDecimal(result.netSavings, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                     <div><span>손익분기점 개월 수</span><strong th:text="${result.breakEvenMonths > 0 ? result.breakEvenMonths + '개월' : '회수 어려움'}">0개월</strong></div>
+                    <div><span>손익분기 예상일</span><strong th:text="${result.breakEvenDate != null ? #temporals.format(result.breakEvenDate, 'yyyy-MM-dd') : '회수 어려움'}">2026-01-01</strong></div>
                 </div>
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
             </section>

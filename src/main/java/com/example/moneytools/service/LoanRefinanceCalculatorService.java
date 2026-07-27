@@ -23,6 +23,7 @@ public class LoanRefinanceCalculatorService {
         double totalSwitchingCost = prepaymentPenalty + request.getAdditionalCost().doubleValue();
         double netSavings = totalInterestSavings - totalSwitchingCost;
         int breakEvenMonths = monthlySavings > 0.0 ? (int) Math.ceil(totalSwitchingCost / monthlySavings) : -1;
+        var breakEvenDate = breakEvenMonths > 0 ? request.getRefinanceDate().plusMonths(breakEvenMonths) : null;
         String recommendation = recommendation(netSavings, breakEvenMonths);
 
         return new LoanRefinanceResult(
@@ -36,6 +37,7 @@ public class LoanRefinanceCalculatorService {
                 totalSwitchingCost,
                 netSavings,
                 breakEvenMonths,
+                breakEvenDate,
                 recommendation,
                 recommendationLevel(recommendation)
         );

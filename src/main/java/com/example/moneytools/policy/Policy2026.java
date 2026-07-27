@@ -29,9 +29,9 @@ public final class Policy2026 {
     public static final double EMPLOYMENT_INSURANCE_EMPLOYEE_RATE = 0.009; // 실업급여 근로자 부담 0.9%
 
     public static final double BASIC_PERSONAL_DEDUCTION_PER_PERSON = 1_500_000.0;
-    public static final double WITHHOLDING_CHILD_TAX_CREDIT_ONE = 12_500.0;
-    public static final double WITHHOLDING_CHILD_TAX_CREDIT_TWO = 29_160.0;
-    public static final double WITHHOLDING_CHILD_TAX_CREDIT_ADDITIONAL = 25_000.0;
+    public static final double WITHHOLDING_CHILD_TAX_CREDIT_ONE = 20_830.0;
+    public static final double WITHHOLDING_CHILD_TAX_CREDIT_TWO = 45_830.0;
+    public static final double WITHHOLDING_CHILD_TAX_CREDIT_ADDITIONAL = 33_330.0;
 
     public static final double OVERSEAS_STOCK_BASIC_DEDUCTION_KRW = 2_500_000.0;
     public static final double OVERSEAS_STOCK_DEFAULT_CAPITAL_GAINS_TAX_RATE = 22.0;

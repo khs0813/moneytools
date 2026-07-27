@@ -3,6 +3,7 @@ package com.example.moneytools.service;
 import com.example.moneytools.dto.SalaryRequest;
 import com.example.moneytools.dto.SalaryResult;
 import com.example.moneytools.policy.Policy2026;
+import com.example.moneytools.util.RoundingPolicy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -205,6 +206,6 @@ public class SalaryCalculatorService {
     }
 
     private double roundWon(double value) {
-        return Math.round(value);
+        return RoundingPolicy.roundToWon(value);
     }
 }

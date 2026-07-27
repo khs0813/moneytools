@@ -15,13 +15,19 @@ public class OverseasStockTaxRequest {
     @NotNull @DecimalMin("0.0") @DecimalMax("999999999999999.0")
     private Double dividendForeign = 300.0;
 
-    @NotNull @DecimalMin("0.0") @DecimalMax("999999999999999.0")
+    @NotNull
+    @DecimalMin(value = "0.0001", message = "매수일 환율은 0보다 커야 합니다.")
+    @DecimalMax("999999999999999.0")
     private Double buyExchangeRate = 1_350.0;
 
-    @NotNull @DecimalMin("0.0") @DecimalMax("999999999999999.0")
+    @NotNull
+    @DecimalMin(value = "0.0001", message = "매도일 환율은 0보다 커야 합니다.")
+    @DecimalMax("999999999999999.0")
     private Double sellExchangeRate = 1_350.0;
 
-    @NotNull @DecimalMin("0.0") @DecimalMax("999999999999999.0")
+    @NotNull
+    @DecimalMin(value = "0.0001", message = "배당기준 환율은 0보다 커야 합니다.")
+    @DecimalMax("999999999999999.0")
     private Double dividendExchangeRate = 1_350.0;
 
     @NotNull @DecimalMin("0.0") @DecimalMax("999999999999999.0")

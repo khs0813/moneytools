@@ -3,6 +3,8 @@ package com.example.moneytools.service;
 import com.example.moneytools.dto.LoanRefinanceRequest;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class LoanRefinanceCalculatorServiceTests {
@@ -19,11 +21,13 @@ class LoanRefinanceCalculatorServiceTests {
         request.setPrepaymentPenaltyRate(0.5);
         request.setAdditionalCost(300_000L);
         request.setRepaymentType("EQUAL_PAYMENT");
+        request.setRefinanceDate(LocalDate.of(2026, 8, 1));
 
         var result = service.calculate(request);
 
         assertThat(result.monthlySavings()).isGreaterThan(0.0);
         assertThat(result.netSavings()).isGreaterThan(0.0);
+        assertThat(result.breakEvenDate()).isEqualTo(request.getRefinanceDate().plusMonths(result.breakEvenMonths()));
         assertThat(result.recommendation()).isIn("갈아타기 유리", "장기 보유 시 유리");
     }
 

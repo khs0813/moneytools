@@ -1,4 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
+  /**
+   * @typedef {number} KrwAmount 원 단위 금액
+   * @typedef {number} PercentInput 화면 입력 퍼센트값. 예: 4.5는 4.5%
+   * @typedef {number} RateFraction 내부 계산 비율값. 예: 0.045는 4.5%
+   * @typedef {number} KwhAmount 전력 사용량(kWh)
+   * @typedef {number} KrwPerKwh kWh당 원화 단가
+   */
   const MAX_NUMERIC_TEXT_LENGTH = 128;
   const MAX_SCIENTIFIC_EXPONENT_ABS = 128;
   const resultScrollRequestKey = `moneytools:result-scroll:${window.location.pathname}`;
@@ -544,9 +551,9 @@ document.addEventListener('DOMContentLoaded', () => {
     employmentInsuranceEmployeeRate: 0.009,
     localIncomeTaxRate: 0.1,
     basicPersonalDeductionPerPerson: 1_500_000,
-    childTaxCreditOne: 12_500,
-    childTaxCreditTwo: 29_160,
-    childTaxCreditAdditional: 25_000
+    childTaxCreditOne: 20_830,
+    childTaxCreditTwo: 45_830,
+    childTaxCreditAdditional: 33_330
   };
 
   const decimalPlaces = (value) => {
@@ -624,7 +631,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return Number.isFinite(number) ? number : 0;
   };
 
-  const formatWon = (value) => `${Math.round(Math.max(0, value)).toLocaleString('ko-KR')}원`;
+  const formatWon = (value) => `${Math.round(value).toLocaleString('ko-KR')}원`;
 
   const roundWon = (value) => Math.round(value);
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -813,11 +820,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const capitalGainsTaxRate = parseNumberInput(document.getElementById('domesticCapitalGainsTaxRate')) / 100;
       const applyCapitalGainsTax = applyCapitalGainsTaxInput?.checked ?? false;
 
-      const capitalGain = Math.max(0, sellAmount - buyAmount - feeAmount);
+      const capitalGain = sellAmount - buyAmount - feeAmount;
+      const taxableCapitalGain = Math.max(0, capitalGain);
       const transactionTax = sellAmount * transactionTaxRate;
-      const capitalGainsTax = applyCapitalGainsTax ? capitalGain * capitalGainsTaxRate : 0;
+      const capitalGainsTax = applyCapitalGainsTax ? taxableCapitalGain * capitalGainsTaxRate : 0;
       const totalTax = transactionTax + capitalGainsTax;
-      const afterTaxProfit = Math.max(0, sellAmount - buyAmount - feeAmount - totalTax);
+      const afterTaxProfit = capitalGain - totalTax;
 
       const result = {
         capitalGain,

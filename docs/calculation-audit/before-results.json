@@ -1,0 +1,360 @@
+{
+  "generatedAt": "2026-07-28T07:20:00+09:00",
+  "basis": "Current source before calculation fixes in this task. Default request DTO values were executed through the service layer where a service exists; JavaScript-only calculators were evaluated from their checked-in formulas.",
+  "routes": {
+    "/loan-interest-calculator": {
+      "input": {
+        "principalKrw": 100000000,
+        "annualRatePercent": 4.5,
+        "years": 20,
+        "repaymentType": "EQUAL_PAYMENT"
+      },
+      "result": {
+        "firstMonthlyPaymentKrw": 632649.3762199708,
+        "averageMonthlyPaymentKrw": 632649.3762199568,
+        "lastMonthlyPaymentKrw": 632649.3762166399,
+        "totalInterestKrw": 51835850.29278969,
+        "totalPaymentKrw": 151835850.29278964,
+        "totalMonths": 240
+      }
+    },
+    "/stock-average-calculator": {
+      "input": {
+        "currentShares": 100,
+        "currentAveragePriceKrw": 50000,
+        "additionalShares": 50,
+        "additionalPriceKrw": 40000
+      },
+      "result": {
+        "currentInvestmentKrw": 5000000,
+        "additionalInvestmentKrw": 2000000,
+        "totalShares": 150,
+        "totalInvestmentKrw": 7000000,
+        "newAveragePriceKrw": 46666.666666666664,
+        "averagePriceChangeKrw": -3333.3333333333358,
+        "averagePriceChangeRatePercent": -6.666666666666672,
+        "breakEvenPriceKrw": 46666.666666666664
+      }
+    },
+    "/loan-refinance-calculator": {
+      "input": {
+        "currentBalanceKrw": 200000000,
+        "currentAnnualRatePercent": 5,
+        "currentRemainingYears": 20,
+        "newAnnualRatePercent": 4,
+        "newYears": 20,
+        "prepaymentPenaltyRatePercent": 1,
+        "additionalCostKrw": 500000,
+        "repaymentType": "EQUAL_PAYMENT"
+      },
+      "result": {
+        "currentMonthlyPaymentKrw": 1319911.4784333177,
+        "newMonthlyPaymentKrw": 1211960.658598819,
+        "monthlySavingsKrw": 107950.81983449869,
+        "currentTotalInterestKrw": 116778754.82399625,
+        "newTotalInterestKrw": 90870558.06371659,
+        "totalInterestSavingsKrw": 25908196.760279655,
+        "prepaymentPenaltyKrw": 2000000,
+        "totalSwitchingCostKrw": 2500000,
+        "netSavingsKrw": 23408196.760279655,
+        "breakEvenMonths": 24,
+        "recommendation": "갈아타기 유리"
+      },
+      "knownIssue": "refinanceDate was validated by the form but was not used in any result."
+    },
+    "/stock-tax-calculator": {
+      "result": null,
+      "note": "Calculation hub only; no form calculation."
+    },
+    "/domestic-stock-tax-calculator": {
+      "input": {
+        "buyAmountKrw": 10000000,
+        "sellAmountKrw": 13000000,
+        "feeAmountKrw": 0,
+        "transactionTaxRatePercent": 0.15,
+        "applyCapitalGainsTax": false
+      },
+      "result": {
+        "capitalGainKrw": 3000000,
+        "transactionTaxKrw": 19500,
+        "capitalGainsTaxKrw": 0,
+        "totalTaxKrw": 19500,
+        "afterTaxProfitKrw": 2980500
+      },
+      "knownIssue": "Loss cases were clamped to 0 and labeled as profit."
+    },
+    "/overseas-stock-tax-calculator": {
+      "input": {
+        "buyAmountForeign": 10000,
+        "sellAmountForeign": 13000,
+        "dividendForeign": 300,
+        "buyExchangeRateKrwPerForeign": 1350,
+        "sellExchangeRateKrwPerForeign": 1350,
+        "dividendExchangeRateKrwPerForeign": 1350,
+        "feeKrw": 50000,
+        "applyBasicDeduction": true,
+        "basicDeductionKrw": 2500000,
+        "capitalGainsTaxRatePercent": 22,
+        "dividendTaxRatePercent": 15.4
+      },
+      "result": {
+        "buyAmountKrw": 13500000,
+        "sellAmountKrw": 17550000,
+        "capitalGainKrw": 4000000,
+        "taxableCapitalGainKrw": 1500000,
+        "capitalGainsTaxKrw": 330000,
+        "dividendKrw": 405000,
+        "dividendTaxKrw": 62370,
+        "totalTaxKrw": 392370,
+        "afterTaxProfitKrw": 4012630
+      }
+    },
+    "/mortgage-monthly-payment-calculator": {
+      "input": {
+        "housePriceKrw": 600000000,
+        "cashOnHandKrw": 200000000,
+        "expectedLoanAmountKrw": 400000000,
+        "annualRatePercent": 4,
+        "years": 30,
+        "repaymentType": "EQUAL_PAYMENT",
+        "ltvRatioPercent": 70,
+        "annualIncomeKrw": 80000000,
+        "existingMonthlyDebtPaymentKrw": 0
+      },
+      "result": {
+        "estimatedMonthlyPaymentKrw": 1909673.0927708496,
+        "totalInterestKrw": 287482313.3975059,
+        "totalPaymentKrw": 687482313.3975059,
+        "requiredEquityKrw": 200000000,
+        "cashShortfallKrw": 0,
+        "maxLoanByLtvKrw": 420000000,
+        "monthlyBurdenRatePercent": 28.645096391562743,
+        "monthlyBurdenRateWithExistingDebtPercent": 28.645096391562743,
+        "riskLabel": "주의"
+      }
+    },
+    "/dividend-calculator": {
+      "input": {
+        "shares": 100,
+        "dividendPerShareKrw": 500,
+        "period": "QUARTERLY",
+        "taxApplied": true,
+        "taxRatePercent": 15.4
+      },
+      "result": {
+        "oneTimeGrossKrw": 50000,
+        "oneTimeNetKrw": 42300,
+        "monthlyGrossKrw": 16666.666666666668,
+        "monthlyNetKrw": 14100,
+        "annualGrossKrw": 200000,
+        "annualNetKrw": 169200,
+        "paymentsPerYear": 4
+      }
+    },
+    "/annual-salary-net-calculator": {
+      "input": {
+        "annualSalaryKrw": 50000000,
+        "monthlyTaxFreeMealKrw": 200000,
+        "dependents": 1,
+        "childrenUnder20": 0,
+        "retirementIncluded": false,
+        "monthlyBonusEnabled": false,
+        "monthlyBonusAmountKrw": 0
+      },
+      "result": {
+        "grossMonthlyKrw": 4166666.6666666665,
+        "nationalPensionKrw": 188417,
+        "healthInsuranceKrw": 142602,
+        "longTermCareInsuranceKrw": 18739,
+        "employmentInsuranceKrw": 35700,
+        "incomeTaxKrw": 188687,
+        "localIncomeTaxKrw": 18869,
+        "totalDeductionKrw": 593014,
+        "netMonthlyKrw": 3573652.6666666665,
+        "netAnnualKrw": 42883832
+      }
+    },
+    "/salary-calculator": {
+      "input": {
+        "incomeType": "MONTHLY",
+        "amountKrw": 3500000,
+        "taxFreeAmountKrw": 200000,
+        "dependents": 1,
+        "children": 0,
+        "applyInsurance": true
+      },
+      "result": {
+        "grossMonthlyKrw": 3500000,
+        "nationalPensionKrw": 156750,
+        "healthInsuranceKrw": 118635,
+        "longTermCareInsuranceKrw": 15589,
+        "employmentInsuranceKrw": 29700,
+        "incomeTaxKrw": 98046,
+        "localIncomeTaxKrw": 9805,
+        "totalDeductionKrw": 428525,
+        "netMonthlyKrw": 3071475,
+        "netAnnualKrw": 36857700
+      }
+    },
+    "/severance-pay-calculator": {
+      "input": {
+        "startDate": "2023-07-28",
+        "endDate": "2026-07-28",
+        "totalWageForLastThreeMonthsKrw": 10500000,
+        "annualBonusKrw": 0,
+        "annualLeaveAllowanceKrw": 0,
+        "ordinaryDailyWageKrw": 0
+      },
+      "result": {
+        "serviceDays": 1097,
+        "calculationPeriodDays": 91,
+        "averageDailyWageKrw": 115384.61538461539,
+        "ordinaryDailyWageKrw": 0,
+        "appliedDailyWageKrw": 115384.61538461539,
+        "estimatedSeverancePayKrw": 10403582.71865121
+      }
+    },
+    "/annual-leave-pay-calculator": {
+      "input": {
+        "startDate": "2024-07-28",
+        "calculationDate": "2026-07-28",
+        "usedLeaveDays": 5,
+        "dailyOrdinaryWageKrw": 120000
+      },
+      "result": {
+        "serviceMonths": 24,
+        "generatedLeaveDays": 15,
+        "usedLeaveDays": 5,
+        "remainingLeaveDays": 10,
+        "estimatedAllowanceKrw": 1200000
+      }
+    },
+    "/fair-value-calculator": {
+      "input": {
+        "epsKrw": 5000,
+        "targetPer": 12,
+        "growthRatePercent": 5,
+        "discountRatePercent": 8,
+        "safetyMarginPercent": 20
+      },
+      "result": {
+        "baseFairValueKrw": 60000,
+        "growthAdjustedFairValueKrw": 58333.33333333333,
+        "safeBuyPriceKrw": 46666.666666666664,
+        "conservativePriceKrw": 39666.666666666664,
+        "neutralPriceKrw": 46666.666666666664,
+        "aggressivePriceKrw": 53666.66666666666
+      }
+    },
+    "/exchange-calculator": {
+      "input": {
+        "amount": 1000,
+        "fromCurrency": "USD",
+        "toCurrency": "KRW",
+        "exchangeRate": 1350,
+        "feeRatePercent": 1
+      },
+      "result": {
+        "beforeFeeAmount": 1350000,
+        "feeAmount": 13500,
+        "afterFeeAmount": 1336500
+      },
+      "knownFaultCases": {
+        "krwToForeign_1350000krw_1350rate_fee0": 1822500000,
+        "sourceEqualsTarget_1000usd_1350rate_fee3": 1309500
+      }
+    },
+    "/electricity-bill-calculator": {
+      "input": {
+        "usageKwh": 350,
+        "season": "NORMAL",
+        "previousUsageKwh": 300
+      },
+      "result": {
+        "usageKwh": 350,
+        "baseFeeKrw": 1600,
+        "energyChargeKrw": 56190,
+        "climateChargeKrw": 3150,
+        "fuelAdjustmentKrw": 1750,
+        "subtotalKrw": 62690,
+        "vatKrw": 6269,
+        "industryFundKrw": 2310,
+        "totalBillKrw": 71269,
+        "averageUnitPriceKrwPerKwh": 203.62571428571428,
+        "previousUsageKwh": 300,
+        "usageDeltaKwh": 50
+      },
+      "knownIssue": "전력산업기반기금 3.7% 적용. 2026년에는 2.7% 적용 필요."
+    },
+    "/air-conditioner-electricity-calculator": {
+      "input": {
+        "powerWatts": 1800,
+        "hoursPerDay": 8,
+        "daysPerMonth": 30,
+        "electricityRatePerKwh": 160,
+        "standbyWatts": 5,
+        "householdUsageKwh": 250,
+        "season": "SUMMER"
+      },
+      "result": {
+        "activeUsageKwh": 432,
+        "standbyUsageKwh": 3.5999999999999996,
+        "totalUsageKwh": 435.6,
+        "estimatedCostKrw": 69696,
+        "dailyCostKrw": 2323.2,
+        "hourlyCostKrw": 290.4,
+        "householdBaseUsageKwh": 250,
+        "householdTotalUsageKwh": 685.6,
+        "householdBaseBillKrw": 39121,
+        "householdTotalBillKrw": 179057.28,
+        "householdIncrementalCostKrw": 139936.28
+      },
+      "knownIssue": "대기전력 사용량이 실제 미사용 시간 대신 24시간 고정으로 계산됨."
+    },
+    "/car-maintenance-calculator": {
+      "input": {
+        "monthlyDistanceKm": 1000,
+        "fuelEfficiencyKmPerLiter": 12,
+        "fuelPricePerLiterKrw": 1700,
+        "parkingFeeMonthlyKrw": 100000,
+        "insuranceAnnualKrw": 900000,
+        "taxAnnualKrw": 300000,
+        "maintenanceAnnualKrw": 600000,
+        "tollMonthlyKrw": 50000,
+        "installmentMonthlyKrw": 0
+      },
+      "result": {
+        "fuelCostMonthlyKrw": 141666.66666666666,
+        "fixedCostMonthlyKrw": 200000,
+        "variableCostMonthlyKrw": 241666.66666666666,
+        "totalCostMonthlyKrw": 441666.6666666666,
+        "totalCostAnnualKrw": 5300000,
+        "costPerKmKrw": 441.66666666666663
+      }
+    },
+    "/monthly-budget-calculator": {
+      "input": {
+        "monthlyIncomeKrw": 3500000,
+        "housingKrw": 900000,
+        "foodKrw": 600000,
+        "transportKrw": 200000,
+        "communicationKrw": 100000,
+        "insuranceKrw": 150000,
+        "educationKrw": 0,
+        "subscriptionsKrw": 50000,
+        "leisureKrw": 300000,
+        "savingsGoalKrw": 700000,
+        "otherKrw": 200000
+      },
+      "result": {
+        "fixedExpensesKrw": 1200000,
+        "variableExpensesKrw": 1300000,
+        "totalExpensesKrw": 2500000,
+        "remainingAfterExpensesKrw": 1000000,
+        "remainingAfterSavingsGoalKrw": 300000,
+        "expenseRatioPercent": 71.42857142857143,
+        "savingsGoalRatioPercent": 20
+      }
+    }
+  }
+}

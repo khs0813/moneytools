@@ -39,6 +39,19 @@
                         <button type="button" data-quick-preset="aircon_hours_12" data-preset-target="hoursPerDay" data-preset-value="12">하루 12시간</button>
                     </div>
                 </div>
+                <label>부하율(정격 대비 0~1)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" data-min="0" data-max="1" data-decimals="2" min="0" max="1" step="0.01" id="loadFactor" name="loadFactor" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'loadFactor')}">
+                    <span class="field-error" th:if="${#fields.hasErrors('loadFactor')}" th:errors="*{loadFactor}"></span>
+                    <small class="field-help">정속형·최대부하는 1, 인버터 절전 운전은 0.4~0.7처럼 낮춰 입력합니다.</small>
+                </label>
+                <div class="quick-preset-group" aria-label="인버터 부하율 예시">
+                    <span>부하율 예시</span>
+                    <div class="preset-buttons">
+                        <button type="button" data-quick-preset="aircon_load_40" data-preset-target="loadFactor" data-preset-value="0.4">인버터 0.4</button>
+                        <button type="button" data-quick-preset="aircon_load_60" data-preset-target="loadFactor" data-preset-value="0.6">인버터 0.6</button>
+                        <button type="button" data-quick-preset="aircon_load_100" data-preset-target="loadFactor" data-preset-value="1">정격 1.0</button>
+                    </div>
+                </div>
                 <label>월 사용 일수
                     <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="daysPerMonth" name="daysPerMonth" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'daysPerMonth')}">
                     <span class="field-error" th:if="${#fields.hasErrors('daysPerMonth')}" th:errors="*{daysPerMonth}"></span>
@@ -68,7 +81,7 @@
             <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
-                    <div><span>냉방 사용 전력량</span><strong th:text="${#numbers.formatDecimal(result.activeUsageKwh, 0, 'COMMA', 1, 'POINT')} + 'kWh'">0kWh</strong></div>
+                    <div><span>부하율 반영 냉방 사용량</span><strong th:text="${#numbers.formatDecimal(result.activeUsageKwh, 0, 'COMMA', 1, 'POINT')} + 'kWh'">0kWh</strong></div>
                     <div><span>대기전력 사용량</span><strong th:text="${#numbers.formatDecimal(result.standbyUsageKwh, 0, 'COMMA', 1, 'POINT')} + 'kWh'">0kWh</strong></div>
                     <div><span>월 총 사용 전력량</span><strong th:text="${#numbers.formatDecimal(result.totalUsageKwh, 0, 'COMMA', 1, 'POINT')} + 'kWh'">0kWh</strong></div>
                     <div><span>에어컨 단독 예상 비용</span><strong th:text="${#numbers.formatDecimal(result.estimatedCost, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>

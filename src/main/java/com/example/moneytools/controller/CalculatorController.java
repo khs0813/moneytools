@@ -439,21 +439,22 @@ public class CalculatorController {
 
     private List<AirConditionerExampleRow> airConditionerExamples() {
         return List.of(
-                airConditionerExample("벽걸이형 인버터 예시", 900.0, 8.0),
-                airConditionerExample("스탠드형 정속형 예시", 1800.0, 8.0),
-                airConditionerExample("시스템 에어컨 예시", 2500.0, 8.0),
-                airConditionerExample("스탠드형 하루 4시간", 1800.0, 4.0),
-                airConditionerExample("스탠드형 하루 12시간", 1800.0, 12.0)
+                airConditionerExample("벽걸이형 인버터 예시(부하율 0.6)", 900.0, 8.0, 0.6),
+                airConditionerExample("스탠드형 정속형 예시(부하율 1.0)", 1800.0, 8.0, 1.0),
+                airConditionerExample("시스템 에어컨 예시(부하율 0.7)", 2500.0, 8.0, 0.7),
+                airConditionerExample("스탠드형 하루 4시간", 1800.0, 4.0, 1.0),
+                airConditionerExample("스탠드형 하루 12시간", 1800.0, 12.0, 1.0)
         );
     }
 
-    private AirConditionerExampleRow airConditionerExample(String label, double powerWatts, double hoursPerDay) {
+    private AirConditionerExampleRow airConditionerExample(String label, double powerWatts, double hoursPerDay, double loadFactor) {
         AirConditionerCostRequest request = new AirConditionerCostRequest();
         request.setPowerWatts(powerWatts);
         request.setHoursPerDay(hoursPerDay);
+        request.setLoadFactor(loadFactor);
         request.setDaysPerMonth(30.0);
         request.setElectricityRatePerKwh(160.0);
-        request.setStandbyWatts(5.0);
+        request.setStandbyWatts(7.5);
         request.setHouseholdUsageKwh(250.0);
         request.setSeason("SUMMER");
         AirConditionerCostResult result = airConditionerCostService.calculate(request);

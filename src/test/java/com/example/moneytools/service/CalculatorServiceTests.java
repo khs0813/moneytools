@@ -2,12 +2,15 @@ package com.example.moneytools.service;
 
 import com.example.moneytools.dto.DividendRequest;
 import com.example.moneytools.dto.AirConditionerCostRequest;
+import com.example.moneytools.dto.ExchangeRequest;
 import com.example.moneytools.dto.LoanRequest;
 import com.example.moneytools.dto.SalaryRequest;
 import com.example.moneytools.dto.StockAverageRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.offset;
 
 class CalculatorServiceTests {
     @Test
@@ -93,8 +96,67 @@ class CalculatorServiceTests {
         var baseResult = service.calculate(withoutChildren);
         var childCreditResult = service.calculate(withTwoChildren);
 
-        assertThat(baseResult.incomeTax() - childCreditResult.incomeTax()).isEqualTo(29_160.0);
+        assertThat(baseResult.incomeTax() - childCreditResult.incomeTax()).isEqualTo(45_830.0);
         assertThat(baseResult.localIncomeTax()).isGreaterThan(childCreditResult.localIncomeTax());
+    }
+
+    @Test
+    void exchangeCalculatorConvertsForeignToKrwUsingKrwPerForeignRate() {
+        ExchangeRequest request = new ExchangeRequest();
+        request.setAmount(1_000.0);
+        request.setFromCurrency("USD");
+        request.setToCurrency("KRW");
+        request.setExchangeRate(1_350.0);
+        request.setFeeRate(0.0);
+
+        var result = new ExchangeCalculatorService().calculate(request);
+
+        assertThat(result.beforeFeeAmount()).isEqualTo(1_350_000.0);
+        assertThat(result.feeAmount()).isEqualTo(0.0);
+        assertThat(result.afterFeeAmount()).isEqualTo(1_350_000.0);
+        assertThat(result.afterFeeKrw()).isEqualTo(1_350_000.0);
+    }
+
+    @Test
+    void exchangeCalculatorConvertsKrwToForeignByDividingByKrwPerForeignRate() {
+        ExchangeRequest request = new ExchangeRequest();
+        request.setAmount(1_350_000.0);
+        request.setFromCurrency("KRW");
+        request.setToCurrency("USD");
+        request.setExchangeRate(1_350.0);
+        request.setFeeRate(0.0);
+
+        var result = new ExchangeCalculatorService().calculate(request);
+
+        assertThat(result.beforeFeeAmount()).isEqualTo(1_000.0);
+        assertThat(result.afterFeeAmount()).isEqualTo(1_000.0);
+        assertThat(result.afterFeeKrw()).isEqualTo(1_350_000.0);
+    }
+
+    @Test
+    void exchangeCalculatorKeepsSameCurrencyAsNoOp() {
+        ExchangeRequest request = new ExchangeRequest();
+        request.setAmount(1_000.0);
+        request.setFromCurrency("USD");
+        request.setToCurrency("USD");
+        request.setExchangeRate(1_350.0);
+        request.setFeeRate(3.0);
+
+        var result = new ExchangeCalculatorService().calculate(request);
+
+        assertThat(result.sameCurrency()).isTrue();
+        assertThat(result.beforeFeeAmount()).isEqualTo(1_000.0);
+        assertThat(result.feeAmount()).isEqualTo(0.0);
+        assertThat(result.afterFeeAmount()).isEqualTo(1_000.0);
+    }
+
+    @Test
+    void exchangeCalculatorRejectsZeroOrNegativeRate() {
+        ExchangeRequest request = new ExchangeRequest();
+        request.setExchangeRate(0.0);
+
+        assertThatThrownBy(() -> new ExchangeCalculatorService().calculate(request))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -102,9 +164,10 @@ class CalculatorServiceTests {
         AirConditionerCostRequest request = new AirConditionerCostRequest();
         request.setPowerWatts(1800.0);
         request.setHoursPerDay(8.0);
+        request.setLoadFactor(1.0);
         request.setDaysPerMonth(30.0);
         request.setElectricityRatePerKwh(160.0);
-        request.setStandbyWatts(5.0);
+        request.setStandbyWatts(7.5);
         request.setHouseholdUsageKwh(250.0);
         request.setSeason("SUMMER");
 
@@ -113,5 +176,36 @@ class CalculatorServiceTests {
         assertThat(result.estimatedCost()).isGreaterThan(0.0);
         assertThat(result.householdTotalUsageKwh()).isGreaterThan(result.householdBaseUsageKwh());
         assertThat(result.householdIncrementalCost()).isGreaterThan(0.0);
+    }
+
+    @Test
+    void airConditionerCalculatorUsesStandbyOnlyOutsideActiveHours() {
+        AirConditionerCostCalculatorService service = new AirConditionerCostCalculatorService(new ElectricityBillCalculatorService());
+
+        assertThat(airConditionerUsage(service, 4.0)).isCloseTo(220.5, offset(0.0001));
+        assertThat(airConditionerUsage(service, 8.0)).isCloseTo(435.6, offset(0.0001));
+        assertThat(airConditionerUsage(service, 12.0)).isCloseTo(650.7, offset(0.0001));
+        assertThat(airConditionerUsage(service, 24.0)).isCloseTo(1296.0, offset(0.0001));
+    }
+
+    @Test
+    void electricityBillCalculatorUses2026IndustryFundRateAndTenWonFloor() {
+        var result = new ElectricityBillCalculatorService().calculate(new com.example.moneytools.dto.ElectricityBillRequest());
+
+        assertThat(result.industryFund()).isEqualTo(1_690.0);
+        assertThat(result.totalBill()).isEqualTo(70_640.0);
+    }
+
+    private double airConditionerUsage(AirConditionerCostCalculatorService service, double hoursPerDay) {
+        AirConditionerCostRequest request = new AirConditionerCostRequest();
+        request.setPowerWatts(1800.0);
+        request.setStandbyWatts(7.5);
+        request.setDaysPerMonth(30.0);
+        request.setHoursPerDay(hoursPerDay);
+        request.setLoadFactor(1.0);
+        request.setElectricityRatePerKwh(160.0);
+        request.setHouseholdUsageKwh(250.0);
+        request.setSeason("SUMMER");
+        return service.calculate(request).totalUsageKwh();
     }
 }

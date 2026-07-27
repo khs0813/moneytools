@@ -2,10 +2,16 @@ package com.example.moneytools.service;
 
 import com.example.moneytools.dto.ElectricityBillRequest;
 import com.example.moneytools.dto.ElectricityBillResult;
+import com.example.moneytools.util.RoundingPolicy;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ElectricityBillCalculatorService {
+    private static final double CLIMATE_CHARGE_PER_KWH = 9.0;
+    private static final double FUEL_ADJUSTMENT_PER_KWH = 5.0;
+    private static final double VALUE_ADDED_TAX_RATE = 0.1;
+    private static final double ELECTRIC_POWER_INDUSTRY_FUND_RATE = 0.027;
+
     public ElectricityBillResult calculate(ElectricityBillRequest request) {
         double usage = request.getUsageKwh();
         TierPolicy policy = policy(request.getSeason());
@@ -18,12 +24,12 @@ public class ElectricityBillCalculatorService {
                 + tier2Usage * policy.rate2
                 + tier3Usage * policy.rate3;
         double baseFee = usage <= policy.tier1Limit ? policy.baseFee1 : usage <= policy.tier2Limit ? policy.baseFee2 : policy.baseFee3;
-        double climateCharge = usage * 9.0;
-        double fuelAdjustment = usage * 5.0;
+        double climateCharge = usage * CLIMATE_CHARGE_PER_KWH;
+        double fuelAdjustment = usage * FUEL_ADJUSTMENT_PER_KWH;
         double subtotal = baseFee + energyCharge + climateCharge + fuelAdjustment;
-        double vat = Math.round(subtotal * 0.1);
-        double fund = Math.floor(subtotal * 0.037 / 10.0) * 10.0;
-        double total = subtotal + vat + fund;
+        double vat = RoundingPolicy.roundToWon(subtotal * VALUE_ADDED_TAX_RATE);
+        double fund = RoundingPolicy.floorToTenWon(subtotal * ELECTRIC_POWER_INDUSTRY_FUND_RATE);
+        double total = RoundingPolicy.floorToTenWon(subtotal + vat + fund);
         double avgUnitPrice = usage > 0 ? total / usage : 0.0;
 
         double previousUsage = request.getPreviousUsageKwh() == null ? 0.0 : request.getPreviousUsageKwh();

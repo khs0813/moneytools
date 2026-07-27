@@ -26,6 +26,22 @@ class RequestValidationTests {
     }
 
     @Test
+    void rejectsZeroExchangeRate() {
+        ExchangeRequest request = new ExchangeRequest();
+        request.setExchangeRate(0.0);
+
+        assertThat(validator.validate(request)).isNotEmpty();
+    }
+
+    @Test
+    void rejectsZeroOverseasStockTaxExchangeRate() {
+        OverseasStockTaxRequest request = new OverseasStockTaxRequest();
+        request.setBuyExchangeRate(0.0);
+
+        assertThat(validator.validate(request)).isNotEmpty();
+    }
+
+    @Test
     void rejectsTooManyUsedLeaveDays() {
         AnnualLeaveRequest request = new AnnualLeaveRequest();
         request.setUsedLeaveDays(36501);
