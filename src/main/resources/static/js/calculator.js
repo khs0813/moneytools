@@ -229,6 +229,9 @@ document.addEventListener('DOMContentLoaded', () => {
       trackEvent('quick_preset_click', {
         preset_key: button.dataset.quickPreset || 'unknown'
       });
+      if (button.dataset.presetSubmit === 'true' && button.dataset.presetTarget && button.dataset.presetValue !== undefined) {
+        button.closest('form')?.requestSubmit();
+      }
     });
   });
 
