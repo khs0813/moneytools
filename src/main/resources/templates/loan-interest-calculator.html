@@ -61,9 +61,9 @@
             <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
-                    <div><span>첫 달 상환금</span><strong th:text="${#numbers.formatDecimal(result.firstMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
-                    <div><span>평균 월 상환금</span><strong th:text="${#numbers.formatDecimal(result.averageMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
-                    <div><span>마지막 달 상환금</span><strong th:text="${#numbers.formatDecimal(result.lastMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span th:text="${form.repaymentType == 'BULLET' ? '평상시 월 이자' : '첫 달 상환금'}">첫 달 상환금</span><strong th:text="${#numbers.formatDecimal(result.firstMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span th:text="${form.repaymentType == 'BULLET' ? '전체 기간 산술평균(만기 원금 포함)' : '평균 월 상환금'}">평균 월 상환금</span><strong th:text="${#numbers.formatDecimal(result.averageMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span th:text="${form.repaymentType == 'BULLET' ? '만기월 총 납입액' : '마지막 달 상환금'}">마지막 달 상환금</span><strong th:text="${#numbers.formatDecimal(result.lastMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                     <div><span>총 이자</span><strong th:text="${#numbers.formatDecimal(result.totalInterest, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                     <div><span>총 상환액</span><strong th:text="${#numbers.formatDecimal(result.totalPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                 </div>
@@ -108,8 +108,8 @@
                     <tr>
                         <th scope="col">상환방식</th>
                         <th scope="col">첫 달 납입액</th>
-                        <th scope="col">평균 월 납입액</th>
-                        <th scope="col">마지막 달 납입액</th>
+                        <th scope="col">월 납입액 해석</th>
+                        <th scope="col">마지막/만기월 납입액</th>
                         <th scope="col">총 이자</th>
                         <th scope="col">총 상환금액</th>
                     </tr>
@@ -118,8 +118,8 @@
                     <tr th:each="row : ${loanComparisonRows}">
                         <td th:text="${row.repaymentType}">원리금균등</td>
                         <td th:text="${#numbers.formatDecimal(row.firstMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
-                        <td th:text="${#numbers.formatDecimal(row.averageMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
-                        <td th:text="${#numbers.formatDecimal(row.lastMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
+                        <td><span class="field-help" th:text="${row.averagePaymentLabel}">평균 월 납입액</span><strong th:text="${#numbers.formatDecimal(row.averageMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></td>
+                        <td><span class="field-help" th:text="${row.lastPaymentLabel}">마지막 달 납입액</span><strong th:text="${#numbers.formatDecimal(row.lastMonthlyPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></td>
                         <td th:text="${#numbers.formatDecimal(row.totalInterest, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
                         <td th:text="${#numbers.formatDecimal(row.totalPayment, 0, 'COMMA', 0, 'POINT')} + '원'">0원</td>
                     </tr>

@@ -2,6 +2,7 @@ package com.example.moneytools.service;
 
 import com.example.moneytools.dto.DividendRequest;
 import com.example.moneytools.dto.AirConditionerCostRequest;
+import com.example.moneytools.dto.AnnualLeaveRequest;
 import com.example.moneytools.dto.ExchangeRequest;
 import com.example.moneytools.dto.LoanRequest;
 import com.example.moneytools.dto.SalaryRequest;
@@ -42,6 +43,35 @@ class CalculatorServiceTests {
         assertThat(result.schedule()).hasSize(12);
         assertThat(result.lastMonthlyPayment()).isGreaterThan(0.0);
         assertThat(result.totalPayment()).isGreaterThan(request.getPrincipal().doubleValue());
+    }
+
+    @Test
+    void bulletLoanSeparatesRegularInterestFromMaturityMonthAndArithmeticAverage() {
+        LoanRequest request = new LoanRequest();
+        request.setPrincipal(100_000_000L);
+        request.setAnnualRate(4.5);
+        request.setYears(20);
+        request.setRepaymentType("BULLET");
+
+        var result = new LoanCalculatorService().calculate(request);
+
+        assertThat(result.firstMonthlyPayment()).isEqualTo(375_000.0);
+        assertThat(result.lastMonthlyPayment()).isEqualTo(100_375_000.0);
+        assertThat(result.totalInterest()).isEqualTo(90_000_000.0);
+        assertThat(result.averageMonthlyPayment()).isCloseTo(791_666.67, offset(0.01));
+    }
+
+    @Test
+    void annualLeaveCalculatorUsesConfirmedUnusedLeaveDaysOnly() {
+        AnnualLeaveRequest request = new AnnualLeaveRequest();
+        request.setUnusedLeaveDays(5.5);
+        request.setDailyOrdinaryWage(120_000.0);
+
+        var result = new AnnualLeaveCalculatorService().calculate(request);
+
+        assertThat(result.unusedLeaveDays()).isEqualTo(5.5);
+        assertThat(result.dailyOrdinaryWage()).isEqualTo(120_000.0);
+        assertThat(result.estimatedAllowance()).isEqualTo(660_000.0);
     }
 
     @Test

@@ -44,4 +44,21 @@ class MortgageCalculatorServiceTests {
         assertThat(result.estimatedMonthlyPayment()).isEqualTo(1_500_000.0);
         assertThat(result.totalInterest()).isEqualTo(180_000_000.0);
     }
+
+    @Test
+    void cashOnHandChangesCashShortfall() {
+        MortgageRequest request = new MortgageRequest();
+        request.setHousePrice(500_000_000L);
+        request.setExpectedLoanAmount(300_000_000L);
+        request.setCashOnHand(180_000_000L);
+
+        var shortResult = service.calculate(request);
+
+        request.setCashOnHand(220_000_000L);
+        var surplusResult = service.calculate(request);
+
+        assertThat(shortResult.requiredEquity()).isEqualTo(200_000_000.0);
+        assertThat(shortResult.cashShortfall()).isEqualTo(20_000_000.0);
+        assertThat(surplusResult.cashShortfall()).isEqualTo(0.0);
+    }
 }

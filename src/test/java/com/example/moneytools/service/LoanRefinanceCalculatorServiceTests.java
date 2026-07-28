@@ -32,6 +32,30 @@ class LoanRefinanceCalculatorServiceTests {
     }
 
     @Test
+    void marksLongerNewTermUnfavorableWhenTotalInterestIncreasesDespiteMonthlySavings() {
+        LoanRefinanceRequest request = new LoanRefinanceRequest();
+        request.setCurrentBalance(100_000_000L);
+        request.setCurrentAnnualRate(5.0);
+        request.setCurrentRemainingYears(5);
+        request.setNewAnnualRate(4.0);
+        request.setNewYears(10);
+        request.setPrepaymentPenaltyRate(0.0);
+        request.setAdditionalCost(0L);
+        request.setRepaymentType("EQUAL_PAYMENT");
+        request.setRefinanceDate(LocalDate.of(2026, 8, 1));
+
+        var result = service.calculate(request);
+
+        assertThat(result.monthlySavings()).isGreaterThan(0.0);
+        assertThat(result.currentMonthlyPayment()).isBetween(1_887_122.0, 1_887_124.0);
+        assertThat(result.newMonthlyPayment()).isBetween(1_012_450.0, 1_012_452.0);
+        assertThat(result.totalInterestSavings()).isLessThan(0.0);
+        assertThat(result.netSavings()).isLessThan(0.0);
+        assertThat(result.recommendation()).isEqualTo("갈아타기 불리");
+        assertThat(result.recommendationLevel()).isEqualTo("danger");
+    }
+
+    @Test
     void marksRefinanceUnfavorableWhenNewRateIsHigher() {
         LoanRefinanceRequest request = new LoanRefinanceRequest();
         request.setCurrentBalance(100_000_000L);

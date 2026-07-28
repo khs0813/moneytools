@@ -42,9 +42,9 @@ class RequestValidationTests {
     }
 
     @Test
-    void rejectsTooManyUsedLeaveDays() {
+    void rejectsTooManyUnusedLeaveDays() {
         AnnualLeaveRequest request = new AnnualLeaveRequest();
-        request.setUsedLeaveDays(36501);
+        request.setUnusedLeaveDays(36501.0);
 
         assertThat(validator.validate(request)).isNotEmpty();
     }

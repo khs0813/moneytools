@@ -13,18 +13,10 @@
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form" th:action="@{/annual-leave-pay-calculator}" th:object="${form}" method="post">
                 <h2>입력값</h2>
-                <label>입사일
-                    <input type="date" th:field="*{startDate}">
-                    <span class="field-error" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></span>
-                </label>
-                <label>계산 기준일
-                    <input type="date" th:field="*{calculationDate}">
-                    <span class="field-error" th:if="${#fields.hasErrors('calculationDate')}" th:errors="*{calculationDate}"></span>
-                    <span class="field-error" th:if="${dateError != null}" th:text="${dateError}"></span>
-                </label>
-                <label>사용 연차일수
-                    <input type="text" inputmode="numeric" autocomplete="off" data-number-input="integer" id="usedLeaveDays" name="usedLeaveDays" th:value="${@inputFieldValueFormatter.formatInteger(form, 'usedLeaveDays')}">
-                    <span class="field-error" th:if="${#fields.hasErrors('usedLeaveDays')}" th:errors="*{usedLeaveDays}"></span>
+                <label>수당 대상 미사용 연차일수
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" data-min="0" data-max="36500" data-decimals="2" min="0" max="36500" step="0.01" id="unusedLeaveDays" name="unusedLeaveDays" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'unusedLeaveDays')}">
+                    <small class="field-help">회사 휴가대장이나 정산 안내에서 확인한, 실제 수당 지급 대상 일수를 입력합니다.</small>
+                    <span class="field-error" th:if="${#fields.hasErrors('unusedLeaveDays')}" th:errors="*{unusedLeaveDays}"></span>
                 </label>
                 <label>1일 통상임금
                     <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="dailyOrdinaryWage" name="dailyOrdinaryWage" th:value="${@inputFieldValueFormatter.formatInteger(form, 'dailyOrdinaryWage')}">
@@ -35,10 +27,8 @@
             <section class="result-panel" aria-live="polite" th:if="${result != null}" data-result-card>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
-                    <div><span>근속 개월</span><strong th:text="${#numbers.formatInteger(result.serviceMonths, 0, 'COMMA')} + '개월'">0개월</strong></div>
-                    <div><span>발생 연차</span><strong th:text="${result.generatedLeaveDays} + '일'">0일</strong></div>
-                    <div><span>사용 연차</span><strong th:text="${result.usedLeaveDays} + '일'">0일</strong></div>
-                    <div><span>잔여 연차</span><strong th:text="${result.remainingLeaveDays} + '일'">0일</strong></div>
+                    <div><span>수당 대상 미사용 연차</span><strong th:text="${#numbers.formatDecimal(result.unusedLeaveDays, 0, 'COMMA', 2, 'POINT')} + '일'">0일</strong></div>
+                    <div><span>1일 통상임금</span><strong th:text="${#numbers.formatDecimal(result.dailyOrdinaryWage, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                     <div><span>예상 연차수당</span><strong th:text="${#numbers.formatDecimal(result.estimatedAllowance, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                 </div>
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
@@ -47,10 +37,10 @@
             <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
         </section>
 
-        <div th:replace="~{fragments/components :: disclaimer('연차 계산은 근로기준법 제60조의 기본 구조를 따라 1년 미만 또는 80% 미만 출근자는 1개월 개근 시 1일, 1년 이상 80% 이상 출근자는 15일을 전제로 산정합니다. 회사의 회계연도 기준, 출근율, 사용촉진 여부에 따라 실제 값은 달라질 수 있습니다.')}" ></div>
+        <div th:replace="~{fragments/components :: disclaimer('연차수당은 회사에서 확인한 수당 대상 미사용 연차일수와 1일 통상임금을 곱해 산정하는 단순 참고값입니다. 연차 발생일, 소멸일, 출근율, 사용촉진 여부에 따라 실제 지급 대상 일수는 달라질 수 있습니다.')}" ></div>
         <section class="content-card">
             <h2>입력값과 결과 해석</h2>
-            <p>이 페이지는 입사일 기준 연차를 전제로 완전 근속 개월 수를 계산하고, 1년 미만은 최대 11일, 1년 이상은 15일에 2년마다 1일을 가산해 최대 25일까지 반영합니다. 미사용 연차수당은 잔여 연차일수 × 1일 통상임금으로 계산합니다.</p>
+            <p>이 페이지는 자동 발생 연차를 확정하지 않습니다. 회사에서 확인한 수당 대상 미사용 연차일수를 입력하고, 미사용 연차수당 = 수당 대상 미사용 연차일수 × 1일 통상임금으로 계산합니다.</p>
         </section>
         <div th:replace="~{fragments/longform :: calculatorContent(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>

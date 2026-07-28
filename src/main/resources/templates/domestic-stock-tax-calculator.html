@@ -13,17 +13,46 @@
         <section class="calculator-layout" data-domestic-stock-tax-layout>
             <form class="calculator-form two-column-form" data-domestic-stock-tax-calculator>
                 <h2>입력값</h2>
+                <label>거래일
+                    <input type="date" id="domesticTradeDate" value="2026-01-02">
+                    <small class="field-help">2026년 1월 1일 이후 양도분 기준 시장별 세율을 적용합니다.</small>
+                </label>
+                <label>시장
+                    <select id="domesticMarket">
+                        <option value="KOSPI">코스피 일반 주권</option>
+                        <option value="KOSDAQ">코스닥 일반 주권</option>
+                        <option value="KONEX">코넥스</option>
+                        <option value="KOTC">K-OTC</option>
+                    </select>
+                </label>
+                <label>상품 유형
+                    <select id="domesticProductType">
+                        <option value="COMMON_STOCK">일반 주권</option>
+                        <option value="CUSTOM_RATE_REQUIRED">ETF·ETN·ELW 등 별도 확인 상품</option>
+                    </select>
+                    <small class="field-help">일반 주권 외 상품은 세율 예외가 있을 수 있어 사용자 지정 세율로만 계산합니다.</small>
+                </label>
                 <label>매수금액
                     <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="domesticBuyAmount" value="10,000,000">
                 </label>
                 <label>매도금액
-                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="domesticSellAmount" value="13,000,000">
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="domesticSellAmount" value="10,000,000">
                 </label>
-                <label>매매 수수료 합계
-                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="domesticFeeAmount" value="0">
+                <label>매수 수수료
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="domesticBuyFeeAmount" value="0">
                 </label>
-                <label>증권거래세율(%)
-                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" id="domesticTransactionTaxRate" value="0.15">
+                <label>매도 수수료
+                    <input type="text" inputmode="numeric" autocomplete="off" data-money-input data-number-input="integer" id="domesticSellFeeAmount" value="0">
+                </label>
+                <label class="checkbox-row">
+                    <input type="checkbox" id="domesticUseCustomRates">
+                    사용자 지정 세율 시나리오
+                </label>
+                <label>사용자 지정 증권거래세율(%)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" data-optional="true" data-min="0" data-max="100" data-decimals="4" min="0" max="100" step="0.0001" id="domesticCustomTransactionTaxRate" value="">
+                </label>
+                <label>사용자 지정 농어촌특별세율(%)
+                    <input type="text" inputmode="decimal" autocomplete="off" data-number-input="decimal" data-optional="true" data-min="0" data-max="100" data-decimals="4" min="0" max="100" step="0.0001" id="domesticCustomAgricultureTaxRate" value="">
                 </label>
                 <label class="checkbox-row">
                     <input type="checkbox" id="domesticApplyCapitalGainsTax">
@@ -37,10 +66,15 @@
             <section class="result-panel" aria-live="polite" data-result-card data-domestic-stock-tax-result-panel hidden>
                 <h2>계산 결과</h2>
                 <div class="result-grid">
+                    <div><span>적용 시장·상품</span><strong data-domestic-stock-tax-result="appliedPolicy">코스피 일반 주권</strong></div>
+                    <div><span>적용 거래세율</span><strong data-domestic-stock-tax-result="appliedRates">0%</strong></div>
                     <div><span>양도손익</span><strong data-domestic-stock-tax-result="capitalGain">0원</strong></div>
-                    <div><span>예상 증권거래세</span><strong data-domestic-stock-tax-result="transactionTax">0원</strong></div>
-                    <div><span>예상 양도소득세</span><strong data-domestic-stock-tax-result="capitalGainsTax">0원</strong></div>
-                    <div><span>총 예상 매도세금</span><strong data-domestic-stock-tax-result="totalTax">0원</strong></div>
+                    <div><span>증권거래세</span><strong data-domestic-stock-tax-result="transactionTax">0원</strong></div>
+                    <div><span>농어촌특별세</span><strong data-domestic-stock-tax-result="agricultureTax">0원</strong></div>
+                    <div><span>매매수수료</span><strong data-domestic-stock-tax-result="brokerageFees">0원</strong></div>
+                    <div><span>양도소득세 시나리오</span><strong data-domestic-stock-tax-result="capitalGainsTax">0원</strong></div>
+                    <div><span>총 거래비용</span><strong data-domestic-stock-tax-result="totalCost">0원</strong></div>
+                    <div><span>세후 매도대금</span><strong data-domestic-stock-tax-result="afterTaxProceeds">0원</strong></div>
                     <div><span>세후 매도손익</span><strong data-domestic-stock-tax-result="afterTaxProfit">0원</strong></div>
                 </div>
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
@@ -52,20 +86,20 @@
         <div th:replace="~{fragments/components :: disclaimer('국내 상장주식 세금은 시장, 종목, 대주주 여부, 비상장주식 여부, 세법 개정에 따라 달라질 수 있습니다. 이 계산기는 매도금액 기준 증권거래세와 선택 입력한 양도소득세를 단순 추정하는 참고용 도구입니다.')}" ></div>
         <section class="content-card">
             <h2>국내 주식 매도세금 계산 예시</h2>
-            <p>아래 표는 증권거래세율을 0.15%로 입력했을 때의 단순 예시입니다. 실제 세율은 시장, 종목, 거래 시점, 세법 개정에 따라 달라질 수 있으므로 최신 기준을 확인해야 합니다.</p>
+            <p>아래 표는 2026년 1월 1일 이후 양도분의 일반 주권 시장별 세율 예시입니다. 코스피는 증권거래세와 농어촌특별세를 분리해 표시하고, 일반 주권 외 상품은 별도 세율 확인이 필요합니다.</p>
             <div class="table-scroll overflow-x-auto">
                 <table class="data-table">
-                    <caption>국내 주식 매도금액별 증권거래세 계산 예시</caption>
-                    <thead><tr><th scope="col">매도금액</th><th scope="col">예시 세율</th><th scope="col">증권거래세</th><th scope="col">계산식</th></tr></thead>
+                    <caption>국내 주식 시장별 매도세금 계산 예시</caption>
+                    <thead><tr><th scope="col">시장</th><th scope="col">매도금액</th><th scope="col">증권거래세</th><th scope="col">농어촌특별세</th><th scope="col">합계</th></tr></thead>
                     <tbody>
-                    <tr><td>100만원</td><td>0.15%</td><td>1,500원</td><td>100만원 × 0.15%</td></tr>
-                    <tr><td>500만원</td><td>0.15%</td><td>7,500원</td><td>500만원 × 0.15%</td></tr>
-                    <tr><td>1,000만원</td><td>0.15%</td><td>15,000원</td><td>1,000만원 × 0.15%</td></tr>
-                    <tr><td>3,000만원</td><td>0.15%</td><td>45,000원</td><td>3,000만원 × 0.15%</td></tr>
+                    <tr><td>코스피 일반 주권</td><td>1,000만원</td><td>5,000원</td><td>15,000원</td><td>20,000원</td></tr>
+                    <tr><td>코스닥 일반 주권</td><td>1,000만원</td><td>20,000원</td><td>0원</td><td>20,000원</td></tr>
+                    <tr><td>코넥스</td><td>1,000만원</td><td>10,000원</td><td>0원</td><td>10,000원</td></tr>
+                    <tr><td>K-OTC</td><td>1,000만원</td><td>20,000원</td><td>0원</td><td>20,000원</td></tr>
                     </tbody>
                 </table>
             </div>
-            <p>매도금액 1,000만원에 증권거래세율 0.15%를 적용하면 예상 증권거래세는 15,000원입니다.</p>
+            <p>매도금액 1,000만원 기준 코스피 일반 주권은 증권거래세 5,000원과 농어촌특별세 15,000원을 합산해 20,000원으로 계산합니다.</p>
         </section>
         <div th:replace="~{fragments/longform :: calculatorContent(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>

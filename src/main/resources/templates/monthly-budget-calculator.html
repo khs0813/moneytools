@@ -13,7 +13,7 @@
         <section class="calculator-layout" th:classappend="${result != null} ? ' has-result' : ''">
             <form class="calculator-form two-column-form" th:action="@{/monthly-budget-calculator}" th:object="${form}" method="post">
                 <h2>입력값</h2>
-                <label>월 소득
+                <label>월 실수령 소득(세후)
                     <input type="text" inputmode="decimal" autocomplete="off" data-money-input data-number-input="decimal" id="monthlyIncome" name="monthlyIncome" th:value="${@inputFieldValueFormatter.formatDecimal(form, 'monthlyIncome')}">
                     <span class="field-error" th:if="${#fields.hasErrors('monthlyIncome')}" th:errors="*{monthlyIncome}"></span>
                 </label>
@@ -65,8 +65,8 @@
                     <div><span>월 고정비</span><strong th:text="${#numbers.formatDecimal(result.fixedExpenses, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                     <div><span>월 변동비</span><strong th:text="${#numbers.formatDecimal(result.variableExpenses, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                     <div><span>월 총지출</span><strong th:text="${#numbers.formatDecimal(result.totalExpenses, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
-                    <div><span>지출 후 잔액</span><strong th:text="${#numbers.formatDecimal(result.remainingAfterExpenses, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
-                    <div><span>저축 목표 반영 후 잔액</span><strong th:text="${#numbers.formatDecimal(result.remainingAfterSavingsGoal, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>생활지출 후 잔액</span><strong th:text="${#numbers.formatDecimal(result.remainingAfterExpenses, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
+                    <div><span>저축 목표 반영 후 자유잔액</span><strong th:text="${#numbers.formatDecimal(result.remainingAfterSavingsGoal, 0, 'COMMA', 0, 'POINT')} + '원'">0원</strong></div>
                     <div><span>소득 대비 지출 비율</span><strong th:text="${#numbers.formatDecimal(result.expenseRatio, 0, 'COMMA', 1, 'POINT')} + '%'">0%</strong></div>
                 </div>
                 <button class="ghost-button" type="button" data-copy-result>결과 복사</button>
@@ -75,7 +75,7 @@
             <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
         </section>
 
-        <div th:replace="~{fragments/components :: disclaimer('월 소득과 주요 지출 항목을 단순 합산한 예산 참고값입니다. 비정기 의료비, 경조사, 여행, 큰 수리비 같은 예외 비용은 별도로 준비해야 합니다.')}"></div>
+        <div th:replace="~{fragments/components :: disclaimer('월 실수령 소득과 주요 지출 항목을 단순 합산한 예산 참고값입니다. 비정기 의료비, 경조사, 여행, 큰 수리비 같은 예외 비용은 별도로 준비해야 합니다.')}"></div>
         <div th:replace="~{fragments/longform :: calculatorContent(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>

@@ -210,10 +210,8 @@ public class CalculatorController {
     @PostMapping("/annual-leave-pay-calculator")
     public String calculateAnnualLeave(@Valid @ModelAttribute("form") AnnualLeaveRequest form, BindingResult bindingResult, Model model) {
         prepare(model, "annual-leave", annualLeaveFaqs());
-        if (!bindingResult.hasErrors() && !form.getCalculationDate().isBefore(form.getStartDate())) {
+        if (!bindingResult.hasErrors()) {
             model.addAttribute("result", annualLeaveService.calculate(form));
-        } else if (form.getCalculationDate() != null && form.getStartDate() != null && form.getCalculationDate().isBefore(form.getStartDate())) {
-            model.addAttribute("dateError", "계산 기준일은 입사일보다 빠를 수 없습니다.");
         }
         return "annual-leave-pay-calculator";
     }
@@ -407,11 +405,14 @@ public class CalculatorController {
         request.setYears(source.getYears());
         request.setRepaymentType(repaymentType);
         LoanResult result = loanService.calculate(request);
+        boolean bullet = "BULLET".equals(repaymentType);
         return new LoanComparisonRow(
                 label,
                 result.firstMonthlyPayment(),
                 result.averageMonthlyPayment(),
+                bullet ? "전체 기간 산술평균(만기 원금 포함)" : "평균 월 납입액",
                 result.lastMonthlyPayment(),
+                bullet ? "만기월 총 납입액" : "마지막 달 납입액",
                 result.totalInterest(),
                 result.totalPayment()
         );
@@ -582,7 +583,7 @@ public class CalculatorController {
     public record SalaryExampleRow(String annualSalary, double grossMonthly, double insuranceDeduction, double taxDeduction, double netMonthly, double netAnnual, String basis) {}
     public record MonthlySalaryExampleRow(String monthlySalary, double netMonthly, String deductions, String basis) {}
     public record LoanExampleRow(String principal, String rate, String years, String repaymentType, double monthlyPayment, double totalInterest) {}
-    public record LoanComparisonRow(String repaymentType, double firstMonthlyPayment, double averageMonthlyPayment, double lastMonthlyPayment, double totalInterest, double totalPayment) {}
+    public record LoanComparisonRow(String repaymentType, double firstMonthlyPayment, double averageMonthlyPayment, String averagePaymentLabel, double lastMonthlyPayment, String lastPaymentLabel, double totalInterest, double totalPayment) {}
     public record ElectricityUsageExampleRow(String usageKwh, double normalBill, double summerBill, double summerDifference) {}
     public record AirConditionerExampleRow(String label, double powerWatts, double hoursPerDay, double usageKwh, double standaloneCost, double householdIncrementalCost) {}
     public record MortgageExampleRow(String housePrice, String loanAmount, String rate, String years, double monthlyPayment, double ltv) {}
@@ -678,19 +679,19 @@ public class CalculatorController {
 
     private List<FaqItem> annualLeaveFaqs() {
         return List.of(
-                new FaqItem("발생 연차는 어떻게 계산하나요?", "근로기준법 제60조의 기본 구조를 따라 1년 미만 또는 80% 미만 출근자는 1개월 개근 시 1일, 1년 이상 80% 이상 출근자는 15일을 전제로 계산합니다."),
-                new FaqItem("연차수당은 어떻게 계산하나요?", "잔여 연차일수에 1일 통상임금을 곱해 계산합니다. 별도의 규정이 없으면 통상임금을 기준으로 보는 구조를 기본값으로 두었습니다."),
-                new FaqItem("회사 정책과 다른 경우가 있나요?", "네. 회계연도 기준 운영, 사용촉진, 출근율, 단시간 근로 여부에 따라 실제 부여일수와 수당은 달라질 수 있습니다."),
-                new FaqItem("미사용 연차가 모두 수당으로 지급되나요?", "사용촉진 절차를 적법하게 진행했는지, 소멸 시점이 언제인지에 따라 달라질 수 있어 개별 확인이 필요합니다."),
-                new FaqItem("계산 기준일은 왜 중요한가요?", "같은 입사일이라도 어느 시점에서 보는지에 따라 발생 연차와 사용 가능 잔여일수가 달라지기 때문입니다.")
+                new FaqItem("수당 대상 미사용 연차일수는 무엇인가요?", "회사 휴가대장이나 정산 안내에서 이미 확인한, 금전 보상 대상 미사용 연차일수를 뜻합니다."),
+                new FaqItem("연차수당은 어떻게 계산하나요?", "수당 대상 미사용 연차일수에 1일 통상임금을 곱해 계산합니다."),
+                new FaqItem("발생 연차를 자동 계산하지 않는 이유는 무엇인가요?", "연차는 발생일, 소멸일, 출근율, 회계연도 기준, 사용촉진 여부에 따라 수당 대상 여부가 달라져 단일 누적값으로 확정하기 어렵기 때문입니다."),
+                new FaqItem("미사용 연차가 모두 수당으로 지급되나요?", "아닙니다. 사용촉진 절차, 소멸 시점, 회사 운영 기준에 따라 지급 대상에서 제외될 수 있어 회사 확인값을 입력해야 합니다."),
+                new FaqItem("1일 통상임금은 어디서 확인하나요?", "급여명세서, 취업규칙, 근로계약서 또는 회사 인사팀 안내에서 확인한 1일 통상임금을 입력하는 것이 안전합니다.")
         );
     }
 
     private List<FaqItem> exchangeFaqs() {
         return List.of(
                 new FaqItem("실시간 환율을 자동 반영하나요?", "초기 버전은 환율을 직접 입력하는 방식입니다."),
-                new FaqItem("환전 수수료는 어떻게 계산하나요?", "환전 전 금액에 수수료율을 곱해 차감한 결과를 보여줍니다."),
-                new FaqItem("통화 단위는 제한되나요?", "기본 통화 목록을 제공하며, 환율만 알면 어떤 통화 조합도 계산 로직을 확장할 수 있습니다."),
+                new FaqItem("환전 수수료는 어떻게 계산하나요?", "받는 통화 기준 수수료 전 금액에 수수료율을 곱해 차감한 결과를 보여줍니다."),
+                new FaqItem("환율은 어떤 방향으로 입력하나요?", "1 외화 = X원 기준으로 입력합니다. 원화를 외화로 바꿀 때는 원화 금액을 해당 환율로 나눕니다."),
                 new FaqItem("환율 계산 결과가 실제 카드 청구액과 다른 이유는 무엇인가요?", "카드사 해외서비스 수수료, 네트워크 수수료, 승인 시점 환율 차이까지는 반영하지 않기 때문입니다."),
                 new FaqItem("은행 우대환율은 어디에 반영하나요?", "우대 적용 후 실제 체감 환율을 직접 계산해 환율 칸에 입력하면 보다 현실적인 결과를 볼 수 있습니다.")
         );
@@ -709,10 +710,10 @@ public class CalculatorController {
 
     private List<FaqItem> domesticStockTaxFaqs() {
         return List.of(
-                new FaqItem("국내 주식 매도세금은 무엇을 계산하나요?", "매도금액에 증권거래세율을 곱해 예상 증권거래세를 계산하고, 대주주 등 양도소득세 대상 여부는 별도 입력으로 확인합니다."),
+                new FaqItem("국내 주식 매도세금은 무엇을 계산하나요?", "시장별 증권거래세와 농어촌특별세를 세목별로 계산하고, 대주주 등 양도소득세 대상 여부는 별도 입력으로 확인합니다."),
                 new FaqItem("국내 상장주식도 양도소득세가 발생하나요?", "일반적인 소액주주 상장주식 거래는 양도소득세가 과세되지 않는 경우가 많지만, 대주주나 비상장주식 등 요건에 따라 양도소득세가 발생할 수 있습니다."),
                 new FaqItem("해외주식과 계산 방식이 다른가요?", "해외주식은 양도차익에서 기본공제 250만원을 차감한 과세표준에 세율을 적용하는 구조라 국내주식 증권거래세 계산과 다릅니다."),
-                new FaqItem("시장별 세율 차이는 어디서 반영하나요?", "이 페이지는 참고용 단순 계산기이므로 실제 거래 시장 세율과 계좌 유형은 직접 확인해 입력값을 조정해야 합니다."),
+                new FaqItem("시장별 세율 차이는 어디서 반영하나요?", "코스피, 코스닥, 코넥스, K-OTC 선택값에 따라 2026년 일반 주권 세율표를 적용합니다."),
                 new FaqItem("수수료를 함께 보는 이유는 무엇인가요?", "매도세금이 작아 보여도 수수료까지 합치면 실제 순이익이 크게 줄 수 있기 때문입니다.")
         );
     }
@@ -731,7 +732,7 @@ public class CalculatorController {
         return List.of(
                 new FaqItem("에어컨 하루 8시간 기준 계산이 가능한가요?", "가능합니다. 소비전력과 하루 사용 시간, 사용 일수를 입력하면 월 사용전력량과 예상 요금을 보여줍니다."),
                 new FaqItem("인버터 에어컨도 정확한가요?", "정확히 일치하지는 않습니다. 인버터는 실사용 중 소비전력이 계속 변하므로 정격 소비전력 기준 참고값으로 보는 것이 맞습니다."),
-                new FaqItem("대기전력도 포함되나요?", "네. 선택 입력이 아닌 기본 입력값으로 하루 24시간 기준 대기전력을 함께 더합니다."),
+                new FaqItem("대기전력도 포함되나요?", "네. 하루 사용 시간을 제외한 시간에만 대기전력을 더해 가동 사용량과 중복 계산하지 않습니다."),
                 new FaqItem("전기요금 계산기와 차이는 무엇인가요?", "이 페이지는 에어컨 한 대의 사용량을 중심으로 보고, 전기요금 계산기는 가정 전체 사용량 누진 구조를 보는 데 더 적합합니다."),
                 new FaqItem("실제 청구서보다 높거나 낮게 나오는 이유는 무엇인가요?", "실내온도 설정, 실외기 효율, 단열 상태, 동시 사용 가전, 누진구간 진입 여부가 모두 다르기 때문입니다.")
         );

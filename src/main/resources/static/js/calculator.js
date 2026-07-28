@@ -635,6 +635,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const formatWon = (value) => `${Math.round(value).toLocaleString('ko-KR')}원`;
+  const formatPercent = (value) => `${(value * 100).toLocaleString('ko-KR', { maximumFractionDigits: 4 })}%`;
 
   const roundWon = (value) => Math.round(value);
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -792,10 +793,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const domesticStockTaxForm = document.querySelector('[data-domestic-stock-tax-calculator]');
   if (domesticStockTaxForm) {
+    const DOMESTIC_STOCK_TAX_POLICIES = {
+      KOSPI: {
+        label: '코스피 일반 주권',
+        transactionTaxRate: 0.0005,
+        agricultureTaxRate: 0.0015,
+        effectiveDate: '2026-01-01'
+      },
+      KOSDAQ: {
+        label: '코스닥 일반 주권',
+        transactionTaxRate: 0.002,
+        agricultureTaxRate: 0,
+        effectiveDate: '2026-01-01'
+      },
+      KONEX: {
+        label: '코넥스',
+        transactionTaxRate: 0.001,
+        agricultureTaxRate: 0,
+        effectiveDate: '2026-01-01'
+      },
+      KOTC: {
+        label: 'K-OTC',
+        transactionTaxRate: 0.002,
+        agricultureTaxRate: 0,
+        effectiveDate: '2026-01-01'
+      }
+    };
     const layout = document.querySelector('[data-domestic-stock-tax-layout]');
     const resultPanel = document.querySelector('[data-domestic-stock-tax-result-panel]');
+    const marketInput = document.getElementById('domesticMarket');
+    const productTypeInput = document.getElementById('domesticProductType');
+    const useCustomRatesInput = document.getElementById('domesticUseCustomRates');
     const applyCapitalGainsTaxInput = document.getElementById('domesticApplyCapitalGainsTax');
     const capitalGainsTaxRateInput = document.getElementById('domesticCapitalGainsTaxRate');
+    const customTransactionTaxRateInput = document.getElementById('domesticCustomTransactionTaxRate');
+    const customAgricultureTaxRateInput = document.getElementById('domesticCustomAgricultureTaxRate');
     const resultTargets = Object.fromEntries(
       Array.from(document.querySelectorAll('[data-domestic-stock-tax-result]'))
         .map((element) => [element.dataset.domesticStockTaxResult, element])
@@ -815,32 +847,76 @@ document.addEventListener('DOMContentLoaded', () => {
     syncCapitalGainsTaxRate();
     applyCapitalGainsTaxInput?.addEventListener('change', syncCapitalGainsTaxRate);
 
+    const syncCustomRateInputs = () => {
+      const useCustomRates = useCustomRatesInput?.checked ?? false;
+      [customTransactionTaxRateInput, customAgricultureTaxRateInput].forEach((input) => {
+        if (!input) return;
+        input.disabled = !useCustomRates;
+        if (!useCustomRates) {
+          input.value = '';
+          input.setCustomValidity('');
+        }
+      });
+      if (productTypeInput && productTypeInput.value === 'CUSTOM_RATE_REQUIRED' && !useCustomRates) {
+        productTypeInput.setCustomValidity('일반 주권 외 상품은 사용자 지정 세율 시나리오를 선택하고 세율을 입력해주세요.');
+      } else {
+        productTypeInput?.setCustomValidity('');
+      }
+    };
+
+    syncCustomRateInputs();
+    useCustomRatesInput?.addEventListener('change', syncCustomRateInputs);
+    productTypeInput?.addEventListener('change', syncCustomRateInputs);
+
     const renderDomesticStockTaxResult = () => {
+      syncCustomRateInputs();
+      if (productTypeInput && !productTypeInput.checkValidity()) {
+        productTypeInput.reportValidity();
+        return;
+      }
+
+      const policy = DOMESTIC_STOCK_TAX_POLICIES[marketInput?.value] ?? DOMESTIC_STOCK_TAX_POLICIES.KOSPI;
+      const useCustomRates = useCustomRatesInput?.checked ?? false;
       const buyAmount = parseNumberInput(document.getElementById('domesticBuyAmount'));
       const sellAmount = parseNumberInput(document.getElementById('domesticSellAmount'));
-      const feeAmount = parseNumberInput(document.getElementById('domesticFeeAmount'));
-      const transactionTaxRate = parseNumberInput(document.getElementById('domesticTransactionTaxRate')) / 100;
+      const buyFeeAmount = parseNumberInput(document.getElementById('domesticBuyFeeAmount'));
+      const sellFeeAmount = parseNumberInput(document.getElementById('domesticSellFeeAmount'));
+      const brokerageFees = buyFeeAmount + sellFeeAmount;
+      const transactionTaxRate = useCustomRates
+        ? parseNumberInput(customTransactionTaxRateInput) / 100
+        : policy.transactionTaxRate;
+      const agricultureTaxRate = useCustomRates
+        ? parseNumberInput(customAgricultureTaxRateInput) / 100
+        : policy.agricultureTaxRate;
       const capitalGainsTaxRate = parseNumberInput(document.getElementById('domesticCapitalGainsTaxRate')) / 100;
       const applyCapitalGainsTax = applyCapitalGainsTaxInput?.checked ?? false;
 
-      const capitalGain = sellAmount - buyAmount - feeAmount;
+      const capitalGain = sellAmount - buyAmount - brokerageFees;
       const taxableCapitalGain = Math.max(0, capitalGain);
       const transactionTax = sellAmount * transactionTaxRate;
+      const agricultureTax = sellAmount * agricultureTaxRate;
       const capitalGainsTax = applyCapitalGainsTax ? taxableCapitalGain * capitalGainsTaxRate : 0;
-      const totalTax = transactionTax + capitalGainsTax;
+      const totalTax = transactionTax + agricultureTax + capitalGainsTax;
+      const totalCost = brokerageFees + totalTax;
+      const afterTaxProceeds = sellAmount - sellFeeAmount - transactionTax - agricultureTax - capitalGainsTax;
       const afterTaxProfit = capitalGain - totalTax;
 
       const result = {
+        appliedPolicy: `${useCustomRates ? '사용자 지정' : policy.label} · ${policy.effectiveDate} 기준`,
+        appliedRates: `증권거래세 ${formatPercent(transactionTaxRate)} / 농어촌특별세 ${formatPercent(agricultureTaxRate)}`,
         capitalGain,
         transactionTax,
+        agricultureTax,
+        brokerageFees,
         capitalGainsTax,
-        totalTax,
+        totalCost,
+        afterTaxProceeds,
         afterTaxProfit
       };
 
       Object.entries(result).forEach(([key, value]) => {
         if (resultTargets[key]) {
-          resultTargets[key].textContent = formatWon(value);
+          resultTargets[key].textContent = typeof value === 'number' ? formatWon(value) : value;
         }
       });
       resultPanel?.removeAttribute('hidden');
