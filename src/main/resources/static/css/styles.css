@@ -363,6 +363,20 @@ h3 { margin: 0 0 8px; font-size: 1.15rem; }
 .overseas-tax-layout {
     grid-template-columns: minmax(360px, 1.05fr) minmax(300px, 0.95fr);
 }
+
+@media (min-width: 821px) {
+    .calculator-layout:has(> .adfit-slot) {
+        grid-template-areas:
+            "form ad"
+            "form side";
+    }
+    .calculator-layout.has-result:has(> .adfit-slot) {
+        grid-template-areas:
+            "form result"
+            "form ad"
+            "form side";
+    }
+}
 .calculator-form,
 .result-panel { padding: 28px; }
 .calculator-form,
