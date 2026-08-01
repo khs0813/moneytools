@@ -22,6 +22,8 @@ class SecurityHeadersFilterTests {
         assertThat(response.getHeader("Content-Security-Policy"))
                 .contains("default-src 'self'")
                 .contains("script-src 'self' 'nonce-")
+                .contains("manifest-src 'self'")
+                .contains("worker-src 'self'")
                 .doesNotContain("'unsafe-inline'");
         assertThat(response.getHeader("X-Content-Type-Options")).isEqualTo("nosniff");
         assertThat(response.getHeader("X-Frame-Options")).isEqualTo("DENY");

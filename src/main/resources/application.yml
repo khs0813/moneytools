@@ -29,3 +29,6 @@ app:
   adsense:
     enabled: ${ADSENSE_ENABLED:false}
     client-id: ${ADSENSE_CLIENT_ID:ca-pub-7766989656523085}
+  android:
+    package-name: ${APP_ANDROID_PACKAGE_NAME:com.moneycalculator.app}
+    sha256-cert-fingerprints: ${APP_ANDROID_SHA256_CERT_FINGERPRINTS:}

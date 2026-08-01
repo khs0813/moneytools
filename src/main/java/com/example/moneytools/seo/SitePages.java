@@ -7,11 +7,12 @@ import java.util.Optional;
 public final class SitePages {
     private static final LocalDate BASE_REFRESHED_AT = LocalDate.of(2026, 6, 4);
     private static final LocalDate SEO_REFRESHED_AT = LocalDate.of(2026, 6, 4);
+    private static final LocalDate ANDROID_RELEASE_REFRESHED_AT = LocalDate.of(2026, 8, 1);
 
     private SitePages() {}
 
     public static final List<PageInfo> ALL = List.of(
-            new PageInfo("home", "/", "홈", "머니계산기 | 실수령액·대출·세금·생활비 계산기와 가이드", "실수령액, 대출이자, 퇴직금, 배당금, 환율, 전기요금, 자동차 유지비, 생활비 계산기와 금융·세금 가이드를 한 곳에서 확인하세요.", true, true, SEO_REFRESHED_AT),
+            new PageInfo("home", "/", "홈", "머니계산기 | 실수령액·대출·세금·생활비 계산기와 가이드", "실수령액, 대출이자, 퇴직금, 배당금, 환율, 전기요금, 자동차 유지비, 생활비 계산기와 금융·세금 가이드를 한 곳에서 확인하세요.", true, true, ANDROID_RELEASE_REFRESHED_AT),
             new PageInfo("dividend", "/dividend-calculator", "배당 계산기", "배당 계산기 | 세전·세후 배당금 계산기", "보유 주식 수와 주당 배당금, 배당 주기, 세율을 입력해 세전 배당금과 세후 배당금, 월배당·연배당 금액을 계산해보세요.", true, true, SEO_REFRESHED_AT),
             new PageInfo("fair-value", "/fair-value-calculator", "적정주가 계산기", "적정주가 계산기 | EPS와 PER로 목표주가 계산", "EPS, 목표 PER, 성장률, 할인율, 안전마진을 입력해 참고용 적정주가와 매수가를 계산합니다.", true, true, BASE_REFRESHED_AT),
             new PageInfo("loan", "/loan-interest-calculator", "대출이자 계산기", "대출이자 계산기 | 원리금균등·원금균등 계산", "대출금액, 금리, 기간, 상환방식을 입력해 월 상환금, 총이자, 월별 상환표를 간편하게 계산하세요.", true, true, BASE_REFRESHED_AT),
@@ -49,7 +50,7 @@ public final class SitePages {
             new PageInfo("guide-dividend-100m", "/guide/dividend-100man", "배당금으로 월 100만 원 받으려면 얼마가 필요할까?", "배당금으로 월 100만 원 받으려면 얼마가 필요할까? | 목표 배당금 역산", "목표 월 배당금 100만 원을 만들기 위해 필요한 투자 원금을 배당수익률별로 계산하는 방법을 설명합니다.", false, true, SEO_REFRESHED_AT),
             new PageInfo("guide-budget-items", "/guide/monthly-budget-items", "생활비 예산을 계산할 때 꼭 봐야 할 항목", "생활비 예산을 계산할 때 꼭 봐야 할 항목 | 고정비·변동비 체크리스트", "생활비 예산표를 만들 때 빠뜨리기 쉬운 고정비와 변동비 항목, 저축 목표 반영 방법을 정리합니다.", false, true, SEO_REFRESHED_AT),
             new PageInfo("guide-per-limit", "/guide/per-fair-value-limit", "PER 적정주가 계산의 한계", "PER 적정주가 계산의 한계 | 적정주가 계산기 해석법", "PER 방식 적정주가 계산이 왜 단순 참고용인지, 어떤 한계와 왜곡이 있는지 설명합니다.", false, true, SEO_REFRESHED_AT),
-            new PageInfo("privacy", "/privacy-policy", "개인정보처리방침", "개인정보처리방침 | 머니계산기", "머니계산기의 개인정보 처리 기준과 광고·쿠키 사용 안내를 확인하세요.", true, true, SEO_REFRESHED_AT),
+            new PageInfo("privacy", "/privacy-policy", "개인정보처리방침", "개인정보처리방침 | 머니계산기", "머니계산기의 개인정보 처리 기준과 광고·쿠키 사용 안내를 확인하세요.", true, true, ANDROID_RELEASE_REFRESHED_AT),
             new PageInfo("about", "/about", "사이트 소개", "사이트 소개 | 머니계산기 운영 목적과 편집 원칙", "머니계산기가 어떤 기준으로 계산기와 가이드를 운영하는지, 업데이트 원칙과 편집 기준을 확인하세요.", false, false, SEO_REFRESHED_AT),
             new PageInfo("terms", "/terms", "이용약관", "이용약관 | 머니계산기 서비스 이용 조건", "머니계산기 계산기와 정보성 콘텐츠의 이용 조건, 책임 범위, 금지 행위를 확인하세요.", false, true, SEO_REFRESHED_AT),
             new PageInfo("disclaimer", "/disclaimer", "면책고지", "면책고지 | 머니계산기", "머니계산기에서 제공하는 계산 결과와 정보의 이용 범위, 한계, 책임 제한 기준을 확인하세요.", true, true, BASE_REFRESHED_AT),

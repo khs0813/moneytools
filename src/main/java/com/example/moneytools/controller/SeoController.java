@@ -13,6 +13,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 public class SeoController {
@@ -31,6 +33,22 @@ public class SeoController {
         return "User-agent: *\n"
                 + "Allow: /\n\n"
                 + "Sitemap: " + publicUrlService.absoluteUrl("/sitemap.xml") + "\n";
+    }
+
+    @GetMapping(value = "/.well-known/assetlinks.json", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Map<String, Object>> assetLinks() {
+        List<String> fingerprints = appProperties.getAndroid().getSha256CertFingerprints();
+        if (fingerprints.isEmpty()) {
+            return List.of();
+        }
+        return List.of(Map.of(
+                "relation", List.of("delegate_permission/common.handle_all_urls"),
+                "target", Map.of(
+                        "namespace", "android_app",
+                        "package_name", appProperties.getAndroid().getPackageName(),
+                        "sha256_cert_fingerprints", fingerprints
+                )
+        ));
     }
 
     @GetMapping(value = "/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)

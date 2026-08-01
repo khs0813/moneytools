@@ -39,4 +39,22 @@ class AppPropertiesTests {
 
         assertThat(properties.getContactEmail()).isEqualTo("moneyfinancecalculator@gmail.com");
     }
+
+    @Test
+    void sanitizesAndroidPackageName() {
+        AppProperties properties = new AppProperties();
+        properties.getAndroid().setPackageName("Com.Example.Bad");
+
+        assertThat(properties.getAndroid().getPackageName()).isEqualTo("com.moneycalculator.app");
+    }
+
+    @Test
+    void filtersInvalidAndroidCertificateFingerprints() {
+        AppProperties properties = new AppProperties();
+        String fingerprint = "aa:bb:cc:dd:ee:ff:00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff:00:11:22:33:44:55:66:77:88:99";
+        properties.getAndroid().setSha256CertFingerprints(java.util.List.of(fingerprint, "not-a-fingerprint", fingerprint));
+
+        assertThat(properties.getAndroid().getSha256CertFingerprints())
+                .containsExactly(fingerprint.toUpperCase());
+    }
 }

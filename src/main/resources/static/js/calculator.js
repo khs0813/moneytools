@@ -440,3 +440,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
+
+if ('serviceWorker' in navigator && window.isSecureContext) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js').catch(() => {
+      // Service worker registration is optional for core calculator flows.
+    });
+  });
+}

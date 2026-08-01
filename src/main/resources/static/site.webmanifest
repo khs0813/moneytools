@@ -1,9 +1,35 @@
 {
   "name": "머니계산기",
   "short_name": "머니계산기",
+  "description": "대출이자, 실수령액, 퇴직금, 해외주식 세금, 배당 등 자주 찾는 금융 계산기 모음",
   "lang": "ko-KR",
+  "id": "/",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
   "background_color": "#fbfbff",
-  "theme_color": "#6c8cff"
+  "theme_color": "#6c8cff",
+  "categories": ["finance", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/maskable-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
 }

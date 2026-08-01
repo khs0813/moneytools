@@ -5,7 +5,7 @@
 ## 기술 스택
 
 - Java 17
-- Spring Boot 3.5.11
+- Spring Boot 3.5.14
 - Spring Web MVC
 - Thymeleaf
 - Bean Validation
@@ -69,6 +69,8 @@ export ADSENSE_SLOT_TOP="0000000000"
 export ADSENSE_SLOT_CONTENT="1111111111"
 export ADSENSE_SLOT_RESULT="2222222222"
 export ADSENSE_SLOT_SIDEBAR="3333333333"
+export APP_ANDROID_PACKAGE_NAME="com.moneycalculator.app"
+export APP_ANDROID_SHA256_CERT_FINGERPRINTS="AA:BB:CC:DD:...:99"
 ```
 
 ## 주요 기능
@@ -84,8 +86,21 @@ export ADSENSE_SLOT_SIDEBAR="3333333333"
 - `robots.txt`, `sitemap.xml`, `rss.xml`, `ads.txt`
 - 페이지별 title, description, canonical, OG, Twitter Card
 - JSON-LD 구조화 데이터
+- Android TWA/PWA 출시용 manifest, service worker, 앱 아이콘, Digital Asset Links
 - Google Search Console / Naver Search Advisor 인증 메타 태그 설정
 - 404/500 에러 페이지
+
+## Android 출시 준비
+
+Google Play에는 이 웹앱을 Trusted Web Activity(TWA) 래퍼로 배포하는 방식을 권장합니다. 앱 생성과 Play Console 제출 순서는 [docs/android-play-release.md](docs/android-play-release.md)를 확인하세요.
+
+운영 배포 후에는 아래 URL들이 정상 응답해야 합니다.
+
+- `/site.webmanifest`
+- `/service-worker.js`
+- `/icons/icon-512.png`
+- `/privacy-policy`
+- `/.well-known/assetlinks.json`
 
 ## 화면 및 API 설명
 

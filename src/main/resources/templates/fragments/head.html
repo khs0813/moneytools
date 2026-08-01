@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-    <meta name="theme-color" content="#f7f6ff">
+    <meta name="theme-color" content="#6c8cff">
     <meta name="format-detection" content="telephone=no, address=no, email=no">
     <meta name="application-name" th:content="${appName}">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" th:content="${appName}">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title th:text="${pageTitle}">머니계산기</title>
     <meta name="description" lang="ko" th:content="${pageDescription}">
     <link rel="canonical" th:href="${canonicalUrl}">
@@ -38,6 +42,8 @@
     <meta th:if="${adsenseEnabled and adsAllowedOnPage}" name="google-adsense-account" content="ca-pub-7766989656523085">
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/icons/icon-192.png" sizes="192x192" type="image/png">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
     <link rel="stylesheet" th:href="@{/css/styles.css(v=${staticAssetVersion})}">

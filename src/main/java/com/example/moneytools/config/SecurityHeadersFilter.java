@@ -31,6 +31,8 @@ public class SecurityHeadersFilter extends OncePerRequestFilter {
             "style-src 'self' https://cdn.jsdelivr.net",
             "img-src 'self' data: https:",
             "font-src 'self' data:",
+            "manifest-src 'self'",
+            "worker-src 'self'",
             "connect-src 'self'",
             "frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com",
             "upgrade-insecure-requests");

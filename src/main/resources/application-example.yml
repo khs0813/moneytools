@@ -29,3 +29,7 @@ app:
   adsense:
     enabled: ${ADSENSE_ENABLED:false}
     client-id: ${ADSENSE_CLIENT_ID:ca-pub-7766989656523085}
+  android:
+    package-name: ${APP_ANDROID_PACKAGE_NAME:com.moneycalculator.app}
+    # Play Console > 앱 무결성 > 앱 서명 키 인증서의 SHA-256을 콤마로 구분해 입력합니다.
+    sha256-cert-fingerprints: ${APP_ANDROID_SHA256_CERT_FINGERPRINTS:}
