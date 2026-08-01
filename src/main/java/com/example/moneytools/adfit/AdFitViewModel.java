@@ -1,5 +1,7 @@
 package com.example.moneytools.adfit;
 
+import org.springframework.util.StringUtils;
+
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -40,6 +42,13 @@ public class AdFitViewModel {
 
     public String pageKind() {
         return pageKind.name().toLowerCase();
+    }
+
+    public String experimentId() {
+        String experiment = properties.getExperiment();
+        return StringUtils.hasText(experiment) && !"off".equalsIgnoreCase(experiment.trim())
+                ? experiment.trim()
+                : "control";
     }
 
     private Set<AdPlacement> allowedPlacements() {

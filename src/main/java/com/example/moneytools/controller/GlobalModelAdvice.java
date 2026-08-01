@@ -137,8 +137,8 @@ public class GlobalModelAdvice {
         return SitePages.sitemap().stream()
                 .map(page -> page.lastModified().format(DateTimeFormatter.BASIC_ISO_DATE))
                 .max(String::compareTo)
-                .map(v -> v + "-adfit-desktop-v1")
-                .orElse("20260425-adfit-desktop-v1");
+                .map(v -> v + "-adfit-guard-v2")
+                .orElse("20260425-adfit-guard-v2");
     }
 
     @ModelAttribute("defaultImageUrl")

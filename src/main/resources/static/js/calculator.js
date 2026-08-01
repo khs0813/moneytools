@@ -11,28 +11,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultScrollRequestKey = `moneytools:result-scroll:${window.location.pathname}`;
   const mobileResultScrollMedia = window.matchMedia('(max-width: 820px)');
   const PAGE_ANALYTICS_META = {
-    '/electricity-bill-calculator': { calculatorType: 'electricity_bill', contentCluster: 'electricity' },
-    '/guide/electricity-tier': { calculatorType: 'electricity_bill', contentCluster: 'electricity' },
-    '/air-conditioner-electricity-calculator': { calculatorType: 'air_conditioner_cost', contentCluster: 'electricity' },
-    '/guide/aircon-8hours-cost': { calculatorType: 'air_conditioner_cost', contentCluster: 'electricity' },
-    '/loan-interest-calculator': { calculatorType: 'loan_interest', contentCluster: 'loan' },
-    '/guide/loan-100m-interest': { calculatorType: 'loan_interest', contentCluster: 'loan' },
-    '/guide/repayment-method-difference': { calculatorType: 'loan_interest', contentCluster: 'loan' },
-    '/loan-refinance-calculator': { calculatorType: 'loan_refinance', contentCluster: 'loan' },
-    '/mortgage-monthly-payment-calculator': { calculatorType: 'mortgage', contentCluster: 'loan' },
-    '/annual-salary-net-calculator': { calculatorType: 'annual_salary_net', contentCluster: 'salary' },
-    '/salary-calculator': { calculatorType: 'salary_net', contentCluster: 'salary' },
-    '/severance-pay-calculator': { calculatorType: 'severance', contentCluster: 'salary' },
-    '/monthly-budget-calculator': { calculatorType: 'monthly_budget', contentCluster: 'living' },
-    '/domestic-stock-tax-calculator': { calculatorType: 'domestic_stock_tax', contentCluster: 'stock_tax' },
-    '/stock-average-calculator': { calculatorType: 'stock_average', contentCluster: 'stock' },
-    '/stock-tax-calculator': { calculatorType: 'stock_tax', contentCluster: 'stock_tax' },
-    '/overseas-stock-tax-calculator': { calculatorType: 'overseas_stock_tax', contentCluster: 'stock_tax' },
-    '/dividend-calculator': { calculatorType: 'dividend', contentCluster: 'stock' },
-    '/fair-value-calculator': { calculatorType: 'fair_value', contentCluster: 'stock' },
-    '/exchange-calculator': { calculatorType: 'exchange', contentCluster: 'finance' },
-    '/car-maintenance-calculator': { calculatorType: 'car_maintenance', contentCluster: 'living' },
-    '/annual-leave-pay-calculator': { calculatorType: 'annual_leave', contentCluster: 'salary' }
+    '/electricity-bill-calculator': { calculatorType: 'electricity_bill', contentCluster: 'electricity', pageGroup: 'living' },
+    '/guide/electricity-tier': { calculatorType: 'electricity_bill', contentCluster: 'electricity', pageGroup: 'living' },
+    '/air-conditioner-electricity-calculator': { calculatorType: 'air_conditioner_cost', contentCluster: 'electricity', pageGroup: 'living' },
+    '/guide/aircon-8hours-cost': { calculatorType: 'air_conditioner_cost', contentCluster: 'electricity', pageGroup: 'living' },
+    '/loan-interest-calculator': { calculatorType: 'loan_interest', contentCluster: 'loan', pageGroup: 'loan' },
+    '/guide/loan-100m-interest': { calculatorType: 'loan_interest', contentCluster: 'loan', pageGroup: 'loan' },
+    '/guide/repayment-method-difference': { calculatorType: 'loan_interest', contentCluster: 'loan', pageGroup: 'loan' },
+    '/loan-refinance-calculator': { calculatorType: 'loan_refinance', contentCluster: 'loan', pageGroup: 'loan' },
+    '/mortgage-monthly-payment-calculator': { calculatorType: 'mortgage', contentCluster: 'loan', pageGroup: 'loan' },
+    '/annual-salary-net-calculator': { calculatorType: 'annual_salary_net', contentCluster: 'salary', pageGroup: 'income' },
+    '/salary-calculator': { calculatorType: 'salary_net', contentCluster: 'salary', pageGroup: 'income' },
+    '/severance-pay-calculator': { calculatorType: 'severance', contentCluster: 'salary', pageGroup: 'income' },
+    '/monthly-budget-calculator': { calculatorType: 'monthly_budget', contentCluster: 'living', pageGroup: 'living' },
+    '/domestic-stock-tax-calculator': { calculatorType: 'domestic_stock_tax', contentCluster: 'stock_tax', pageGroup: 'investment' },
+    '/stock-average-calculator': { calculatorType: 'stock_average', contentCluster: 'stock', pageGroup: 'investment' },
+    '/stock-tax-calculator': { calculatorType: 'stock_tax', contentCluster: 'stock_tax', pageGroup: 'investment' },
+    '/overseas-stock-tax-calculator': { calculatorType: 'overseas_stock_tax', contentCluster: 'stock_tax', pageGroup: 'investment' },
+    '/dividend-calculator': { calculatorType: 'dividend', contentCluster: 'stock', pageGroup: 'investment' },
+    '/fair-value-calculator': { calculatorType: 'fair_value', contentCluster: 'stock', pageGroup: 'investment' },
+    '/exchange-calculator': { calculatorType: 'exchange', contentCluster: 'finance', pageGroup: 'investment' },
+    '/car-maintenance-calculator': { calculatorType: 'car_maintenance', contentCluster: 'living', pageGroup: 'living' },
+    '/annual-leave-pay-calculator': { calculatorType: 'annual_leave', contentCluster: 'salary', pageGroup: 'income' }
   };
 
   const parseReferrerHost = () => {
@@ -63,12 +63,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageMeta = PAGE_ANALYTICS_META[window.location.pathname] ?? {};
     const referrerHost = parseReferrerHost();
     return {
+      site: window.location.hostname || 'moneycalculator.co.kr',
       page_path: window.location.pathname,
+      page_group: pageMeta.pageGroup ?? pageMeta.contentCluster ?? 'general',
       calculator_type: pageMeta.calculatorType ?? 'none',
       content_cluster: pageMeta.contentCluster ?? 'general',
       device: mobileResultScrollMedia.matches ? 'mobile' : 'desktop',
       referrer_host: referrerHost,
       referrer_type: classifyReferrer(referrerHost),
+      experiment_id: document.documentElement.dataset.experimentId || document.documentElement.dataset.experimentVariant || 'control',
       experiment_variant: document.documentElement.dataset.experimentVariant || 'control'
     };
   };
@@ -83,12 +86,25 @@ document.addEventListener('DOMContentLoaded', () => {
     window.dataLayer.push({ event: eventName, ...payload });
   };
 
+  window.MoneytoolsAnalytics = window.MoneytoolsAnalytics || {};
+  window.MoneytoolsAnalytics.trackEvent = trackEvent;
+  const queuedAnalyticsEvents = Array.isArray(window.MoneytoolsAnalyticsQueue)
+    ? window.MoneytoolsAnalyticsQueue.splice(0)
+    : [];
+  queuedAnalyticsEvents.forEach((item) => {
+    if (!item || !item.eventName) return;
+    trackEvent(item.eventName, item.details || {});
+  });
+
   const trackVisibleResult = (resultCard) => {
     if (!resultCard || resultCard.dataset.analyticsResultViewed === 'true') return;
     if (resultCard.hidden || resultCard.offsetParent === null) return;
     resultCard.dataset.analyticsResultViewed = 'true';
     trackEvent('calculator_complete');
     trackEvent('result_view');
+    if (window.MoneytoolsAdFit && typeof window.MoneytoolsAdFit.initAdFitSlots === 'function') {
+      window.MoneytoolsAdFit.initAdFitSlots();
+    }
   };
 
   const shouldScrollToResult = () => mobileResultScrollMedia.matches;
@@ -193,6 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await navigator.clipboard.writeText(text);
         const original = button.textContent;
         button.textContent = '복사 완료';
+        trackEvent('share_click', { method: 'copy_result' });
         setTimeout(() => button.textContent = original, 1400);
       } catch (error) {
         alert('브라우저에서 복사를 허용하지 않았습니다.');
@@ -207,6 +224,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const initialAnalyticsContext = analyticsContext();
   if (initialAnalyticsContext.referrer_type.endsWith('_organic')) {
     trackEvent('organic_landing_view');
+  }
+  try {
+    const returnVisitKey = 'moneytools:return-visit';
+    if (window.localStorage.getItem(returnVisitKey) === 'true') {
+      trackEvent('return_visit');
+    } else {
+      window.localStorage.setItem(returnVisitKey, 'true');
+    }
+  } catch (error) {
+    // Storage can be unavailable in private or restricted browsing modes.
   }
 
   trackVisibleResult(getVisibleResultCard());
@@ -248,10 +275,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.35 });
 
     document.querySelectorAll('.data-table').forEach((table) => tableObserver.observe(table));
+
+    const contentCompleteTarget = document.querySelector('.footer') || document.querySelector('.related-box:last-of-type');
+    if (contentCompleteTarget) {
+      const contentObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          observer.unobserve(entry.target);
+          trackEvent('content_complete');
+        });
+      }, { threshold: 0.35 });
+      contentObserver.observe(contentCompleteTarget);
+    }
   }
 
   document.querySelectorAll('.related-links a').forEach((link) => {
     link.addEventListener('click', () => {
+      const isNextAction = !!link.closest('.related-next-actions');
+      trackEvent(isNextAction ? 'next_tool_click' : 'related_content_click', {
+        target_path: link.pathname || '',
+        placement: isNextAction ? 'related_next_actions' : 'related_links'
+      });
       trackEvent('related_calculator_click', {
         target_path: link.pathname || ''
       });

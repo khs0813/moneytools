@@ -1,0 +1,4 @@
+date,site,page_group,variable_changed,placement,device,hypothesis,start_date,end_date,status,decision,notes
+2026-08-01,moneycalculator.co.kr,all,baseline_guard,all,all,"PR0 guardrails and baseline docs before placement movement",2026-08-01,,in_progress,,"No SEO metadata or content placement experiment in this deploy"
+2026-08-01,moneycalculator.co.kr,living,planned_position_move,calculator_article_mid,mobile,"Move CALC_ARTICLE_MOBILE after first practical example/table and leave enough content below",,,planned,,"Run only after guard deployment has stable data; minimum 14 days"
+

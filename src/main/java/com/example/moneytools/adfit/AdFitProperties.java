@@ -13,6 +13,7 @@ public class AdFitProperties {
     private String allowedHosts = "www.moneycalculator.co.kr";
     private String experiment = "off";
     private String calcPreFaqRoutes = "";
+    private final Placements placements = new Placements();
     private final Units units = new Units();
 
     public boolean isEnabled() {
@@ -51,6 +52,10 @@ public class AdFitProperties {
         return units;
     }
 
+    public Placements getPlacements() {
+        return placements;
+    }
+
     public boolean isAllowedHost(String host) {
         if (!StringUtils.hasText(host)) {
             return false;
@@ -63,6 +68,9 @@ public class AdFitProperties {
     }
 
     public AdFitSlotViewModel slotFor(AdPlacement placement) {
+        if (!isPlacementEnabled(placement)) {
+            return AdFitSlotViewModel.empty(placement.key());
+        }
         return switch (placement) {
             case CALCULATOR_POST_TOOL -> calculatorPostToolSlot();
             case CALCULATOR_ARTICLE_MID -> new AdFitSlotViewModel(
@@ -81,6 +89,18 @@ public class AdFitProperties {
                     placement.key(),
                     normalize(units.homeDesktop), 728, 90,
                     normalize(units.homeMobile), 320, 100);
+        };
+    }
+
+    public boolean isPlacementEnabled(AdPlacement placement) {
+        return switch (placement) {
+            case CALCULATOR_POST_TOOL -> placements.calculatorPostTool;
+            case CALCULATOR_ARTICLE_MID -> placements.calculatorArticleMid;
+            case CALCULATOR_PRE_FAQ -> placements.calculatorPreFaq;
+            case GUIDE_ARTICLE_MID -> placements.guideArticleMid;
+            case GUIDE_PRE_FAQ -> placements.guidePreFaq;
+            case GUIDE_INDEX -> placements.guideIndex;
+            case HOME_MID -> placements.homeMid;
         };
     }
 
@@ -136,6 +156,31 @@ public class AdFitProperties {
 
     private String normalize(String value) {
         return StringUtils.hasText(value) ? value.trim() : "";
+    }
+
+    public static class Placements {
+        private boolean calculatorPostTool = true;
+        private boolean calculatorArticleMid = true;
+        private boolean calculatorPreFaq = true;
+        private boolean guideArticleMid = true;
+        private boolean guidePreFaq = true;
+        private boolean guideIndex = true;
+        private boolean homeMid = true;
+
+        public boolean isCalculatorPostTool() { return calculatorPostTool; }
+        public void setCalculatorPostTool(boolean calculatorPostTool) { this.calculatorPostTool = calculatorPostTool; }
+        public boolean isCalculatorArticleMid() { return calculatorArticleMid; }
+        public void setCalculatorArticleMid(boolean calculatorArticleMid) { this.calculatorArticleMid = calculatorArticleMid; }
+        public boolean isCalculatorPreFaq() { return calculatorPreFaq; }
+        public void setCalculatorPreFaq(boolean calculatorPreFaq) { this.calculatorPreFaq = calculatorPreFaq; }
+        public boolean isGuideArticleMid() { return guideArticleMid; }
+        public void setGuideArticleMid(boolean guideArticleMid) { this.guideArticleMid = guideArticleMid; }
+        public boolean isGuidePreFaq() { return guidePreFaq; }
+        public void setGuidePreFaq(boolean guidePreFaq) { this.guidePreFaq = guidePreFaq; }
+        public boolean isGuideIndex() { return guideIndex; }
+        public void setGuideIndex(boolean guideIndex) { this.guideIndex = guideIndex; }
+        public boolean isHomeMid() { return homeMid; }
+        public void setHomeMid(boolean homeMid) { this.homeMid = homeMid; }
     }
 
     public static class Units {

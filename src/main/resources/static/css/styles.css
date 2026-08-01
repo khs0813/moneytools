@@ -777,6 +777,9 @@ details p { color: var(--muted); margin-bottom: 0; }
     max-width: 100%;
     overflow: visible;
 }
+.adfit-slot[hidden] {
+    display: none !important;
+}
 .adfit-slot-frame {
     display: grid;
     place-items: center;
@@ -833,17 +836,17 @@ details p { color: var(--muted); margin-bottom: 0; }
     .calculator-layout:has(> .adfit-slot),
     .overseas-tax-layout:has(> .adfit-slot) {
         grid-template-areas:
-            "ad"
             "form"
-            "side";
+            "side"
+            "ad";
     }
     .calculator-layout.has-result:has(> .adfit-slot),
     .overseas-tax-layout.has-result:has(> .adfit-slot) {
         grid-template-areas:
-            "ad"
             "form"
             "result"
-            "side";
+            "side"
+            "ad";
     }
 }
 

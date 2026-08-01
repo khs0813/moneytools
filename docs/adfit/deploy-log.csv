@@ -1,0 +1,3 @@
+date,site,pr,commit,scope,adfit_change,seo_metadata_change,title_h1_url_changed,notes
+2026-08-01,moneycalculator.co.kr,PR0,working-tree,"audit docs, placement flags, request guards, analytics events",yes,no,no,"No DAN ID changes; no calculator formula changes"
+

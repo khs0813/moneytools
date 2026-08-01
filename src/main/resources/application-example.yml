@@ -35,6 +35,14 @@ app:
     allowed-hosts: ${PUBLIC_ADFIT_ALLOWED_HOSTS:www.moneycalculator.co.kr}
     experiment: ${PUBLIC_ADFIT_EXPERIMENT:off}
     calc-pre-faq-routes: ${PUBLIC_ADFIT_CALC_PRE_FAQ_ROUTES:}
+    placements:
+      calculator-post-tool: ${PUBLIC_ADFIT_ENABLE_CALCULATOR_POST_TOOL:true}
+      calculator-article-mid: ${PUBLIC_ADFIT_ENABLE_CALCULATOR_ARTICLE_MID:true}
+      calculator-pre-faq: ${PUBLIC_ADFIT_ENABLE_CALCULATOR_PRE_FAQ:true}
+      guide-article-mid: ${PUBLIC_ADFIT_ENABLE_GUIDE_ARTICLE_MID:true}
+      guide-pre-faq: ${PUBLIC_ADFIT_ENABLE_GUIDE_PRE_FAQ:true}
+      guide-index: ${PUBLIC_ADFIT_ENABLE_GUIDE_INDEX:true}
+      home-mid: ${PUBLIC_ADFIT_ENABLE_HOME_MID:true}
     units:
       calc-post-tool-desktop: ${PUBLIC_ADFIT_CALC_POST_TOOL_DESKTOP:}
       calc-post-tool-mobile: ${PUBLIC_ADFIT_CALC_POST_TOOL_MOBILE:}

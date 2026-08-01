@@ -49,6 +49,32 @@ class AdFitViewModelTests {
         assertThat(viewModel.slot("guide_pre_faq").renderable()).isFalse();
     }
 
+    @Test
+    void placementFlagCanDisableOneSlotWithoutClearingAdUnitConfiguration() {
+        AdFitProperties properties = enabledProperties();
+        properties.getPlacements().setCalculatorArticleMid(false);
+        AdFitViewModel viewModel = new AdFitViewModel(
+                properties,
+                "/salary-calculator",
+                "www.moneycalculator.co.kr",
+                AdFitViewModel.PageKind.CALCULATOR);
+
+        assertThat(viewModel.slot("calculator_article_mid").renderable()).isFalse();
+        assertThat(viewModel.slot("calculator_post_tool").renderable()).isTrue();
+    }
+
+    @Test
+    void offExperimentReportsControlForAnalytics() {
+        AdFitProperties properties = enabledProperties();
+        AdFitViewModel viewModel = new AdFitViewModel(
+                properties,
+                "/salary-calculator",
+                "www.moneycalculator.co.kr",
+                AdFitViewModel.PageKind.CALCULATOR);
+
+        assertThat(viewModel.experimentId()).isEqualTo("control");
+    }
+
     private AdFitProperties enabledProperties() {
         AdFitProperties properties = new AdFitProperties();
         properties.setEnabled(true);

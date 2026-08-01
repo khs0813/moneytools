@@ -4,7 +4,10 @@
 <th:block th:fragment="slot(placement)" th:with="slot=${adfit.slot(placement)}">
     <div th:if="${slot != null and slot.renderable()}"
          class="adfit-slot"
+         th:hidden="${slot.placement() == 'calculator_post_tool'}"
          th:attr="data-adfit-placement=${slot.placement()},
+                  data-adfit-requires-result=${slot.placement() == 'calculator_post_tool'},
+                  data-adfit-experiment-id=${adfit.experimentId()},
                   data-adfit-desktop-unit=${slot.desktopUnit()},
                   data-adfit-desktop-width=${slot.desktopWidth()},
                   data-adfit-desktop-height=${slot.desktopHeight()},
