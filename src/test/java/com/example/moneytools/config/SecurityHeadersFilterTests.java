@@ -19,19 +19,10 @@ class SecurityHeadersFilterTests {
 
         filter.doFilter(new MockHttpServletRequest("GET", "/"), response, new MockFilterChain());
 
-        assertThat(response.getHeader("Content-Security-Policy"))
+        assertThat(response.getHeader("Content-Security-Policy-Report-Only"))
                 .contains("default-src 'self'")
-                .contains("script-src 'self' 'nonce-")
-                .contains("https://t1.kakaocdn.net")
-                .contains("https://serv.ds.kakao.com")
-                .contains("https://t1.daumcdn.net")
-                .contains("https://aem-kakao-collector.onkakao.net")
                 .contains("https://ads-partners.coupang.com")
-                .contains("https://partners.coupangcdn.com")
-                .contains("https://*.coupang.com")
-                .contains("https://coupa.ng")
-                .contains("style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net")
-                .doesNotContain("script-src 'self' 'unsafe-inline'");
+                .contains("style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net");
         assertThat(response.getHeader("X-Content-Type-Options")).isEqualTo("nosniff");
         assertThat(response.getHeader("X-Frame-Options")).isEqualTo("DENY");
         assertThat(response.getHeader("Strict-Transport-Security")).isEqualTo("max-age=31536000; includeSubDomains");

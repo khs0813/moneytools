@@ -102,9 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
     resultCard.dataset.analyticsResultViewed = 'true';
     trackEvent('calculator_complete');
     trackEvent('result_view');
-    if (window.MoneytoolsAdFit && typeof window.MoneytoolsAdFit.initAdFitSlots === 'function') {
-      window.MoneytoolsAdFit.initAdFitSlots();
-    }
   };
 
   const shouldScrollToResult = () => mobileResultScrollMedia.matches;

@@ -385,15 +385,30 @@ function renderBreadcrumbs(page) {
 </div>`;
 }
 
+// Coupang Partners 배너 컴파일
+function renderCoupangBanner() {
+  return `<div class="coupang-banner-wrap">
+    <div class="coupang-banner-frame">
+        <script src="https://ads-partners.coupang.com/g.js"></script>
+        <script>
+            new PartnersCoupang.G({"id":1031229,"template":"carousel","trackingCode":"AF4791224","width":"100%","height":"140","tsource":""});
+        </script>
+    </div>
+    <p class="coupang-notice">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+</div>`;
+}
+
 // Page Hero 컴파일
 function renderPageHero(page, customTitle) {
   const eyebrow = getEyebrow(page.key);
   const title = customTitle || page.label;
+  const isPolicy = ['privacy', 'about', 'terms', 'disclaimer', 'contact'].includes(page.key);
+  const coupangBanner = !isPolicy ? `\n${renderCoupangBanner()}` : '';
   return `<section class="page-hero">
     <p class="eyebrow">${eyebrow}</p>
     <h1>${title}</h1>
     <p>${page.description}</p>
-</section>`;
+</section>${coupangBanner}`;
 }
 
 // Calculation Basis 박스
@@ -585,6 +600,13 @@ export async function buildSite() {
     // PageHero 치환
     html = html.replace(/<div\s+th:replace="~\{fragments\/components\s+::\s+pageHero\('([^']+)'[^)]*\)\}">[\s\S]*?<\/div>/g, (m, title) => renderPageHero(page, title));
     html = html.replace(/<div\s+th:replace="~\{fragments\/components\s+::\s+pageHero\([^)]*\)\}">[\s\S]*?<\/div>/g, renderPageHero(page));
+
+    // Coupang Banner 치환 (홈페이지 또는 개별 템플릿에 직접 삽입된 경우)
+    html = html.replace(/<div\s+th:replace="~\{fragments\/coupang\s+::\s+banner\}">[\s\S]*?<\/div>/g, renderCoupangBanner());
+
+    // 잔여 AdFit 태그 정제 (안전 장치)
+    html = html.replace(/<div\s+th:replace="~\{fragments\/adfit\s+::\s+slot\([^)]*\)\}">[\s\S]*?<\/div>/g, '');
+    html = html.replace(/<section\s+class="home-hero-ad"[\s\S]*?<\/section>/g, '');
 
     // CalculationBasis 치환
     html = html.replace(/<div\s+th:replace="~\{fragments\/components\s+::\s+calculationBasis\([^)]*\)\}">[\s\S]*?<\/div>/g, renderCalculationBasis(page.key));

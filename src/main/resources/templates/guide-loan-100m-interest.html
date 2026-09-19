@@ -26,9 +26,9 @@
             <h2>관련 계산기</h2>
             <p><a href="/loan-interest-calculator">대출이자 계산기</a>, <a href="/loan-refinance-calculator">대출 갈아타기 계산기</a>, <a href="/mortgage-monthly-payment-calculator">주담대 월납입 계산기</a></p>
         </article>
-        <div th:replace="~{fragments/adfit :: slot('guide_article_mid')}"></div>
+        
         <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
-        <div th:replace="~{fragments/adfit :: slot('guide_pre_faq')}"></div>
+        
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
         <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>

@@ -12,9 +12,6 @@
                 <p class="eyebrow">생활비·금융·세금 계산 가이드</p>
                 <h1>실수령액부터 생활비, 대출, 세금까지 한 번에 계산하고 이해하는 사이트</h1>
                 <p>머니계산기는 단순히 입력폼과 숫자만 보여주는 계산기 모음이 아니라, 왜 그런 결과가 나오는지 설명형 본문과 FAQ, 실제 예시, 관련 계산기 링크를 함께 제공하는 금융·생활 계산 도구 모음입니다. 실수령액, 대출이자, 퇴직금, 배당금, 환율, 전기요금, 자동차 유지비, 월 생활비처럼 생활과 의사결정에 바로 연결되는 주제를 우선적으로 다룹니다.</p>
-                <div class="home-hero-ad" th:if="${adfit.slot('home_mid').renderable()}">
-                    <div th:replace="~{fragments/adfit :: slot('home_mid')}"></div>
-                </div>
                 <div class="hero-actions">
                     <a class="primary-button" href="/salary-calculator">실수령액 계산 시작</a>
                     <a class="ghost-button" href="/guide">계산 기준과 가이드 보기</a>
@@ -26,6 +23,7 @@
                 <p th:text="${homeHeroDescription}">LTV와 소득 대비 월 상환 부담률을 함께 확인해보세요.</p>
             </a>
         </section>
+        <div th:replace="~{fragments/coupang :: banner}"></div>
 
         <section class="section-block content-card">
             <h2>이 사이트가 필요한 이유</h2>

@@ -62,9 +62,9 @@
             <h2>관련 계산기</h2>
             <p><a href="/air-conditioner-electricity-calculator">에어컨 전기세 계산기</a>, <a href="/electricity-bill-calculator">전기요금 계산기</a>, <a href="/monthly-budget-calculator">월 생활비 계산기</a></p>
         </article>
-        <div th:replace="~{fragments/adfit :: slot('guide_article_mid')}"></div>
+        
         <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>
-        <div th:replace="~{fragments/adfit :: slot('guide_pre_faq')}"></div>
+        
         <div th:replace="~{fragments/components :: faqList(${faqs})}"></div>
         <div th:replace="~{fragments/components :: relatedLinks(${activeMenu})}"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>

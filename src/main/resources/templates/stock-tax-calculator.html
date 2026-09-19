@@ -9,7 +9,7 @@
         <div th:replace="~{fragments/components :: breadcrumbs(${page})}"></div>
         <div th:replace="~{fragments/components :: pageHero('주식 세금 계산기', ${pageDescription})}"></div>
         <div th:replace="~{fragments/components :: calculationBasis(${activeMenu})}"></div>
-        <div th:replace="~{fragments/adfit :: slot('calculator_post_tool')}"></div>
+        
 
         <section class="content-card">
             <h2>국내·해외주식 매도세금 계산 허브</h2>
@@ -82,7 +82,7 @@
             </div>
         </section>
 
-        <div th:replace="~{fragments/adfit :: slot('calculator_article_mid')}"></div>
+        
 
         <div th:replace="~{fragments/components :: disclaimer('주식 세금은 계좌 유형, 투자자 지위, 종목, 손익통산, 신고 방식에 따라 달라집니다. 계산 결과는 참고용이며 실제 신고 전 최신 기준을 확인해야 합니다.')}" ></div>
         <div th:replace="~{fragments/components :: officialSources(${activeMenu})}"></div>

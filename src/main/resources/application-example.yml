@@ -30,28 +30,3 @@ app:
     featured-cluster: ${HOME_FEATURED_CLUSTER:electricity}
     active-from: ${HOME_FEATURED_ACTIVE_FROM:2026-06-01}
     active-until: ${HOME_FEATURED_ACTIVE_UNTIL:2026-09-30}
-  adfit:
-    enabled: ${PUBLIC_ADFIT_ENABLED:false}
-    allowed-hosts: ${PUBLIC_ADFIT_ALLOWED_HOSTS:www.moneycalculator.co.kr}
-    experiment: ${PUBLIC_ADFIT_EXPERIMENT:off}
-    calc-pre-faq-routes: ${PUBLIC_ADFIT_CALC_PRE_FAQ_ROUTES:}
-    placements:
-      calculator-post-tool: ${PUBLIC_ADFIT_ENABLE_CALCULATOR_POST_TOOL:true}
-      calculator-article-mid: ${PUBLIC_ADFIT_ENABLE_CALCULATOR_ARTICLE_MID:true}
-      calculator-pre-faq: ${PUBLIC_ADFIT_ENABLE_CALCULATOR_PRE_FAQ:true}
-      guide-article-mid: ${PUBLIC_ADFIT_ENABLE_GUIDE_ARTICLE_MID:true}
-      guide-pre-faq: ${PUBLIC_ADFIT_ENABLE_GUIDE_PRE_FAQ:true}
-      guide-index: ${PUBLIC_ADFIT_ENABLE_GUIDE_INDEX:true}
-      home-mid: ${PUBLIC_ADFIT_ENABLE_HOME_MID:true}
-    units:
-      calc-post-tool-desktop: ${PUBLIC_ADFIT_CALC_POST_TOOL_DESKTOP:}
-      calc-post-tool-mobile: ${PUBLIC_ADFIT_CALC_POST_TOOL_MOBILE:}
-      calc-article-desktop: ${PUBLIC_ADFIT_CALC_ARTICLE_DESKTOP:}
-      calc-article-mobile: ${PUBLIC_ADFIT_CALC_ARTICLE_MOBILE:}
-      guide-desktop: ${PUBLIC_ADFIT_GUIDE_DESKTOP:}
-      guide-mobile: ${PUBLIC_ADFIT_GUIDE_MOBILE:}
-      home-desktop: ${PUBLIC_ADFIT_HOME_DESKTOP:}
-      home-mobile: ${PUBLIC_ADFIT_HOME_MOBILE:}
-      calc-post-tool-mobile-alt: ${PUBLIC_ADFIT_CALC_POST_TOOL_MOBILE_ALT:}
-      calc-pre-faq-desktop: ${PUBLIC_ADFIT_CALC_PRE_FAQ_DESKTOP:}
-      calc-pre-faq-mobile: ${PUBLIC_ADFIT_CALC_PRE_FAQ_MOBILE:}

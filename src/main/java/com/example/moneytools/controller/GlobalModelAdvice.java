@@ -1,7 +1,5 @@
 package com.example.moneytools.controller;
 
-import com.example.moneytools.adfit.AdFitProperties;
-import com.example.moneytools.adfit.AdFitViewModel;
 import com.example.moneytools.adfit.CalculatorCatalog;
 import com.example.moneytools.adfit.CalculatorMeta;
 import com.example.moneytools.config.AppProperties;
@@ -44,12 +42,10 @@ public class GlobalModelAdvice {
             "/stock-average-calculator", new OgImage("/og/stock-average-calculator.png", "추가매수 후 주식 평균단가 계산 안내")
     );
     private final AppProperties appProperties;
-    private final AdFitProperties adFitProperties;
     private final PublicUrlService publicUrlService;
 
-    public GlobalModelAdvice(AppProperties appProperties, AdFitProperties adFitProperties, PublicUrlService publicUrlService) {
+    public GlobalModelAdvice(AppProperties appProperties, PublicUrlService publicUrlService) {
         this.appProperties = appProperties;
-        this.adFitProperties = adFitProperties;
         this.publicUrlService = publicUrlService;
     }
 
@@ -92,53 +88,13 @@ public class GlobalModelAdvice {
                 .orElse(null);
     }
 
-    @ModelAttribute("adfit")
-    public AdFitViewModel adfit(HttpServletRequest request) {
-        String path = request.getRequestURI();
-        return new AdFitViewModel(adFitProperties, path, request.getServerName(), adFitPageKind(path));
-    }
-
-    private AdFitViewModel.PageKind adFitPageKind(String path) {
-        if (path == null
-                || path.equals("/about")
-                || path.equals("/privacy")
-                || path.equals("/privacy-policy")
-                || path.equals("/terms")
-                || path.equals("/disclaimer")
-                || path.equals("/contact")
-                || path.startsWith("/error")
-                || path.endsWith(".xml")
-                || path.endsWith(".json")
-                || path.endsWith(".rss")) {
-            return AdFitViewModel.PageKind.BLOCKED;
-        }
-        if (path.equals("/")) {
-            return AdFitViewModel.PageKind.HOME;
-        }
-        if (path.equals("/guide")) {
-            return AdFitViewModel.PageKind.GUIDE_INDEX;
-        }
-        if (path.startsWith("/guide/")) {
-            return LONG_GUIDE_PATHS.contains(path)
-                    ? AdFitViewModel.PageKind.GUIDE_ARTICLE_LONG
-                    : AdFitViewModel.PageKind.GUIDE_ARTICLE_SHORT;
-        }
-        return SitePages.ALL.stream()
-                .filter(page -> page.path().equals(path))
-                .map(page -> CalculatorCatalog.calculatorKeys().contains(page.key())
-                        ? AdFitViewModel.PageKind.CALCULATOR
-                        : AdFitViewModel.PageKind.BLOCKED)
-                .findFirst()
-                .orElse(AdFitViewModel.PageKind.BLOCKED);
-    }
-
     @ModelAttribute("staticAssetVersion")
     public String staticAssetVersion() {
         return SitePages.sitemap().stream()
                 .map(page -> page.lastModified().format(DateTimeFormatter.BASIC_ISO_DATE))
                 .max(String::compareTo)
-                .map(v -> v + "-adfit-guard-v2")
-                .orElse("20260425-adfit-guard-v2");
+                .map(v -> v + "-v1")
+                .orElse("20260919-v1");
     }
 
     @ModelAttribute("defaultImageUrl")

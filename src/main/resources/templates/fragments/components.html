@@ -32,6 +32,7 @@
         <h1 th:text="${title}">계산기</h1>
         <p th:text="${description}">설명</p>
     </section>
+    <div th:replace="~{fragments/coupang :: banner}"></div>
 </div>
 
 <section class="content-card empty-result-state" th:fragment="resultEmptyState(message)">

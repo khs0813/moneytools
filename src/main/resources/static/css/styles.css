@@ -216,16 +216,6 @@ h3 { margin: 0 0 8px; font-size: 1.15rem; }
 .home-hero p { max-width: 760px; color: var(--muted); }
 
 .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
-.home-hero-ad {
-    margin: 28px 0 18px;
-}
-.home-hero-ad .adfit-slot {
-    margin-top: 0;
-    margin-bottom: 0;
-}
-.home-hero-ad + .hero-actions {
-    margin-top: 16px;
-}
 .primary-button,
 .ghost-button {
     display: inline-flex;
@@ -349,33 +339,8 @@ h3 { margin: 0 0 8px; font-size: 1.15rem; }
         "form result"
         "form side";
 }
-.calculator-layout:has(> .adfit-slot) {
-    grid-template-areas:
-        "form side"
-        "form ad";
-}
-.calculator-layout.has-result:has(> .adfit-slot) {
-    grid-template-areas:
-        "form result"
-        "form side"
-        "form ad";
-}
 .overseas-tax-layout {
     grid-template-columns: minmax(360px, 1.05fr) minmax(300px, 0.95fr);
-}
-
-@media (min-width: 821px) {
-    .calculator-layout:has(> .adfit-slot) {
-        grid-template-areas:
-            "form ad"
-            "form side";
-    }
-    .calculator-layout.has-result:has(> .adfit-slot) {
-        grid-template-areas:
-            "form result"
-            "form ad"
-            "form side";
-    }
 }
 .calculator-form,
 .result-panel { padding: 28px; }
@@ -388,10 +353,6 @@ h3 { margin: 0 0 8px; font-size: 1.15rem; }
     grid-area: form;
     display: grid;
     gap: 16px;
-}
-.calculator-layout > .kakao-adfit-top-slot {
-    grid-area: affiliate;
-    margin-top: 0;
 }
 .calculator-layout > .calculation-basis-box {
     grid-column: 1;
@@ -769,38 +730,51 @@ details p { color: var(--muted); margin-bottom: 0; }
 .data-table td:first-child { text-align: center; }
 .data-table th { position: sticky; top: 0; background: #f4f7ff; color: #344054; }
 
-.adfit-slot {
-    display: grid;
-    justify-items: center;
-    gap: 8px;
-    margin: 56px auto;
-    max-width: 100%;
-    overflow: visible;
+/* Coupang Partners Banner */
+.coupang-banner-wrap {
+    width: 100%;
+    margin: 1.25rem 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 12px 16px 8px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    box-sizing: border-box;
+    overflow: hidden;
 }
-.adfit-slot[hidden] {
-    display: none !important;
+.coupang-banner-frame {
+    width: 100%;
+    min-height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
-.adfit-slot-frame {
-    display: grid;
-    place-items: center;
-    max-width: 100%;
-    overflow: visible;
+.coupang-banner-frame iframe {
+    max-width: 100% !important;
+    border: none !important;
 }
-.calculator-layout > .adfit-slot {
-    grid-area: ad;
-    margin: 0 auto;
+.coupang-notice {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin: 6px 0 0 0;
+    text-align: right;
+    width: 100%;
+    line-height: 1.4;
 }
-.adfit-slot[data-adfit-desktop-width="300"] .adfit-slot-frame {
-    width: 300px;
-    min-height: 250px;
-}
-.adfit-slot[data-adfit-desktop-width="728"] .adfit-slot-frame {
-    width: 728px;
-    min-height: 90px;
-}
-.calculation-basis-box + .adfit-slot {
-    margin-top: 18px;
-    margin-bottom: 22px;
+@media (max-width: 640px) {
+    .coupang-banner-wrap {
+        margin: 0.75rem 0 1.25rem;
+        padding: 8px 8px 6px;
+        border-radius: 12px;
+    }
+    .coupang-notice {
+        font-size: 0.7rem;
+    }
 }
 .footer {
     margin-top: 34px;
@@ -832,21 +806,6 @@ details p { color: var(--muted); margin-bottom: 0; }
             "form"
             "result"
             "side";
-    }
-    .calculator-layout:has(> .adfit-slot),
-    .overseas-tax-layout:has(> .adfit-slot) {
-        grid-template-areas:
-            "form"
-            "side"
-            "ad";
-    }
-    .calculator-layout.has-result:has(> .adfit-slot),
-    .overseas-tax-layout.has-result:has(> .adfit-slot) {
-        grid-template-areas:
-            "form"
-            "result"
-            "side"
-            "ad";
     }
 }
 
@@ -970,24 +929,6 @@ details p { color: var(--muted); margin-bottom: 0; }
         font-size: clamp(1.08rem, 5vw, 1.25rem);
         overflow-wrap: anywhere;
     }
-    .adfit-slot {
-        width: 100vw;
-        max-width: 100vw;
-        margin-left: calc(50% - 50vw);
-        margin-right: calc(50% - 50vw);
-    }
-    .calculator-layout > .adfit-slot {
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-    .adfit-slot[data-adfit-mobile-width="300"] .adfit-slot-frame {
-        width: 300px;
-        min-height: 250px;
-    }
-    .adfit-slot[data-adfit-mobile-width="320"] .adfit-slot-frame {
-        width: 320px;
-        min-height: 100px;
-    }
     .risk-summary {
         align-items: flex-start;
         flex-direction: column;
@@ -1062,7 +1003,7 @@ details p { color: var(--muted); margin-bottom: 0; }
 }
 
 @media print {
-    .sidebar, .mobile-menu-button, .footer, .primary-button, .ghost-button, .adfit-slot { display: none !important; }
+    .sidebar, .mobile-menu-button, .footer, .primary-button, .ghost-button, .coupang-banner-wrap { display: none !important; }
     .app-shell { display: block; }
     .main-content { padding: 0; width: 100%; }
     .content-card, .calculator-form, .result-panel { box-shadow: none; border: 1px solid #ddd; }

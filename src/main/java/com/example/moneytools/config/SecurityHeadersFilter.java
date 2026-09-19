@@ -29,7 +29,7 @@ public class SecurityHeadersFilter extends OncePerRequestFilter {
             "img-src 'self' data: https:",
             "font-src 'self' data:",
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
-            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://t1.kakaocdn.net",
+            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://ads-partners.coupang.com",
             "connect-src 'self' https:",
             "frame-src https:");
 

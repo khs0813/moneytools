@@ -8,7 +8,7 @@ class ChangeRateTests {
     @Test
     void calculatesRateUsingPreviousValueAsDenominator() {
         assertThat(ChangeRate.calculate(24, 17).percent()).isEqualTo(-29.17);
-        assertThat(ChangeRate.calculate(71.64, 29.51).percent()).isEqualTo(-58.8);
+        assertThat(ChangeRate.calculate(71.64, 29.51).percent()).isEqualTo(-58.81);
         assertThat(ChangeRate.calculate(10, 8).percent()).isEqualTo(-20.0);
         assertThat(ChangeRate.calculate(80, 37).percent()).isEqualTo(-53.75);
     }

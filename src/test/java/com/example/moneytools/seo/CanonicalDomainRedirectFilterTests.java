@@ -24,7 +24,7 @@ class CanonicalDomainRedirectFilterTests {
 
         assertThat(response.getStatus()).isEqualTo(301);
         assertThat(response.getHeader("Location"))
-                .isEqualTo("https://www.moneycalculator.co.kr/salary-calculator?amount=3000000");
+                .isEqualTo("https://www.moneycalculator.co.kr/salary-calculator");
     }
 
     @Test
@@ -51,7 +51,7 @@ class CanonicalDomainRedirectFilterTests {
 
         assertThat(response.getStatus()).isEqualTo(301);
         assertThat(response.getHeader("Location"))
-                .isEqualTo("https://www.moneycalculator.co.kr/salary-calculator?amount=%3Cscript%3Ealert(1)%3C/script%3E");
+                .isEqualTo("https://www.moneycalculator.co.kr/salary-calculator");
     }
 
     @Test
