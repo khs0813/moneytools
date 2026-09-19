@@ -11,7 +11,7 @@ const APP_NAME = process.env.APP_NAME || '머니계산기';
 const APP_DESC = process.env.APP_DESCRIPTION || '실수령액, 대출이자, 퇴직금, 배당금, 환율, 전기요금, 자동차 유지비, 생활비 계산기와 금융·세금 가이드를 한 곳에서 확인하세요.';
 const APP_CONTACT_EMAIL = process.env.APP_CONTACT_EMAIL || 'moneyfinancecalculator@gmail.com';
 const GOOGLE_SITE_VERIFICATION = process.env.GOOGLE_SITE_VERIFICATION || '';
-const STATIC_VERSION = '20260919';
+const STATIC_VERSION = '20260919b';
 
 // 페이지별 개별 OG 이미지 매핑 (GlobalModelAdvice.java 기준)
 const PAGE_OG_IMAGES = {

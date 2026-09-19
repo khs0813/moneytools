@@ -734,10 +734,7 @@ details p { color: var(--muted); margin-bottom: 0; }
 .coupang-banner-wrap {
     width: 100%;
     margin: 1.25rem 0 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    display: block;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 16px;
@@ -749,12 +746,19 @@ details p { color: var(--muted); margin-bottom: 0; }
 .coupang-banner-frame {
     width: 100%;
     min-height: 140px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
     overflow: hidden;
 }
+.coupang-banner-frame ins {
+    display: block !important;
+    width: 100% !important;
+    min-height: 140px;
+    text-decoration: none;
+}
 .coupang-banner-frame iframe {
+    display: block !important;
+    width: 100% !important;
+    min-width: 100% !important;
     max-width: 100% !important;
     border: none !important;
 }
