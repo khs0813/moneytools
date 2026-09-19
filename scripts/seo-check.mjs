@@ -111,7 +111,7 @@ const sitemapContent = fs.readFileSync(path.join(DIST_DIR, 'sitemap.xml'), 'utf8
 const sitemapPages = pages.filter((p) => p.inSitemap);
 
 for (const p of sitemapPages) {
-  const expectedUrl = `https://www.moneycalculator.co.kr${p.path === '/' ? '' : p.path}`;
+  const expectedUrl = `https://www.moneycalculator.co.kr${p.path}`;
   if (!sitemapContent.includes(`<loc>${expectedUrl}</loc>`)) {
     console.error(`[SEO Check] ERROR: URL missing from sitemap.xml: ${expectedUrl}`);
     errors += 1;

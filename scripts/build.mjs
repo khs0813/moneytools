@@ -147,7 +147,7 @@ function extractLongform(key) {
 
 // JSON-LD 구조화 데이터 생성 (SeoService.java와 완전히 동일)
 function generateStructuredData(page) {
-  const pageUrl = `${BASE_URL}${page.path === '/' ? '' : page.path}`;
+  const pageUrl = `${BASE_URL}${page.path}`;
   const siteUrl = `${BASE_URL}/`;
   const orgId = `${siteUrl}#organization`;
   const siteId = `${siteUrl}#website`;
@@ -261,7 +261,7 @@ function generateStructuredData(page) {
 
 // HTML Head 컴파일 (head.html 기준 완전 동일)
 function renderHead(page) {
-  const canonicalUrl = `${BASE_URL}${page.path === '/' ? '' : page.path}`;
+  const canonicalUrl = `${BASE_URL}${page.path}`;
   const ogMeta = PAGE_OG_IMAGES[page.path];
   const ogImageUrl = ogMeta ? `${BASE_URL}${ogMeta.path}` : `${BASE_URL}/og-image.png`;
   const ogImageAlt = ogMeta ? ogMeta.alt : `${APP_NAME} 금융 계산기 모음`;
@@ -698,7 +698,7 @@ export async function buildSite() {
   const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${sitemapPages.map((p) => `  <url>
-    <loc>${BASE_URL}${p.path === '/' ? '' : p.path}</loc>
+    <loc>${BASE_URL}${p.path}</loc>
     <lastmod>${p.lastModified}</lastmod>
     <changefreq>${p.path === '/' ? 'daily' : 'weekly'}</changefreq>
     <priority>${p.path === '/' ? '1.0' : '0.8'}</priority>
@@ -728,8 +728,8 @@ Sitemap: ${BASE_URL}/sitemap.xml
   <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
 ${sitemapPages.map((p) => `  <item>
     <title><![CDATA[${p.title}]]></title>
-    <link>${BASE_URL}${p.path === '/' ? '' : p.path}</link>
-    <guid isPermaLink="true">${BASE_URL}${p.path === '/' ? '' : p.path}</guid>
+    <link>${BASE_URL}${p.path}</link>
+    <guid isPermaLink="true">${BASE_URL}${p.path}</guid>
     <description><![CDATA[${p.description}]]></description>
     <pubDate>${new Date(p.lastModified).toUTCString()}</pubDate>
   </item>`).join('\n')}

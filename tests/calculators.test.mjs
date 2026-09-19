@@ -186,3 +186,129 @@ test('severanceCalculation', () => {
   assert.ok(result.serviceDays >= 1095);
   assert.ok(result.severance > 0);
 });
+
+test('annualLeaveCalculation', () => {
+  const result = calculateAnnualLeave({
+    startDate: '2023-01-01',
+    calculationDate: '2025-01-01',
+    dailyOrdinaryWage: 100_000,
+    usedLeaveDays: 5
+  });
+
+  assert.equal(result.serviceMonths, 24);
+  assert.equal(result.generatedLeaveDays, 15);
+  assert.equal(result.remainingLeaveDays, 10);
+  assert.equal(result.estimatedAllowance, 1_000_000);
+});
+
+test('fairValueCalculation', () => {
+  const result = calculateFairValue({
+    eps: 5000,
+    targetPer: 15,
+    growthRate: 10,
+    discountRate: 8,
+    safetyMargin: 20
+  });
+
+  assert.equal(result.baseFairValue, 75000);
+  assert.ok(result.growthAdjustedFairValue > 75000);
+  assert.ok(result.safeBuyPrice > 0);
+  assert.ok(result.safeBuyLow < result.safeBuyPrice);
+});
+
+test('exchangeCalculation', () => {
+  const result = calculateExchange({
+    amount: 1000,
+    exchangeRate: 1350,
+    feeRate: 1.0
+  });
+
+  assert.equal(result.convertedBeforeFee, 1_350_000);
+  assert.equal(result.feeAmount, 13_500);
+  assert.equal(result.convertedAfterFee, 1_336_500);
+});
+
+test('airConditionerCostCalculation', () => {
+  const result = calculateAirConditionerCost({
+    powerWatts: 1500,
+    standbyWatts: 5,
+    hoursPerDay: 8,
+    daysPerMonth: 30,
+    electricityRatePerKwh: 200
+  });
+
+  assert.equal(result.activeUsageKwh, 360);
+  assert.ok(result.totalUsageKwh > 360);
+  assert.ok(result.estimatedMonthlyCost > 70000);
+});
+
+test('carMaintenanceCalculation', () => {
+  const result = calculateCarMaintenance({
+    monthlyDistanceKm: 1000,
+    fuelEfficiencyKmPerLiter: 10,
+    fuelPricePerLiter: 1700,
+    parkingFeeMonthly: 50000,
+    insuranceAnnual: 1200000,
+    taxAnnual: 360000,
+    installmentMonthly: 0,
+    maintenanceAnnual: 600000,
+    tollMonthly: 30000
+  });
+
+  assert.equal(result.fuelCostMonthly, 170000);
+  assert.equal(result.fixedCostMonthly, 180000); // 50000 + 100000 + 30000
+  assert.equal(result.variableCostMonthly, 250000); // 170000 + 50000 + 30000
+  assert.equal(result.totalCostMonthly, 430000);
+  assert.equal(result.totalCostAnnual, 5160000);
+});
+
+test('monthlyBudgetCalculation', () => {
+  const result = calculateMonthlyBudget({
+    monthlyIncome: 4000000,
+    housing: 600000,
+    communication: 100000,
+    insurance: 200000,
+    education: 0,
+    subscriptions: 50000,
+    food: 800000,
+    transport: 200000,
+    leisure: 300000,
+    other: 150000,
+    savingsGoal: 1000000
+  });
+
+  assert.equal(result.fixedExpenses, 950000);
+  assert.equal(result.variableExpenses, 1450000);
+  assert.equal(result.totalExpenses, 2400000);
+  assert.equal(result.remainingAfterExpenses, 1600000);
+  assert.equal(result.remainingAfterSavingsGoal, 600000);
+  assert.equal(result.expenseRatio, 60.0);
+  assert.equal(result.savingsGoalRatio, 25.0);
+});
+
+test('overseasStockTaxCalculation', () => {
+  const result = calculateOverseasStockTax({
+    buyAmountForeign: 10000,
+    buyExchangeRate: 1300,
+    sellAmountForeign: 15000,
+    sellExchangeRate: 1400,
+    feeKrw: 50000,
+    applyBasicDeduction: true,
+    basicDeductionKrw: 2500000,
+    capitalGainsTaxRate: 22.0,
+    dividendForeign: 500,
+    dividendExchangeRate: 1400,
+    dividendTaxRate: 15.4
+  });
+
+  assert.equal(result.buyKrw, 13000000);
+  assert.equal(result.sellKrw, 21000000);
+  assert.equal(result.capitalGain, 7950000); // 21M - 13M - 50k
+  assert.equal(result.taxableCapitalGain, 5450000); // 7.95M - 2.5M
+  assert.equal(result.capitalTax, 1199000); // 5.45M * 0.22
+  assert.equal(result.dividendKrw, 700000);
+  assert.equal(result.dividendTax, 107800); // 700k * 0.154
+  assert.equal(result.totalTax, 1306800);
+  assert.equal(result.afterTaxProfit, 7343200); // 7950000 + 700000 - 1306800
+});
+
