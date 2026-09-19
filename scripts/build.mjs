@@ -9,7 +9,27 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 const BASE_URL = (process.env.APP_BASE_URL || 'https://www.moneycalculator.co.kr').replace(/\/$/, '');
 const APP_NAME = process.env.APP_NAME || '머니계산기';
 const APP_DESC = process.env.APP_DESCRIPTION || '실수령액, 대출이자, 퇴직금, 배당금, 환율, 전기요금, 자동차 유지비, 생활비 계산기와 금융·세금 가이드를 한 곳에서 확인하세요.';
+const APP_CONTACT_EMAIL = process.env.APP_CONTACT_EMAIL || 'moneyfinancecalculator@gmail.com';
+const GOOGLE_SITE_VERIFICATION = process.env.GOOGLE_SITE_VERIFICATION || '';
 const STATIC_VERSION = '20260801';
+
+// 페이지별 개별 OG 이미지 매핑 (GlobalModelAdvice.java 기준)
+const PAGE_OG_IMAGES = {
+  '/electricity-bill-calculator': { path: '/og/electricity-bill-calculator.png', alt: '가정용 전기요금과 누진구간 계산 안내' },
+  '/loan-interest-calculator':    { path: '/og/loan-interest-calculator.png',    alt: '원리금균등 원금균등 월상환액 비교 안내' },
+  '/annual-salary-net-calculator':{ path: '/og/annual-salary-net-calculator.png',alt: '2026 연봉 실수령액과 공제액 계산 안내' },
+  '/air-conditioner-electricity-calculator': { path: '/og/air-conditioner-electricity-calculator.png', alt: '하루 8시간 에어컨 예상 전기세 계산 안내' },
+  '/domestic-stock-tax-calculator': { path: '/og/domestic-stock-tax-calculator.png', alt: '국내주식 매도세금과 증권거래세 계산 안내' },
+  '/stock-average-calculator':    { path: '/og/stock-average-calculator.png',    alt: '추가매수 후 주식 평균단가 계산 안내' }
+};
+
+// 계산기 페이지 키 목록 (SitePages.java의 calculator() = inNav && !isGuide && !isInfo)
+const CALCULATOR_KEYS = new Set([
+  'dividend','fair-value','loan','stock-average','loan-refinance','mortgage',
+  'annual-salary-net','salary','severance','annual-leave','exchange',
+  'electricity-bill','air-conditioner-cost','car-maintenance','monthly-budget',
+  'stock-tax','domestic-stock-tax','overseas-tax'
+]);
 
 const pagesDataRaw = fs.readFileSync(path.join(__dirname, 'page-data.json'), 'utf8');
 const ALL_PAGES = JSON.parse(pagesDataRaw);
@@ -125,60 +145,139 @@ function extractLongform(key) {
   return '';
 }
 
-// JSON-LD 생성
+// JSON-LD 구조화 데이터 생성 (SeoService.java와 완전히 동일)
 function generateStructuredData(page) {
-  const canonicalUrl = `${BASE_URL}${page.path === '/' ? '' : page.path}`;
+  const pageUrl = `${BASE_URL}${page.path === '/' ? '' : page.path}`;
+  const siteUrl = `${BASE_URL}/`;
+  const orgId = `${siteUrl}#organization`;
+  const siteId = `${siteUrl}#website`;
+  const pageId = `${pageUrl}#webpage`;
+  const ogImageUrl = `${BASE_URL}/og-image.png`;
+
+  const isGuide = page.key.startsWith('guide-');
+  const isCalculator = CALCULATOR_KEYS.has(page.key);
+  const isHome = page.path === '/';
+
   const graph = [];
 
-  // WebSite schema for home
-  if (page.path === '/') {
+  // 1. Organization
+  graph.push({
+    '@type': 'Organization',
+    '@id': orgId,
+    'name': APP_NAME,
+    'url': siteUrl,
+    'email': APP_CONTACT_EMAIL,
+    'contactPoint': { '@type': 'ContactPoint', 'email': APP_CONTACT_EMAIL, 'contactType': 'customer support' },
+    'logo': ogImageUrl
+  });
+
+  // 2. WebSite
+  graph.push({
+    '@type': 'WebSite',
+    '@id': siteId,
+    'name': APP_NAME,
+    'url': siteUrl,
+    'description': APP_DESC,
+    'publisher': { '@id': orgId },
+    'inLanguage': 'ko-KR'
+  });
+
+  // 3. WebPage
+  const webPage = {
+    '@type': 'WebPage',
+    '@id': pageId,
+    'url': pageUrl,
+    'name': page.title,
+    'description': page.description,
+    'isPartOf': { '@id': siteId },
+    'about': { '@id': orgId },
+    'inLanguage': 'ko-KR',
+    'image': ogImageUrl,
+    'primaryImageOfPage': ogImageUrl,
+    'dateModified': `${page.lastModified}T12:00:00+09:00`
+  };
+  graph.push(webPage);
+
+  // 4. WebApplication (계산기 페이지만)
+  if (isCalculator) {
     graph.push({
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      'name': APP_NAME,
-      'url': BASE_URL,
-      'description': APP_DESC
+      '@type': 'WebApplication',
+      '@id': `${pageUrl}#webapplication`,
+      'name': page.label,
+      'url': pageUrl,
+      'applicationCategory': 'FinanceApplication',
+      'operatingSystem': 'Web',
+      'description': page.description,
+      'inLanguage': 'ko-KR',
+      'isAccessibleForFree': true,
+      'offers': { '@type': 'Offer', 'price': '0', 'priceCurrency': 'KRW' }
     });
   }
 
-  // FAQ schema if page has FAQs
+  // 5. Article (가이드 페이지만)
+  if (isGuide) {
+    graph.push({
+      '@type': 'Article',
+      '@id': `${pageUrl}#article`,
+      'mainEntityOfPage': { '@id': pageId },
+      'headline': page.title,
+      'description': page.description,
+      'url': pageUrl,
+      'image': ogImageUrl,
+      'author': { '@id': orgId },
+      'publisher': { '@id': orgId },
+      'inLanguage': 'ko-KR',
+      'datePublished': `${page.lastModified}T12:00:00+09:00`,
+      'dateModified': `${page.lastModified}T12:00:00+09:00`
+    });
+  }
+
+  // 6. BreadcrumbList
+  const breadcrumbItems = [{ '@type': 'ListItem', 'position': 1, 'name': '홈', 'item': siteUrl }];
+  if (!isHome) {
+    breadcrumbItems.push({ '@type': 'ListItem', 'position': 2, 'name': page.label, 'item': pageUrl });
+  }
+  graph.push({ '@type': 'BreadcrumbList', 'itemListElement': breadcrumbItems });
+
+  // 7. FAQPage
   if (page.faqs && page.faqs.length > 0) {
     graph.push({
-      '@context': 'https://schema.org',
       '@type': 'FAQPage',
+      '@id': `${pageUrl}#faq`,
       'mainEntity': page.faqs.map((faq) => ({
         '@type': 'Question',
         'name': faq.question,
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text': faq.answer
-        }
+        'acceptedAnswer': { '@type': 'Answer', 'text': faq.answer }
       }))
     });
   }
 
-  if (graph.length === 0) return '';
-  return JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
+  const root = { '@context': 'https://schema.org', '@graph': graph };
+  return JSON.stringify(root, null, 2)
+    .replace(/</g, '\\u003C')
+    .replace(/>/g, '\\u003E')
+    .replace(/&/g, '\\u0026');
 }
 
-// HTML Head 컴파일
+// HTML Head 컴파일 (head.html 기준 완전 동일)
 function renderHead(page) {
   const canonicalUrl = `${BASE_URL}${page.path === '/' ? '' : page.path}`;
-  const defaultImageUrl = `${BASE_URL}/og-image.png`;
+  const ogMeta = PAGE_OG_IMAGES[page.path];
+  const ogImageUrl = ogMeta ? `${BASE_URL}${ogMeta.path}` : `${BASE_URL}/og-image.png`;
+  const ogImageAlt = ogMeta ? ogMeta.alt : `${APP_NAME} 금융 계산기 모음`;
   const structuredData = generateStructuredData(page);
+  const googleVerificationMeta = GOOGLE_SITE_VERIFICATION
+    ? `\n    <meta name="google-site-verification" content="${GOOGLE_SITE_VERIFICATION}">`
+    : '';
 
   return `<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-    <meta name="theme-color" content="#6c8cff">
+    <meta name="theme-color" content="#f7f6ff">
     <meta name="format-detection" content="telephone=no, address=no, email=no">
     <meta name="application-name" content="${APP_NAME}">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="${APP_NAME}">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>${page.title}</title>
     <meta name="description" lang="ko" content="${page.description}">
     <link rel="canonical" href="${canonicalUrl}">
@@ -193,29 +292,26 @@ function renderHead(page) {
     <meta property="og:title" content="${page.title}">
     <meta property="og:description" content="${page.description}">
     <meta property="og:url" content="${canonicalUrl}">
-    <meta property="og:image" content="${defaultImageUrl}">
+    <meta property="og:image" content="${ogImageUrl}">
     <meta property="og:image:type" content="image/png">
-    <meta property="og:image:alt" content="${APP_NAME} 금융 계산기 모음">
+    <meta property="og:image:alt" content="${ogImageAlt}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${page.title}">
     <meta name="twitter:description" content="${page.description}">
-    <meta name="twitter:image" content="${defaultImageUrl}">
-    <meta name="twitter:image:alt" content="${APP_NAME} 금융 계산기 모음">
-
+    <meta name="twitter:image" content="${ogImageUrl}">
+    <meta name="twitter:image:alt" content="${ogImageAlt}">${googleVerificationMeta}
     <meta name="naver-site-verification" content="1ee183886e284f895a1709cd041bda149e20e662">
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="icon" href="/icons/icon-192.png" sizes="192x192" type="image/png">
-    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
     <link rel="stylesheet" href="/css/styles.css?v=${STATIC_VERSION}">
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/ko.js" defer></script>
-    ${structuredData ? `<script type="application/ld+json">${structuredData}</script>` : ''}
+    <script type="application/ld+json">${structuredData}</script>
 </head>`;
 }
 
@@ -270,6 +366,13 @@ function renderFooter() {
     </div>
     <p class="copyright">© 2026 ${APP_NAME}. All rights reserved.</p>
     <script src="/js/calculator.js?v=${STATIC_VERSION}" defer></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/service-worker.js').catch(function() {});
+        });
+      }
+    </script>
 </footer>`;
 }
 
