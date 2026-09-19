@@ -615,36 +615,24 @@ export async function buildSite() {
     // index.html 및 guide.html 내 카드 목록 렌더링
     if (page.key === 'home') {
       const calcCards = CALCULATOR_PAGES.map((c) => `
-        <article class="tool-card">
-            <p class="tool-badge">${getEyebrow(c.key)}</p>
-            <h3><a href="${c.path}">${c.label}</a></h3>
+        <a class="calculator-card" href="${c.path}">
+            <span class="card-badge">계산기</span>
+            <h3>${c.label}</h3>
             <p>${c.description}</p>
-            <a class="card-link" href="${c.path}">계산기 바로가기 →</a>
-        </article>
+        </a>
       `).join('\n');
-      html = html.replace(/<article class="tool-card"\s+th:each="item : \$\{calculatorPages\}">[\s\S]*?<\/article>/g, calcCards);
-
-      const guideCards = GUIDE_PAGES.map((g) => `
-        <article class="guide-card">
-            <p class="guide-badge">설명형 가이드</p>
-            <h3><a href="${g.path}">${g.label}</a></h3>
-            <p>${g.description}</p>
-            <a class="card-link" href="${g.path}">가이드 읽기 →</a>
-        </article>
-      `).join('\n');
-      html = html.replace(/<article class="guide-card"\s+th:each="guide : \$\{guidePages\}">[\s\S]*?<\/article>/g, guideCards);
+      html = html.replace(/<a class="calculator-card"\s+th:each="calculator : \$\{calculatorPages\}"[\s\S]*?<\/a>/g, calcCards);
     }
 
     if (page.key === 'guide') {
       const allGuideCards = GUIDE_PAGES.map((g) => `
-        <article class="guide-card">
-            <p class="guide-badge">금융 가이드</p>
-            <h3><a href="${g.path}">${g.label}</a></h3>
+        <a class="calculator-card" href="${g.path}">
+            <span class="card-badge">가이드</span>
+            <h3>${g.label}</h3>
             <p>${g.description}</p>
-            <a class="card-link" href="${g.path}">가이드 읽기 →</a>
-        </article>
+        </a>
       `).join('\n');
-      html = html.replace(/<article class="guide-card"\s+th:each="guide : \$\{guidePages\}">[\s\S]*?<\/article>/g, allGuideCards);
+      html = html.replace(/<a class="calculator-card"\s+th:each="guidePage : \$\{guidePages\}"[\s\S]*?<\/a>/g, allGuideCards);
     }
 
     // 대출 상환표 섹션에 hidden 추가 및 tbody 비우기
