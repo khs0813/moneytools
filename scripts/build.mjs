@@ -11,7 +11,7 @@ const APP_NAME = process.env.APP_NAME || '머니계산기';
 const APP_DESC = process.env.APP_DESCRIPTION || '실수령액, 대출이자, 퇴직금, 배당금, 환율, 전기요금, 자동차 유지비, 생활비 계산기와 금융·세금 가이드를 한 곳에서 확인하세요.';
 const APP_CONTACT_EMAIL = process.env.APP_CONTACT_EMAIL || 'moneyfinancecalculator@gmail.com';
 const GOOGLE_SITE_VERIFICATION = process.env.GOOGLE_SITE_VERIFICATION || '';
-const STATIC_VERSION = '20260801';
+const STATIC_VERSION = '20260919';
 
 // 페이지별 개별 OG 이미지 매핑 (GlobalModelAdvice.java 기준)
 const PAGE_OG_IMAGES = {
@@ -400,19 +400,19 @@ function renderPageHero(page, customTitle) {
 function renderCalculationBasis(key) {
   let liContent = '';
   if (['salary', 'annual-salary-net', 'severance', 'annual-leave'].includes(key)) {
-    liContent = '<li>반영 기준: 2026년 6월 현재 공개된 급여 공제 구조, 4대보험 근로자 부담률, 근로기준법상 계산 원칙을 기준으로 추정합니다.</li>';
+    liContent = '<li>반영 기준: 2026년 9월 기준 최신 급여 공제 체계, 4대보험 요율(국민연금 4.75%, 건강보험 3.595%, 장기요양 0.4724%, 고용보험 0.9%) 및 2026년 7월 고시 개정 국민연금 기준소득월액 상·하한액(하한 41만 원, 상한 659만 원), 근로소득 간이세액표 및 근로기준법상 통상임금 산정 원칙을 기준으로 계산합니다.</li>';
   } else if (['stock-tax', 'domestic-stock-tax', 'overseas-tax', 'dividend'].includes(key)) {
-    liContent = '<li>반영 기준: 2026년 6월 현재 공개된 세율 구조, 기본공제, 원천징수 개념과 사용자가 입력한 거래 조건을 기준으로 참고값을 계산합니다.</li>';
+    liContent = '<li>반영 기준: 2026년 9월 기준 국내주식 시장별 증권거래세 및 농어촌특별세(코스피 0.2%, 코스닥 0.2%, 코넥스 0.1%), 해외주식 양도소득세 22%(기본공제 250만 원), 배당소득세 15.4%(지방소득세 포함) 및 원천징수 세율 구조를 반영합니다.</li>';
   } else if (['loan', 'loan-refinance', 'mortgage'].includes(key)) {
-    liContent = '<li>반영 기준: 사용자가 입력한 금리, 기간, 상환방식, 비용과 2026년 6월 기준 일반적인 금융 계산 공식을 반영합니다.</li>';
+    liContent = '<li>반영 기준: 2026년 9월 기준 금융권 여신 계산 공식(원리금균등, 원금균등, 만기일시 상환방식), LTV·DTI·DSR 규제 산출 기준 및 조기상환 수수료율 체계를 반영합니다.</li>';
   } else if (['electricity-bill', 'air-conditioner-cost'].includes(key)) {
-    liContent = '<li>반영 기준: 2026년 6월 기준 가정용 전기요금 구조와 사용자가 입력한 사용량, 단가, 계절 조건을 기준으로 계산합니다.</li>';
+    liContent = '<li>반영 기준: 2026년 9월 기준 한국전력 주택용 전기요금 누진제 요금표(기본요금 3단계, 전력량요금 3단계, 기후환경요금 9원/kWh, 연료비조정단가 +5원/kWh)를 반영합니다.</li>';
   } else {
-    liContent = '<li>반영 기준: 2026년 6월 기준 일반 계산 공식과 사용자가 입력한 환율, 단가, 비용, 가정값을 기준으로 참고값을 계산합니다.</li>';
+    liContent = '<li>반영 기준: 2026년 9월 기준 최신 고시 환율, 표준 유지비 산출 모델 및 정부 고시 기준을 바탕으로 참고값을 계산합니다.</li>';
   }
 
   return `<section class="notice-box calculation-basis-box">
-    <strong>계산 기준일: 2026년 6월 기준</strong>
+    <strong>계산 기준일: 2026년 9월 기준</strong>
     <ul>
         ${liContent}
         <li>주의: 실제 급여·세금·요금·금융상품 결과와 다를 수 있으며, 회사 정책, 금융사 조건, 계약 종류, 신고 기준, 고시 변경에 따라 최종 금액은 달라질 수 있습니다.</li>

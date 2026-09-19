@@ -4,7 +4,7 @@
  * 정적 에셋(CSS, JS, 이미지)은 캐시 우선으로 빠르게 제공
  */
 
-const CACHE_NAME = 'moneytools-v20260801';
+const CACHE_NAME = 'moneytools-v20260919';
 const STATIC_ASSETS = [
   '/',
   '/css/styles.css',

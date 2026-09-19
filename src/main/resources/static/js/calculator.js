@@ -938,7 +938,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const afterTaxProfit = capitalGain - totalTax;
 
       const result = {
-        appliedPolicy: `${useCustomRates ? '사용자 지정' : policy.label} · ${policy.effectiveDate} 기준`,
+        appliedPolicy: `${useCustomRates ? '사용자 지정' : policy.label} · 2026년 9월 기준`,
         appliedRates: `증권거래세 ${formatPercent(transactionTaxRate)} / 농어촌특별세 ${formatPercent(agricultureTaxRate)}`,
         capitalGain,
         transactionTax,
@@ -1366,7 +1366,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let nationalPension = 0, healthInsurance = 0, longTermCareInsurance = 0, employmentInsurance = 0;
       if (applyInsurance && taxableMonthly > 0) {
-        const pensionBase = Math.min(Math.max(taxableMonthly, 400_000), 6_370_000);
+        const pensionBase = Math.min(Math.max(taxableMonthly, 410_000), 6_590_000);
         nationalPension = Math.round(pensionBase * 0.0475);
         healthInsurance = Math.round(taxableMonthly * 0.03595);
         longTermCareInsurance = Math.round(healthInsurance * (0.009448 / 0.0719));
@@ -1418,8 +1418,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const eligibleChildren = Math.min(children, Math.max(0, dependents - 1));
       let childCredit = 0;
-      if (eligibleChildren === 1) childCredit = 12_500;
-      else if (eligibleChildren >= 2) childCredit = 29_160 + (eligibleChildren - 2) * 25_000;
+      if (eligibleChildren === 1) childCredit = 20_830;
+      else if (eligibleChildren >= 2) childCredit = 45_830 + (eligibleChildren - 2) * 33_330;
 
       const incomeTax = Math.max(0, Math.round(annualIncomeTax / 12.0) - childCredit);
       const localIncomeTax = Math.round(incomeTax * 0.1);

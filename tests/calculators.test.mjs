@@ -95,7 +95,7 @@ test('salaryCalculatorAppliesEligibleChildWithholdingCredit', () => {
     applyInsurance: true
   });
 
-  assert.equal(baseResult.incomeTax - childCreditResult.incomeTax, 29160.0);
+  assert.equal(baseResult.incomeTax - childCreditResult.incomeTax, 45830.0);
   assert.ok(baseResult.localIncomeTax > childCreditResult.localIncomeTax);
 });
 
