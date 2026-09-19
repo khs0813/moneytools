@@ -657,14 +657,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return true;
   };
 
-  document.querySelectorAll('form.calculator-form[method]').forEach((form) => {
-    if ((form.getAttribute('method') ?? '').toLowerCase() !== 'post') return;
-    form.addEventListener('submit', () => {
-      trackEvent('calculator_start');
-      rememberResultScrollRequest();
-    });
-  });
-
   numericInputs.forEach((input) => {
     input.addEventListener('input', () => validateNumberInput(input));
     input.addEventListener('change', () => validateNumberInput(input));
@@ -974,6 +966,898 @@ document.addEventListener('DOMContentLoaded', () => {
       renderDomesticStockTaxResult();
       trackVisibleResult(resultPanel);
       scrollToResultCard(resultPanel);
+    });
+  }
+
+  // ====================================================
+  // 정적 사이트(Render Static Site)용 클라이언트 계산기 엔진
+  // ====================================================
+  const parseNum = (idOrElem) => {
+    const elem = typeof idOrElem === 'string' ? document.getElementById(idOrElem) : idOrElem;
+    return parseNumberInput(elem);
+  };
+
+  const formatComma = (value, decimals = 0) => {
+    const num = Number(value) || 0;
+    return decimals > 0
+      ? num.toLocaleString('ko-KR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
+      : Math.round(num).toLocaleString('ko-KR');
+  };
+
+  const showResult = (layout, resultPanel, emptyState) => {
+    resultPanel?.removeAttribute('hidden');
+    emptyState?.setAttribute('hidden', 'true');
+    layout?.classList.add('has-result');
+    trackVisibleResult(resultPanel);
+    scrollToResultCard(resultPanel);
+  };
+
+  /* 1. 대출이자 계산기 (loan-interest-calculator) */
+  const loanForm = document.getElementById('principal')?.closest('form');
+  if (loanForm) {
+    const layout = loanForm.closest('.calculator-layout');
+    const resultPanel = layout?.querySelector('.result-panel');
+    const emptyState = layout?.querySelector('.empty-result-state');
+    const scheduleSection = document.querySelector('[data-loan-schedule-section], section.content-card:has(#loan-schedule)');
+    const tableBody = document.querySelector('#loan-schedule tbody');
+
+    loanForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateNumberInputsInForm(loanForm)) return;
+      trackEvent('calculator_start');
+
+      const principal = parseNum('principal');
+      const annualRate = parseNum('annualRate');
+      const years = parseNum('years');
+      const repaymentType = document.getElementById('repaymentType')?.value || 'EQUAL_PAYMENT';
+
+      const monthlyRate = annualRate / 100.0 / 12.0;
+      const months = Math.max(1, years * 12);
+      const schedule = [];
+
+      if (repaymentType === 'EQUAL_PRINCIPAL') {
+        let remaining = principal;
+        const fixedPrincipal = principal / months;
+        for (let m = 1; m <= months; m++) {
+          const interest = remaining * monthlyRate;
+          const principalPayment = Math.min(remaining, fixedPrincipal);
+          remaining = Math.max(0, remaining - principalPayment);
+          schedule.push({ month: m, payment: principalPayment + interest, principalPayment, interestPayment: interest, remainingPrincipal: remaining });
+        }
+      } else if (repaymentType === 'BULLET') {
+        for (let m = 1; m <= months; m++) {
+          const interest = principal * monthlyRate;
+          const principalPayment = m === months ? principal : 0;
+          const remaining = m === months ? 0 : principal;
+          schedule.push({ month: m, payment: interest + principalPayment, principalPayment, interestPayment: interest, remainingPrincipal: remaining });
+        }
+      } else {
+        if (monthlyRate === 0) {
+          const monthlyPayment = principal / months;
+          let remaining = principal;
+          for (let m = 1; m <= months; m++) {
+            remaining = Math.max(0, remaining - monthlyPayment);
+            schedule.push({ month: m, payment: monthlyPayment, principalPayment: monthlyPayment, interestPayment: 0, remainingPrincipal: remaining });
+          }
+        } else {
+          const factor = Math.pow(1 + monthlyRate, months);
+          const monthlyPayment = principal * monthlyRate * factor / (factor - 1);
+          let remaining = principal;
+          for (let m = 1; m <= months; m++) {
+            const interest = remaining * monthlyRate;
+            const principalPayment = Math.min(remaining, monthlyPayment - interest);
+            remaining = Math.max(0, remaining - principalPayment);
+            schedule.push({ month: m, payment: monthlyPayment, principalPayment, interestPayment: interest, remainingPrincipal: remaining });
+          }
+        }
+      }
+
+      const totalPayment = schedule.reduce((sum, r) => sum + r.payment, 0);
+      const totalInterest = Math.max(0, totalPayment - principal);
+      const averageMonthly = totalPayment / months;
+
+      const targets = resultPanel?.querySelectorAll('.result-grid strong');
+      if (targets && targets.length >= 5) {
+        targets[0].textContent = formatWon(schedule[0]?.payment ?? 0);
+        targets[1].textContent = formatWon(averageMonthly);
+        targets[2].textContent = formatWon(schedule[months - 1]?.payment ?? 0);
+        targets[3].textContent = formatWon(totalInterest);
+        targets[4].textContent = formatWon(totalPayment);
+      }
+
+      if (tableBody) {
+        tableBody.innerHTML = schedule.map((row) => `
+          <tr>
+            <td>${row.month}회차</td>
+            <td>${formatComma(row.payment)}</td>
+            <td>${formatComma(row.principalPayment)}</td>
+            <td>${formatComma(row.interestPayment)}</td>
+            <td>${formatComma(row.remainingPrincipal)}</td>
+          </tr>
+        `).join('');
+      }
+
+      scheduleSection?.removeAttribute('hidden');
+      showResult(layout, resultPanel, emptyState);
+    });
+  }
+
+  /* 2. 물타기 계산기 (stock-average-calculator) */
+  const stockAvgForm = document.getElementById('currentAveragePrice')?.closest('form');
+  if (stockAvgForm) {
+    const layout = stockAvgForm.closest('.calculator-layout');
+    const resultPanel = layout?.querySelector('.result-panel');
+    const emptyState = layout?.querySelector('.empty-result-state');
+
+    stockAvgForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateNumberInputsInForm(stockAvgForm)) return;
+      trackEvent('calculator_start');
+
+      const currentShares = parseNum('currentShares');
+      const currentAveragePrice = parseNum('currentAveragePrice');
+      const additionalShares = parseNum('additionalShares');
+      const additionalPrice = parseNum('additionalPrice');
+
+      const currentInvestment = currentShares * currentAveragePrice;
+      const additionalInvestment = additionalShares * additionalPrice;
+      const totalShares = currentShares + additionalShares;
+      const totalInvestment = currentInvestment + additionalInvestment;
+      const newAveragePrice = totalShares === 0 ? 0 : totalInvestment / totalShares;
+      const averagePriceChange = newAveragePrice - currentAveragePrice;
+
+      const targets = resultPanel?.querySelectorAll('.result-grid strong');
+      if (targets && targets.length >= 7) {
+        targets[0].textContent = formatWon(currentInvestment);
+        targets[1].textContent = formatWon(additionalInvestment);
+        targets[2].textContent = `${formatComma(totalShares)}주`;
+        targets[3].textContent = formatWon(totalInvestment);
+        targets[4].textContent = formatWon(newAveragePrice);
+        targets[5].textContent = `${averagePriceChange > 0 ? '+' : ''}${formatWon(averagePriceChange)}`;
+        targets[6].textContent = formatWon(newAveragePrice);
+      }
+      showResult(layout, resultPanel, emptyState);
+    });
+  }
+
+  /* 3. 대출 갈아타기 계산기 (loan-refinance-calculator) */
+  const loanRefinanceForm = document.getElementById('currentRemainingYears')?.closest('form');
+  if (loanRefinanceForm) {
+    const layout = loanRefinanceForm.closest('.calculator-layout');
+    const resultPanel = layout?.querySelector('.result-panel');
+    const emptyState = layout?.querySelector('.empty-result-state');
+
+    loanRefinanceForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateNumberInputsInForm(loanRefinanceForm)) return;
+      trackEvent('calculator_start');
+
+      const balance = parseNum('currentBalance');
+      const curRate = parseNum('currentAnnualRate') / 100 / 12;
+      const curMonths = Math.max(1, parseNum('currentRemainingYears') * 12);
+      const newRate = parseNum('newAnnualRate') / 100 / 12;
+      const newMonths = Math.max(1, parseNum('newYears') * 12);
+      const repaymentType = document.getElementById('repaymentType')?.value || 'EQUAL_PAYMENT';
+      const penaltyRate = parseNum('prepaymentPenaltyRate') / 100;
+      const addCost = parseNum('additionalCost');
+
+      const getMonthlyPayment = (p, rate, m) => {
+        if (repaymentType === 'EQUAL_PRINCIPAL') return p / m + p * rate;
+        if (rate === 0) return p / m;
+        const factor = Math.pow(1 + rate, m);
+        return p * rate * factor / (factor - 1);
+      };
+
+      const getTotalInterest = (p, rate, m) => {
+        if (repaymentType === 'EQUAL_PRINCIPAL') {
+          let interest = 0;
+          const fixedP = p / m;
+          let rem = p;
+          for (let i = 1; i <= m; i++) {
+            interest += rem * rate;
+            rem = Math.max(0, rem - fixedP);
+          }
+          return interest;
+        }
+        return getMonthlyPayment(p, rate, m) * m - p;
+      };
+
+      const curMonthly = getMonthlyPayment(balance, curRate, curMonths);
+      const newMonthly = getMonthlyPayment(balance, newRate, newMonths);
+      const monthlySavings = curMonthly - newMonthly;
+      const curTotalInt = getTotalInterest(balance, curRate, curMonths);
+      const newTotalInt = getTotalInterest(balance, newRate, newMonths);
+      const totalIntSavings = curTotalInt - newTotalInt;
+      const penalty = balance * penaltyRate;
+      const switchingCost = penalty + addCost;
+      const netSavings = totalIntSavings - switchingCost;
+      const breakEven = monthlySavings > 0 ? Math.ceil(switchingCost / monthlySavings) : -1;
+
+      let rec = '갈아타기 불리';
+      let recClass = 'danger';
+      if (netSavings > 0) {
+        if (breakEven > 0 && breakEven <= 24) {
+          rec = '갈아타기 유리';
+          recClass = 'safe';
+        } else {
+          rec = '장기 보유 시 유리';
+          recClass = 'caution';
+        }
+      }
+
+      const riskSummary = resultPanel?.querySelector('.risk-summary');
+      if (riskSummary) {
+        const strong = riskSummary.querySelector('strong');
+        if (strong) strong.textContent = rec;
+        riskSummary.className = `risk-summary risk-${recClass}`;
+      }
+
+      const targets = resultPanel?.querySelectorAll('.result-grid strong');
+      if (targets && targets.length >= 11) {
+        targets[0].textContent = formatWon(curMonthly);
+        targets[1].textContent = formatWon(newMonthly);
+        targets[2].textContent = `${monthlySavings > 0 ? '+' : ''}${formatWon(monthlySavings)}`;
+        targets[3].textContent = formatWon(curTotalInt);
+        targets[4].textContent = formatWon(newTotalInt);
+        targets[5].textContent = `${totalIntSavings > 0 ? '+' : ''}${formatWon(totalIntSavings)}`;
+        targets[6].textContent = formatWon(penalty);
+        targets[7].textContent = formatWon(switchingCost);
+        targets[8].textContent = `${netSavings > 0 ? '+' : ''}${formatWon(netSavings)}`;
+        targets[9].textContent = breakEven > 0 ? `${breakEven}개월` : '회수 어려움';
+        if (breakEven > 0) {
+          const beDate = new Date();
+          beDate.setMonth(beDate.getMonth() + breakEven);
+          targets[10].textContent = `${beDate.getFullYear()}-${String(beDate.getMonth() + 1).padStart(2, '0')}-01`;
+        } else {
+          targets[10].textContent = '-';
+        }
+      }
+      showResult(layout, resultPanel, emptyState);
+    });
+  }
+
+  /* 4. 주담대 월납입 계산기 (mortgage-monthly-payment-calculator) */
+  const mortgageForm = document.getElementById('housePrice')?.closest('form');
+  if (mortgageForm) {
+    const layout = mortgageForm.closest('.calculator-layout');
+    const resultPanel = layout?.querySelector('.result-panel');
+    const emptyState = layout?.querySelector('.empty-result-state');
+
+    mortgageForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateNumberInputsInForm(mortgageForm)) return;
+      trackEvent('calculator_start');
+
+      const housePrice = parseNum('housePrice');
+      const cashOnHand = parseNum('cashOnHand');
+      const expectedLoan = parseNum('expectedLoanAmount');
+      const annualRate = parseNum('annualRate');
+      const years = parseNum('years');
+      const repaymentType = document.getElementById('repaymentType')?.value || 'EQUAL_PAYMENT';
+      const ltvRatio = parseNum('ltvRatio');
+      const annualIncome = parseNum('annualIncome');
+      const debtPayment = parseNum('existingMonthlyDebtPayment');
+
+      const monthlyRate = annualRate / 100 / 12;
+      const months = Math.max(1, years * 12);
+
+      let monthlyPayment = 0;
+      let totalInterest = 0;
+
+      if (repaymentType === 'EQUAL_PRINCIPAL') {
+        monthlyPayment = expectedLoan / months + expectedLoan * monthlyRate;
+        let rem = expectedLoan;
+        const fixedP = expectedLoan / months;
+        for (let i = 1; i <= months; i++) {
+          totalInterest += rem * monthlyRate;
+          rem = Math.max(0, rem - fixedP);
+        }
+      } else if (repaymentType === 'BULLET') {
+        monthlyPayment = expectedLoan * monthlyRate;
+        totalInterest = expectedLoan * monthlyRate * months;
+      } else {
+        if (monthlyRate === 0) {
+          monthlyPayment = expectedLoan / months;
+          totalInterest = 0;
+        } else {
+          const factor = Math.pow(1 + monthlyRate, months);
+          monthlyPayment = expectedLoan * monthlyRate * factor / (factor - 1);
+          totalInterest = monthlyPayment * months - expectedLoan;
+        }
+      }
+
+      const totalRepayment = expectedLoan + totalInterest;
+      const requiredEquity = Math.max(0, housePrice - expectedLoan);
+      const maxLoanByLtv = housePrice * (ltvRatio / 100);
+      const monthlyIncome = annualIncome / 12;
+      const dtiRatio = monthlyIncome > 0 ? (monthlyPayment / monthlyIncome) * 100 : 0;
+      const dsrRatio = monthlyIncome > 0 ? ((monthlyPayment + debtPayment) / monthlyIncome) * 100 : 0;
+      const cashShortfall = Math.max(0, requiredEquity - cashOnHand);
+
+      let riskLabel = '안전';
+      let riskClass = 'safe';
+      if (dsrRatio >= 70 || cashShortfall > 0 || expectedLoan > maxLoanByLtv) {
+        riskLabel = '위험';
+        riskClass = 'danger';
+      } else if (dsrRatio >= 40 || dtiRatio >= 40) {
+        riskLabel = '주의';
+        riskClass = 'caution';
+      }
+
+      const riskSummary = resultPanel?.querySelector('.risk-summary');
+      if (riskSummary) {
+        const strong = riskSummary.querySelector('strong');
+        if (strong) strong.textContent = riskLabel;
+        riskSummary.className = `risk-summary risk-${riskClass}`;
+      }
+
+      const targets = resultPanel?.querySelectorAll('.result-grid strong');
+      if (targets && targets.length >= 8) {
+        targets[0].textContent = formatWon(monthlyPayment);
+        targets[1].textContent = formatWon(totalInterest);
+        targets[2].textContent = formatWon(totalRepayment);
+        targets[3].textContent = formatWon(requiredEquity);
+        targets[4].textContent = formatWon(maxLoanByLtv);
+        targets[5].textContent = `${formatComma(dtiRatio, 1)}%`;
+        targets[6].textContent = `${formatComma(dsrRatio, 1)}%`;
+        targets[7].textContent = formatWon(cashShortfall);
+      }
+      showResult(layout, resultPanel, emptyState);
+    });
+  }
+
+  /* 5. 배당금 계산기 (dividend-calculator) */
+  const dividendForm = document.getElementById('dividendPerShare')?.closest('form');
+  if (dividendForm) {
+    const layout = dividendForm.closest('.calculator-layout');
+    const resultPanel = layout?.querySelector('.result-panel');
+    const emptyState = layout?.querySelector('.empty-result-state');
+
+    dividendForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateNumberInputsInForm(dividendForm)) return;
+      trackEvent('calculator_start');
+
+      const shares = parseNum('shares');
+      const dividendPerShare = parseNum('dividendPerShare');
+      const period = document.getElementById('period')?.value || 'QUARTERLY';
+      const taxApplied = document.getElementById('taxApplied')?.checked ?? true;
+      const taxRate = parseNum('taxRate');
+
+      const multiplier = { MONTHLY: 12, SEMI_ANNUAL: 2, ANNUAL: 1, QUARTERLY: 4 }[period] || 4;
+      const gross = shares * dividendPerShare;
+      const taxFactor = taxApplied ? Math.max(0, 1 - taxRate / 100) : 1;
+      const net = gross * taxFactor;
+      const annualGross = gross * multiplier;
+      const annualNet = net * multiplier;
+
+      const targets = resultPanel?.querySelectorAll('.result-grid strong');
+      if (targets && targets.length >= 4) {
+        targets[0].textContent = formatWon(gross);
+        targets[1].textContent = formatWon(net);
+        targets[2].textContent = formatWon(annualNet / 12);
+        targets[3].textContent = formatWon(annualNet);
+      }
+      showResult(layout, resultPanel, emptyState);
+    });
+  }
+
+  /* 7. 월급 실수령액 계산기 (salary-calculator) */
+  const salaryForm = document.getElementById('amount')?.closest('form');
+  if (salaryForm && !salaryForm.hasAttribute('data-annual-salary-calculator')) {
+    const layout = salaryForm.closest('.calculator-layout');
+    const resultPanel = layout?.querySelector('.result-panel');
+    const emptyState = layout?.querySelector('.empty-result-state');
+
+    salaryForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateNumberInputsInForm(salaryForm)) return;
+      trackEvent('calculator_start');
+
+      const incomeType = document.getElementById('incomeType')?.value || 'MONTHLY';
+      const amount = parseNum('amount');
+      const taxFreeAmount = parseNum('taxFreeAmount');
+      const dependents = Math.max(1, parseNum('dependents'));
+      const children = Math.max(0, parseNum('children'));
+      const applyInsurance = document.getElementById('applyInsurance')?.checked ?? true;
+
+      const grossMonthly = incomeType === 'ANNUAL' ? amount / 12.0 : amount;
+      const taxableMonthly = Math.max(0, grossMonthly - taxFreeAmount);
+
+      let nationalPension = 0, healthInsurance = 0, longTermCareInsurance = 0, employmentInsurance = 0;
+      if (applyInsurance && taxableMonthly > 0) {
+        const pensionBase = Math.min(Math.max(taxableMonthly, 400_000), 6_370_000);
+        nationalPension = Math.round(pensionBase * 0.0475);
+        healthInsurance = Math.round(taxableMonthly * 0.03595);
+        longTermCareInsurance = Math.round(healthInsurance * (0.009448 / 0.0719));
+        employmentInsurance = Math.round(taxableMonthly * 0.009);
+      }
+
+      const annualTaxableGross = taxableMonthly * 12.0;
+      let annualIncomeTax = 0;
+      if (annualTaxableGross > 0) {
+        let eDed = 0;
+        if (annualTaxableGross <= 5_000_000) eDed = annualTaxableGross * 0.70;
+        else if (annualTaxableGross <= 15_000_000) eDed = 3_500_000 + (annualTaxableGross - 5_000_000) * 0.40;
+        else if (annualTaxableGross <= 45_000_000) eDed = 7_500_000 + (annualTaxableGross - 15_000_000) * 0.15;
+        else if (annualTaxableGross <= 100_000_000) eDed = 12_000_000 + (annualTaxableGross - 45_000_000) * 0.05;
+        else eDed = Math.min(20_000_000, 14_750_000 + (annualTaxableGross - 100_000_000) * 0.02);
+
+        const basicDeduction = dependents * 1_500_000;
+        const bucket = Math.min(dependents, 3);
+        let proxySpecial = 0;
+        if (annualTaxableGross <= 30_000_000) {
+          proxySpecial = bucket === 1 ? 3_100_000 + annualTaxableGross * 0.04 : bucket === 2 ? 3_600_000 + annualTaxableGross * 0.04 : 5_000_000 + annualTaxableGross * 0.07 + Math.max(0, annualTaxableGross - 40_000_000) * 0.04;
+        } else if (annualTaxableGross <= 45_000_000) {
+          proxySpecial = bucket === 1 ? 3_100_000 + annualTaxableGross * 0.04 - (annualTaxableGross - 30_000_000) * 0.05 : bucket === 2 ? 3_600_000 + annualTaxableGross * 0.04 - (annualTaxableGross - 30_000_000) * 0.05 : 5_000_000 + annualTaxableGross * 0.07 - (annualTaxableGross - 30_000_000) * 0.05;
+        } else if (annualTaxableGross <= 70_000_000) {
+          proxySpecial = bucket === 1 ? 3_100_000 + annualTaxableGross * 0.015 : bucket === 2 ? 3_600_000 + annualTaxableGross * 0.02 : 5_000_000 + annualTaxableGross * 0.05;
+        } else {
+          proxySpecial = bucket === 1 ? 3_100_000 + annualTaxableGross * 0.005 : bucket === 2 ? 3_600_000 + annualTaxableGross * 0.01 : 5_000_000 + annualTaxableGross * 0.03;
+        }
+
+        const taxBase = Math.max(0, annualTaxableGross - eDed - basicDeduction - proxySpecial - (nationalPension * 12.0));
+        let calcTax = 0;
+        if (taxBase <= 14_000_000) calcTax = taxBase * 0.06;
+        else if (taxBase <= 50_000_000) calcTax = 840_000 + (taxBase - 14_000_000) * 0.15;
+        else if (taxBase <= 88_000_000) calcTax = 6_240_000 + (taxBase - 50_000_000) * 0.24;
+        else if (taxBase <= 150_000_000) calcTax = 15_360_000 + (taxBase - 88_000_000) * 0.35;
+        else if (taxBase <= 300_000_000) calcTax = 37_060_000 + (taxBase - 150_000_000) * 0.38;
+        else if (taxBase <= 500_000_000) calcTax = 94_060_000 + (taxBase - 300_000_000) * 0.40;
+        else if (taxBase <= 1_000_000_000) calcTax = 174_060_000 + (taxBase - 500_000_000) * 0.42;
+        else calcTax = 384_060_000 + (taxBase - 1_000_000_000) * 0.45;
+
+        let rawCredit = calcTax <= 1_300_000 ? calcTax * 0.55 : 715_000 + (calcTax - 1_300_000) * 0.30;
+        let limit = 740_000;
+        if (annualTaxableGross > 33_000_000 && annualTaxableGross <= 70_000_000) limit = Math.max(660_000, 740_000 - (annualTaxableGross - 33_000_000) * 0.008);
+        else if (annualTaxableGross > 70_000_000 && annualTaxableGross <= 120_000_000) limit = Math.max(500_000, 660_000 - (annualTaxableGross - 70_000_000) * 0.50);
+        else if (annualTaxableGross > 120_000_000) limit = Math.max(200_000, 500_000 - (annualTaxableGross - 120_000_000) * 0.50);
+
+        annualIncomeTax = Math.max(0, calcTax - Math.min(rawCredit, limit));
+      }
+
+      const eligibleChildren = Math.min(children, Math.max(0, dependents - 1));
+      let childCredit = 0;
+      if (eligibleChildren === 1) childCredit = 12_500;
+      else if (eligibleChildren >= 2) childCredit = 29_160 + (eligibleChildren - 2) * 25_000;
+
+      const incomeTax = Math.max(0, Math.round(annualIncomeTax / 12.0) - childCredit);
+      const localIncomeTax = Math.round(incomeTax * 0.1);
+      const totalDeduction = nationalPension + healthInsurance + longTermCareInsurance + employmentInsurance + incomeTax + localIncomeTax;
+      const netMonthly = Math.max(0, grossMonthly - totalDeduction);
+
+      const targets = resultPanel?.querySelectorAll('.result-grid strong');
+      if (targets && targets.length >= 10) {
+        targets[0].textContent = formatWon(grossMonthly);
+        targets[1].textContent = formatWon(nationalPension);
+        targets[2].textContent = formatWon(healthInsurance);
+        targets[3].textContent = formatWon(longTermCareInsurance);
+        targets[4].textContent = formatWon(employmentInsurance);
+        targets[5].textContent = formatWon(incomeTax);
+        targets[6].textContent = formatWon(localIncomeTax);
+        targets[7].textContent = formatWon(totalDeduction);
+        targets[8].textContent = formatWon(netMonthly);
+        targets[9].textContent = formatWon(netMonthly * 12);
+      }
+      showResult(layout, resultPanel, emptyState);
+    });
+  }
+
+  /* 8. 퇴직금 계산기 (severance-pay-calculator) */
+  const severanceForm = document.getElementById('ordinaryDailyWage')?.closest('form');
+  if (severanceForm) {
+    const layout = severanceForm.closest('.calculator-layout');
+    const resultPanel = layout?.querySelector('.result-panel');
+    const emptyState = layout?.querySelector('.empty-result-state');
+
+    severanceForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateNumberInputsInForm(severanceForm)) return;
+      trackEvent('calculator_start');
+
+      const startDate = document.getElementById('startDate')?.value;
+      const endDate = document.getElementById('endDate')?.value;
+      const wage3Months = parseNum('totalWageForLastThreeMonths');
+      const annualBonus = parseNum('annualBonus');
+      const leaveAllowance = parseNum('annualLeaveAllowance');
+      const ordinaryDailyWage = parseNum('ordinaryDailyWage');
+
+      if (!startDate || !endDate) {
+        alert('입사일과 퇴사일을 입력해주세요.');
+        return;
+      }
+
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const msPerDay = 1000 * 60 * 60 * 24;
+      const serviceDays = Math.max(0, Math.round((end - start) / msPerDay) + 1);
+
+      const periodStart = new Date(end);
+      periodStart.setMonth(periodStart.getMonth() - 3);
+      const calculationPeriodDays = Math.max(1, Math.round((end - periodStart) / msPerDay));
+
+      const bonusInc = annualBonus * 3 / 12;
+      const leaveInc = leaveAllowance * 3 / 12;
+      const threeMonthTotal = wage3Months + bonusInc + leaveInc;
+
+      const averageDailyWage = threeMonthTotal / calculationPeriodDays;
+      const appliedDailyWage = Math.max(averageDailyWage, ordinaryDailyWage);
+      const severance = serviceDays < 365 ? 0 : appliedDailyWage * 30 * serviceDays / 365;
+
+      const targets = resultPanel?.querySelectorAll('.result-grid strong');
+      if (targets && targets.length >= 6) {
+        targets[0].textContent = `${formatComma(serviceDays)}일`;
+        targets[1].textContent = `${formatComma(calculationPeriodDays)}일`;
+        targets[2].textContent = formatWon(averageDailyWage);
+        targets[3].textContent = formatWon(ordinaryDailyWage);
+        targets[4].textContent = formatWon(appliedDailyWage);
+        targets[5].textContent = formatWon(severance);
+      }
+      showResult(layout, resultPanel, emptyState);
+    });
+  }
+
+  /* 9. 연차수당 계산기 (annual-leave-pay-calculator) */
+  const annualLeaveForm = document.getElementById('unusedLeaveDays')?.closest('form');
+  if (annualLeaveForm) {
+    const layout = annualLeaveForm.closest('.calculator-layout');
+    const resultPanel = layout?.querySelector('.result-panel');
+    const emptyState = layout?.querySelector('.empty-result-state');
+
+    annualLeaveForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateNumberInputsInForm(annualLeaveForm)) return;
+      trackEvent('calculator_start');
+
+      const unusedLeaveDays = parseNum('unusedLeaveDays');
+      const dailyOrdinaryWage = parseNum('dailyOrdinaryWage');
+      const allowance = unusedLeaveDays * dailyOrdinaryWage;
+
+      const targets = resultPanel?.querySelectorAll('.result-grid strong');
+      if (targets && targets.length >= 3) {
+        targets[0].textContent = `${formatComma(unusedLeaveDays, 2)}일`;
+        targets[1].textContent = formatWon(dailyOrdinaryWage);
+        targets[2].textContent = formatWon(allowance);
+      }
+      showResult(layout, resultPanel, emptyState);
+    });
+  }
+
+  /* 10. 적정주가 계산기 (fair-value-calculator) */
+  const fairValueForm = document.getElementById('eps')?.closest('form');
+  if (fairValueForm) {
+    const layout = fairValueForm.closest('.calculator-layout');
+    const resultPanel = layout?.querySelector('.result-panel');
+    const emptyState = layout?.querySelector('.empty-result-state');
+
+    fairValueForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateNumberInputsInForm(fairValueForm)) return;
+      trackEvent('calculator_start');
+
+      const eps = parseNum('eps');
+      const targetPer = parseNum('targetPer');
+      const growthRate = parseNum('growthRate');
+      const discountRate = parseNum('discountRate');
+      const safetyMargin = parseNum('safetyMargin');
+
+      const base = eps * targetPer;
+      const growthAdjusted = base * (1 + growthRate / 100) / (1 + discountRate / 100);
+      const safeBuy = growthAdjusted * (1 - safetyMargin / 100);
+
+      const targets = resultPanel?.querySelectorAll('.result-grid strong');
+      if (targets && targets.length >= 6) {
+        targets[0].textContent = formatWon(base);
+        targets[1].textContent = formatWon(growthAdjusted);
+        targets[2].textContent = formatWon(safeBuy);
+        targets[3].textContent = formatWon(safeBuy * 0.85);
+        targets[4].textContent = formatWon(safeBuy);
+        targets[5].textContent = formatWon(safeBuy * 1.15);
+      }
+      showResult(layout, resultPanel, emptyState);
+    });
+  }
+
+  /* 11. 환전 계산기 (exchange-calculator) */
+  const exchangeForm = document.getElementById('fromCurrency')?.closest('form');
+  if (exchangeForm) {
+    const layout = exchangeForm.closest('.calculator-layout');
+    const resultPanel = layout?.querySelector('.result-panel');
+    const emptyState = layout?.querySelector('.empty-result-state');
+
+    exchangeForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateNumberInputsInForm(exchangeForm)) return;
+      trackEvent('calculator_start');
+
+      const from = document.getElementById('fromCurrency')?.value || 'USD';
+      const to = document.getElementById('toCurrency')?.value || 'KRW';
+      const amount = parseNum('amount');
+      const exchangeRate = parseNum('exchangeRate');
+      const targetExchangeRate = parseNum('targetExchangeRate');
+      const feeRate = parseNum('feeRate') / 100;
+
+      let beforeFeeTarget = 0;
+      let beforeFeeKrw = 0;
+      let krwPerTarget = 1;
+
+      if (from === to) {
+        beforeFeeTarget = amount;
+        beforeFeeKrw = from === 'KRW' ? amount : amount * exchangeRate;
+        krwPerTarget = from === 'KRW' ? 1 : exchangeRate;
+      } else if (to === 'KRW') {
+        beforeFeeKrw = amount * exchangeRate;
+        beforeFeeTarget = beforeFeeKrw;
+        krwPerTarget = 1;
+      } else if (from === 'KRW') {
+        beforeFeeTarget = exchangeRate > 0 ? amount / exchangeRate : 0;
+        beforeFeeKrw = amount;
+        krwPerTarget = exchangeRate;
+      } else {
+        const sourceKrw = amount * exchangeRate;
+        beforeFeeTarget = targetExchangeRate > 0 ? sourceKrw / targetExchangeRate : 0;
+        beforeFeeKrw = sourceKrw;
+        krwPerTarget = targetExchangeRate;
+      }
+
+      const feeTarget = beforeFeeTarget * feeRate;
+      const afterFeeTarget = Math.max(0, beforeFeeTarget - feeTarget);
+      const feeKrw = feeTarget * krwPerTarget;
+      const afterFeeKrw = afterFeeTarget * krwPerTarget;
+
+      const targets = resultPanel?.querySelectorAll('.result-grid strong');
+      if (targets && targets.length >= 7) {
+        targets[0].textContent = formatComma(beforeFeeTarget, 2);
+        targets[1].textContent = formatComma(feeTarget, 2);
+        targets[2].textContent = to;
+        targets[3].textContent = formatComma(afterFeeTarget, 2);
+        targets[4].textContent = formatWon(beforeFeeKrw);
+        targets[5].textContent = formatWon(feeKrw);
+        targets[6].textContent = formatWon(afterFeeKrw);
+      }
+      showResult(layout, resultPanel, emptyState);
+    });
+  }
+
+  /* 12. 전기요금 계산기 (electricity-bill-calculator) */
+  const electricityForm = document.getElementById('usageKwh')?.closest('form');
+  if (electricityForm) {
+    const layout = electricityForm.closest('.calculator-layout');
+    const resultPanel = layout?.querySelector('.result-panel');
+    const emptyState = layout?.querySelector('.empty-result-state');
+
+    electricityForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateNumberInputsInForm(electricityForm)) return;
+      trackEvent('calculator_start');
+
+      const usage = parseNum('usageKwh');
+      const prevUsage = parseNum('previousUsageKwh');
+      const season = document.getElementById('season')?.value || 'SPRING_FALL';
+
+      const isSummer = season === 'SUMMER';
+      const tier1Limit = isSummer ? 300 : 200;
+      const tier2Limit = isSummer ? 450 : 400;
+
+      const baseFee = usage <= tier1Limit ? 910 : usage <= tier2Limit ? 1600 : 7300;
+      const t1 = Math.min(usage, tier1Limit);
+      const t2 = Math.min(Math.max(0, usage - tier1Limit), tier2Limit - tier1Limit);
+      const t3 = Math.max(0, usage - tier2Limit);
+      const energyCharge = t1 * 120.0 + t2 * 214.6 + t3 * 307.3;
+      const climateCharge = usage * 9.0;
+      const fuelAdj = usage * 5.0;
+
+      const subtotal = baseFee + energyCharge + climateCharge + fuelAdj;
+      const vat = Math.round(subtotal * 0.1);
+      const fund = Math.floor((subtotal * 0.027) / 10) * 10;
+      const total = Math.floor((subtotal + vat + fund) / 10) * 10;
+      const avgUnit = usage > 0 ? total / usage : 0;
+      const usageDelta = usage - prevUsage;
+
+      const targets = resultPanel?.querySelectorAll('.result-grid strong');
+      if (targets && targets.length >= 9) {
+        targets[0].textContent = formatWon(baseFee);
+        targets[1].textContent = formatWon(energyCharge);
+        targets[2].textContent = formatWon(climateCharge);
+        targets[3].textContent = formatWon(fuelAdj);
+        targets[4].textContent = formatWon(vat);
+        targets[5].textContent = formatWon(fund);
+        targets[6].textContent = formatWon(total);
+        targets[7].textContent = `${formatComma(avgUnit, 1)}원/kWh`;
+        targets[8].textContent = `${usageDelta > 0 ? '+' : ''}${formatComma(usageDelta)}kWh`;
+      }
+      showResult(layout, resultPanel, emptyState);
+    });
+  }
+
+  /* 13. 에어컨 전기요금 계산기 (air-conditioner-electricity-calculator) */
+  const airconForm = document.getElementById('powerWatts')?.closest('form');
+  if (airconForm) {
+    const layout = airconForm.closest('.calculator-layout');
+    const resultPanel = layout?.querySelector('.result-panel');
+    const emptyState = layout?.querySelector('.empty-result-state');
+
+    airconForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateNumberInputsInForm(airconForm)) return;
+      trackEvent('calculator_start');
+
+      const powerW = parseNum('powerWatts');
+      const hours = Math.min(24, Math.max(0, parseNum('hoursPerDay')));
+      const standbyHours = 24 - hours;
+      const loadFactor = Math.min(1, Math.max(0, parseNum('loadFactor')));
+      const days = parseNum('daysPerMonth');
+      const ratePerKwh = parseNum('electricityRatePerKwh');
+      const standbyW = parseNum('standbyWatts');
+      const baseHouseholdKwh = parseNum('householdUsageKwh');
+      const season = document.getElementById('season')?.value || 'SUMMER';
+
+      const activeKwh = (powerW / 1000) * hours * days * loadFactor;
+      const standbyKwh = (standbyW / 1000) * standbyHours * days;
+      const totalKwh = activeKwh + standbyKwh;
+      const standaloneCost = totalKwh * ratePerKwh;
+      const dailyCost = days > 0 ? standaloneCost / days : 0;
+      const totalActiveHours = hours * days;
+      const hourlyCost = totalActiveHours > 0 ? standaloneCost / totalActiveHours : 0;
+      const totalHouseholdKwh = baseHouseholdKwh + totalKwh;
+
+      const calcElec = (kwh, s) => {
+        const isSum = s === 'SUMMER';
+        const t1Lim = isSum ? 300 : 200;
+        const t2Lim = isSum ? 450 : 400;
+        const bFee = kwh <= t1Lim ? 910 : kwh <= t2Lim ? 1600 : 7300;
+        const eChg = Math.min(kwh, t1Lim) * 120.0 + Math.min(Math.max(0, kwh - t1Lim), t2Lim - t1Lim) * 214.6 + Math.max(0, kwh - t2Lim) * 307.3;
+        const sub = bFee + eChg + kwh * 9.0 + kwh * 5.0;
+        const v = Math.round(sub * 0.1);
+        const f = Math.floor((sub * 0.027) / 10) * 10;
+        return Math.floor((sub + v + f) / 10) * 10;
+      };
+
+      const baseBill = calcElec(baseHouseholdKwh, season);
+      const totalBill = calcElec(totalHouseholdKwh, season);
+      const incCost = Math.max(0, totalBill - baseBill);
+
+      const targets = resultPanel?.querySelectorAll('.result-grid strong');
+      if (targets && targets.length >= 9) {
+        targets[0].textContent = `${formatComma(activeKwh, 1)}kWh`;
+        targets[1].textContent = `${formatComma(standbyKwh, 1)}kWh`;
+        targets[2].textContent = `${formatComma(totalKwh, 1)}kWh`;
+        targets[3].textContent = formatWon(standaloneCost);
+        targets[4].textContent = formatWon(dailyCost);
+        targets[5].textContent = formatWon(hourlyCost);
+        targets[6].textContent = `${formatComma(totalHouseholdKwh, 1)}kWh`;
+        targets[7].textContent = formatWon(incCost);
+        targets[8].textContent = formatWon(totalBill);
+      }
+      showResult(layout, resultPanel, emptyState);
+    });
+  }
+
+  /* 14. 자동차 유지비 계산기 (car-maintenance-calculator) */
+  const carForm = document.getElementById('monthlyDistanceKm')?.closest('form');
+  if (carForm) {
+    const layout = carForm.closest('.calculator-layout');
+    const resultPanel = layout?.querySelector('.result-panel');
+    const emptyState = layout?.querySelector('.empty-result-state');
+
+    carForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateNumberInputsInForm(carForm)) return;
+      trackEvent('calculator_start');
+
+      const dist = parseNum('monthlyDistanceKm');
+      const eff = parseNum('fuelEfficiencyKmPerLiter');
+      const fuelP = parseNum('fuelPricePerLiter');
+      const parking = parseNum('parkingFeeMonthly');
+      const ins = parseNum('insuranceAnnual');
+      const tax = parseNum('taxAnnual');
+      const maint = parseNum('maintenanceAnnual');
+      const toll = parseNum('tollMonthly');
+      const installment = parseNum('installmentMonthly');
+
+      const fuelMonthly = eff > 0 ? (dist / eff) * fuelP : 0;
+      const fixedMonthly = parking + ins / 12 + tax / 12 + installment;
+      const variableMonthly = fuelMonthly + maint / 12 + toll;
+      const totalMonthly = fixedMonthly + variableMonthly;
+      const totalAnnual = totalMonthly * 12;
+      const costPerKm = dist > 0 ? totalMonthly / dist : 0;
+
+      const targets = resultPanel?.querySelectorAll('.result-grid strong');
+      if (targets && targets.length >= 6) {
+        targets[0].textContent = formatWon(fuelMonthly);
+        targets[1].textContent = formatWon(fixedMonthly);
+        targets[2].textContent = formatWon(variableMonthly);
+        targets[3].textContent = formatWon(totalMonthly);
+        targets[4].textContent = formatWon(totalAnnual);
+        targets[5].textContent = `${formatComma(costPerKm, 1)}원/km`;
+      }
+      showResult(layout, resultPanel, emptyState);
+    });
+  }
+
+  /* 15. 월 생활비 계산기 (monthly-budget-calculator) */
+  const budgetForm = document.getElementById('monthlyIncome')?.closest('form');
+  if (budgetForm) {
+    const layout = budgetForm.closest('.calculator-layout');
+    const resultPanel = layout?.querySelector('.result-panel');
+    const emptyState = layout?.querySelector('.empty-result-state');
+
+    budgetForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateNumberInputsInForm(budgetForm)) return;
+      trackEvent('calculator_start');
+
+      const income = parseNum('monthlyIncome');
+      const fixedExp = parseNum('housing') + parseNum('communication') + parseNum('insurance') + parseNum('education') + parseNum('subscriptions');
+      const varExp = parseNum('food') + parseNum('transport') + parseNum('leisure') + parseNum('other');
+      const totalExp = fixedExp + varExp;
+      const remaining = income - totalExp;
+      const savings = parseNum('savingsGoal');
+      const remAfterSavings = remaining - savings;
+      const expRatio = income > 0 ? (totalExp / income) * 100 : 0;
+
+      const targets = resultPanel?.querySelectorAll('.result-grid strong');
+      if (targets && targets.length >= 6) {
+        targets[0].textContent = formatWon(fixedExp);
+        targets[1].textContent = formatWon(varExp);
+        targets[2].textContent = formatWon(totalExp);
+        targets[3].textContent = formatWon(remaining);
+        targets[4].textContent = formatWon(remAfterSavings);
+        targets[5].textContent = `${formatComma(expRatio, 1)}%`;
+      }
+      showResult(layout, resultPanel, emptyState);
+    });
+  }
+
+  /* 17. 해외주식 세금 계산기 (overseas-stock-tax-calculator) */
+  const overseasForm = document.getElementById('buyAmountForeign')?.closest('form');
+  if (overseasForm) {
+    const layout = overseasForm.closest('.calculator-layout');
+    const resultPanel = layout?.querySelector('.result-panel');
+    const emptyState = layout?.querySelector('.empty-result-state');
+
+    overseasForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateNumberInputsInForm(overseasForm)) return;
+      trackEvent('calculator_start');
+
+      const buyForeign = parseNum('buyAmountForeign');
+      const buyExRate = parseNum('buyExchangeRate');
+      const sellForeign = parseNum('sellAmountForeign');
+      const sellExRate = parseNum('sellExchangeRate');
+      const feeKrw = parseNum('feeKrw');
+      const applyDeduction = document.getElementById('applyBasicDeduction')?.checked ?? true;
+      const deductionKrw = parseNum('basicDeductionKrw');
+      const capTaxRate = parseNum('capitalGainsTaxRate') / 100;
+      const divForeign = parseNum('dividendForeign');
+      const divExRate = parseNum('dividendExchangeRate');
+      const divTaxRate = parseNum('dividendTaxRate') / 100;
+
+      const buyKrw = buyForeign * buyExRate;
+      const sellKrw = sellForeign * sellExRate;
+      const capitalGain = sellKrw - buyKrw - feeKrw;
+      const deduction = applyDeduction ? deductionKrw : 0;
+      const taxableCapGain = Math.max(0, capitalGain - deduction);
+      const capitalTax = taxableCapGain * capTaxRate;
+
+      const dividendKrw = divForeign * divExRate;
+      const dividendTax = dividendKrw * divTaxRate;
+      const totalTax = capitalTax + dividendTax;
+      const afterTaxProfit = capitalGain + dividendKrw - totalTax;
+
+      const targets = resultPanel?.querySelectorAll('.result-grid strong');
+      if (targets && targets.length >= 9) {
+        targets[0].textContent = formatWon(buyKrw);
+        targets[1].textContent = formatWon(sellKrw);
+        targets[2].textContent = formatWon(capitalGain);
+        targets[3].textContent = formatWon(taxableCapGain);
+        targets[4].textContent = formatWon(capitalTax);
+        targets[5].textContent = formatWon(dividendKrw);
+        targets[6].textContent = formatWon(dividendTax);
+        targets[7].textContent = formatWon(totalTax);
+        targets[8].textContent = formatWon(afterTaxProfit);
+      }
+      showResult(layout, resultPanel, emptyState);
     });
   }
 
