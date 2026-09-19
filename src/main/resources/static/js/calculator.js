@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageMeta = PAGE_ANALYTICS_META[window.location.pathname] ?? {};
     const referrerHost = parseReferrerHost();
     return {
-      site: window.location.hostname || 'moneycalculator.co.kr',
+      site: window.location.hostname || 'www.moneycalculator.co.kr',
       page_path: window.location.pathname,
       page_group: pageMeta.pageGroup ?? pageMeta.contentCluster ?? 'general',
       calculator_type: pageMeta.calculatorType ?? 'none',

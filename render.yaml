@@ -5,6 +5,12 @@ services:
     buildCommand: npm run build
     staticPublishPath: ./dist
     pullRequestPreviewsEnabled: true
+    domains:
+      - www.moneycalculator.co.kr
+      - moneycalculator.co.kr
+    envVars:
+      - key: APP_BASE_URL
+        value: https://www.moneycalculator.co.kr
     headers:
       - path: /*
         name: X-Content-Type-Options
