@@ -12,26 +12,44 @@
 - Maven
 - HTML, CSS, JavaScript
 
-## 실행 방법
+## 실행 및 배포 방법
 
-개발 서버 실행:
+### 1. Render Static Site 배포 (권장)
+
+Render 대시보드에서 정적 웹사이트(Static Site)로 즉시 배포할 수 있습니다.
+
+- **방식 A (Render Blueprint)**: 저장소 루트의 `render.yaml`을 통해 자동으로 Static Site 서비스 생성
+- **방식 B (수동 설정)**:
+  - **Environment**: `Static Site`
+  - **Build Command**: `npm run build`
+  - **Publish Directory**: `dist`
+  - **Node Version**: 20 이상
+
+#### 로컬 정적 빌드 및 테스트:
+```bash
+# 1. 계산기 단위 테스트 (Java 서비스 로직과 일치 검증)
+npm test
+
+# 2. 정적 사이트 빌드 (43개 페이지, 에셋, sitemap, robots, rss 생성)
+npm run build
+
+# 3. SEO 및 메타태그 무결성 검증
+npm run seo:check
+
+# 4. 전체 검증 원클릭 실행
+npm run check
+
+# 5. 로컬 개발 서버 실행
+npm run dev
+```
+
+### 2. Spring Boot 개발 서버 실행 (기존 방식)
 
 ```bash
 mvn spring-boot:run
 ```
 
-브라우저 접속:
-
-```text
-http://localhost:8080
-```
-
-패키징 후 실행:
-
-```bash
-mvn clean package
-java -jar target/moneytools-0.0.1-SNAPSHOT.jar
-```
+브라우저 접속: `http://localhost:8080`
 
 ## DB 설정 방법
 
