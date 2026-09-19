@@ -1,0 +1,27 @@
+{
+  "name": "moneytools-static",
+  "version": "1.0.0",
+  "description": "2026 머니계산기 - 실수령액, 대출이자, 퇴직금, 세금, 생활비 계산기 및 금융 가이드 정적 사이트",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/dev-server.mjs",
+    "preview": "node scripts/dev-server.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "seo:check": "node scripts/seo-check.mjs",
+    "check": "npm run test && npm run build && npm run seo:check"
+  },
+  "keywords": [
+    "moneytools",
+    "calculator",
+    "salary-calculator",
+    "loan-calculator",
+    "static-site",
+    "render"
+  ],
+  "license": "MIT"
+}

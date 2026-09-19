@@ -2,6 +2,8 @@
 build/
 target/
 out/
+dist/
+node_modules/
 
 # Gradle
 .gradle/

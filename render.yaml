@@ -1,0 +1,48 @@
+services:
+  - type: web
+    name: moneytools-static
+    runtime: static
+    buildCommand: npm run build
+    staticPublishPath: ./dist
+    pullRequestPreviewsEnabled: true
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /css/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /js/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /icons/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /favicon.svg
+        name: Cache-Control
+        value: public, max-age=86400
+      - path: /service-worker.js
+        name: Cache-Control
+        value: no-cache
+      - path: /site.webmanifest
+        name: Cache-Control
+        value: public, max-age=86400
+    routes:
+      - type: rewrite
+        source: /sitemap.xml
+        destination: /sitemap.xml
+      - type: rewrite
+        source: /robots.txt
+        destination: /robots.txt
+      - type: rewrite
+        source: /rss.xml
+        destination: /rss.xml
+      - type: rewrite
+        source: /.well-known/assetlinks.json
+        destination: /.well-known/assetlinks.json
